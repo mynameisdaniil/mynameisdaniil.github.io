@@ -4212,7 +4212,7 @@ Elm.Main.make = function (_elm) {
                    _L.fromArray([]),
                    _L.fromArray([A2($Html.a,
                    _L.fromArray([$Html$Attributes.href("https://github.com/mynameisdaniil/mynameisdaniil.github.io/blob/master/src/Main.elm")]),
-                   _L.fromArray([$Html.text("This site is functional and reactive")]))]))]));
+                   _L.fromArray([$Html.text("This site is functional and reactive too")]))]))]));
    };
    var main = A2($Signal._op["<~"],
    view,

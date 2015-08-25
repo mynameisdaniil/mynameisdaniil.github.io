@@ -15,7 +15,7 @@ view : Model -> Html
 view model =
   div [] [
     h1 [] [text "Daniil Sobol"],
-    h6 [] [a [href "https://github.com/mynameisdaniil/mynameisdaniil.github.io/blob/master/src/Main.elm"][ text "This site is functional and reactive" ]]
+    h6 [] [a [href "https://github.com/mynameisdaniil/mynameisdaniil.github.io/blob/master/src/Main.elm"][ text "This site is functional and reactive too" ]]
     ]
 
 model : Signal Model
