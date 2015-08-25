@@ -4199,15 +4199,77 @@ Elm.Main.make = function (_elm) {
    $Html$Attributes = Elm.Html.Attributes.make(_elm),
    $List = Elm.List.make(_elm),
    $Maybe = Elm.Maybe.make(_elm),
+   $Random = Elm.Random.make(_elm),
    $Result = Elm.Result.make(_elm),
-   $Signal = Elm.Signal.make(_elm);
-   var model = $Signal.constant({_: {}});
+   $Signal = Elm.Signal.make(_elm),
+   $Signal$Time = Elm.Signal.Time.make(_elm);
+   var shuffle = F3(function (data,
+   i,
+   seed) {
+      return function () {
+         var len = $List.length(data);
+         return function () {
+            var _v0 = _U.cmp(i,len) < 1;
+            switch (_v0)
+            {case false: return data;
+               case true: return function () {
+                    var $ = A2($Random.generate,
+                    A2($Random.$int,0,len),
+                    seed),
+                    pivot = $._0,
+                    newSeed = $._1;
+                    var head = A2($List.take,
+                    pivot,
+                    data);
+                    var tail = A2($List.drop,
+                    pivot,
+                    data);
+                    return A3(shuffle,
+                    A2($List.append,tail,head),
+                    i + 1,
+                    newSeed);
+                 }();}
+            _U.badCase($moduleName,
+            "between lines 54 and 61");
+         }();
+      }();
+   });
+   var data = _L.fromArray(["Master\'s degree in signal processing"
+                           ,"All-time linux user since Ubuntu 8.04"
+                           ,"Have expirience in nginx module writing"
+                           ,"/dev/ops"
+                           ,"Have expirience in nodejs native modules writing"
+                           ,"Do love syntax of Erlang"
+                           ,"Pretty reactive"
+                           ,"Very functional"
+                           ,"My other CAP is a theorem"
+                           ,"I do understand Riak\'s code"
+                           ,"I lost my ability to explain monads"
+                           ,"Can\'t decide if I dislike Java more than C++ or vise versa"]);
+   var model = function (time) {
+      return A3(shuffle,
+      data,
+      0,
+      $Random.initialSeed($Basics.round(time)));
+   };
    var view = function (model) {
       return A2($Html.div,
       _L.fromArray([]),
       _L.fromArray([A2($Html.h1,
                    _L.fromArray([]),
                    _L.fromArray([$Html.text("Daniil Sobol")]))
+                   ,A2($Html.p,
+                   _L.fromArray([]),
+                   _L.fromArray([A2($Html.h2,
+                                _L.fromArray([]),
+                                _L.fromArray([$Html.text("Set of random facts about me:")]))
+                                ,$Html.ul(_L.fromArray([]))(A2($List.map,
+                                function (line) {
+                                   return A2($Html.li,
+                                   _L.fromArray([]),
+                                   _L.fromArray([$Html.text(line)]));
+                                },
+                                model))]))
                    ,A2($Html.h6,
                    _L.fromArray([]),
                    _L.fromArray([A2($Html.a,
@@ -4216,19 +4278,21 @@ Elm.Main.make = function (_elm) {
    };
    var main = A2($Signal._op["<~"],
    view,
-   model);
+   A2($Signal._op["<~"],
+   model,
+   $Signal$Time.startTime));
    var update = F2(function (action,
    model) {
       return model;
    });
    var NoOp = {ctor: "NoOp"};
-   var Model = {_: {}};
    _elm.Main.values = {_op: _op
-                      ,Model: Model
                       ,NoOp: NoOp
                       ,update: update
                       ,view: view
+                      ,data: data
                       ,model: model
+                      ,shuffle: shuffle
                       ,main: main};
    return _elm.Main.values;
 };
@@ -9937,6 +10001,117 @@ Elm.Native.Text.make = function(localRuntime) {
 	};
 };
 
+Elm.Native.Time = {};
+Elm.Native.Time.make = function(localRuntime)
+{
+
+	localRuntime.Native = localRuntime.Native || {};
+	localRuntime.Native.Time = localRuntime.Native.Time || {};
+	if (localRuntime.Native.Time.values)
+	{
+		return localRuntime.Native.Time.values;
+	}
+
+	var NS = Elm.Native.Signal.make(localRuntime);
+	var Maybe = Elm.Maybe.make(localRuntime);
+
+
+	// FRAMES PER SECOND
+
+	function fpsWhen(desiredFPS, isOn)
+	{
+		var msPerFrame = 1000 / desiredFPS;
+		var ticker = NS.input('fps-' + desiredFPS, null);
+
+		function notifyTicker()
+		{
+			localRuntime.notify(ticker.id, null);
+		}
+
+		function firstArg(x, y)
+		{
+			return x;
+		}
+
+		// input fires either when isOn changes, or when ticker fires.
+		// Its value is a tuple with the current timestamp, and the state of isOn
+		var input = NS.timestamp(A3(NS.map2, F2(firstArg), NS.dropRepeats(isOn), ticker));
+
+		var initialState = {
+			isOn: false,
+			time: localRuntime.timer.programStart,
+			delta: 0
+		};
+
+		var timeoutId;
+
+		function update(input,state)
+		{
+			var currentTime = input._0;
+			var isOn = input._1;
+			var wasOn = state.isOn;
+			var previousTime = state.time;
+
+			if (isOn)
+			{
+				timeoutId = localRuntime.setTimeout(notifyTicker, msPerFrame);
+			}
+			else if (wasOn)
+			{
+				clearTimeout(timeoutId);
+			}
+
+			return {
+				isOn: isOn,
+				time: currentTime,
+				delta: (isOn && !wasOn) ? 0 : currentTime - previousTime
+			};
+		}
+
+		return A2(
+			NS.map,
+			function(state) { return state.delta; },
+			A3(NS.foldp, F2(update), update(input.value,initialState), input)
+		);
+	}
+
+
+	// EVERY
+
+	function every(t)
+	{
+		var ticker = NS.input('every-' + t, null);
+		function tellTime()
+		{
+			localRuntime.notify(ticker.id, null);
+		}
+		var clock = A2( NS.map, fst, NS.timestamp(ticker) );
+		setInterval(tellTime, t);
+		return clock;
+	}
+
+
+	function fst(pair)
+	{
+		return pair._0;
+	}
+
+
+	function read(s)
+	{
+		var t = Date.parse(s);
+		return isNaN(t) ? Maybe.Nothing : Maybe.Just(t);
+	}
+
+	return localRuntime.Native.Time.values = {
+		fpsWhen: F2(fpsWhen),
+		every: every,
+		toDate: function(t) { return new window.Date(t); },
+		read: read
+	};
+
+};
+
 Elm.Native.Transform2D = {};
 Elm.Native.Transform2D.make = function(localRuntime) {
 
@@ -11933,6 +12108,291 @@ Elm.Native.VirtualDom.make = function(elm)
 
 },{}]},{},[23]);
 
+Elm.Random = Elm.Random || {};
+Elm.Random.make = function (_elm) {
+   "use strict";
+   _elm.Random = _elm.Random || {};
+   if (_elm.Random.values)
+   return _elm.Random.values;
+   var _op = {},
+   _N = Elm.Native,
+   _U = _N.Utils.make(_elm),
+   _L = _N.List.make(_elm),
+   $moduleName = "Random",
+   $Basics = Elm.Basics.make(_elm),
+   $List = Elm.List.make(_elm);
+   var magicNum8 = 2147483562;
+   var range = function (_v0) {
+      return function () {
+         return {ctor: "_Tuple2"
+                ,_0: 0
+                ,_1: magicNum8};
+      }();
+   };
+   var magicNum7 = 2137383399;
+   var magicNum6 = 2147483563;
+   var magicNum5 = 3791;
+   var magicNum4 = 40692;
+   var magicNum3 = 52774;
+   var magicNum2 = 12211;
+   var magicNum1 = 53668;
+   var magicNum0 = 40014;
+   var generate = F2(function (_v2,
+   seed) {
+      return function () {
+         switch (_v2.ctor)
+         {case "Generator":
+            return _v2._0(seed);}
+         _U.badCase($moduleName,
+         "on line 246, column 5 to 19");
+      }();
+   });
+   var Seed = F4(function (a,
+   b,
+   c,
+   d) {
+      return {_: {}
+             ,next: b
+             ,range: d
+             ,split: c
+             ,state: a};
+   });
+   var State = F2(function (a,b) {
+      return {ctor: "State"
+             ,_0: a
+             ,_1: b};
+   });
+   var initState = function (s$) {
+      return function () {
+         var s = A2($Basics.max,
+         s$,
+         0 - s$);
+         var q = s / (magicNum6 - 1) | 0;
+         var s2 = A2($Basics._op["%"],
+         q,
+         magicNum7 - 1);
+         var s1 = A2($Basics._op["%"],
+         s,
+         magicNum6 - 1);
+         return A2(State,s1 + 1,s2 + 1);
+      }();
+   };
+   var next = function (_v5) {
+      return function () {
+         switch (_v5.ctor)
+         {case "State":
+            return function () {
+                 var k$ = _v5._1 / magicNum3 | 0;
+                 var s2$ = magicNum4 * (_v5._1 - k$ * magicNum3) - k$ * magicNum5;
+                 var s2$$ = _U.cmp(s2$,
+                 0) < 0 ? s2$ + magicNum7 : s2$;
+                 var k = _v5._0 / magicNum1 | 0;
+                 var s1$ = magicNum0 * (_v5._0 - k * magicNum1) - k * magicNum2;
+                 var s1$$ = _U.cmp(s1$,
+                 0) < 0 ? s1$ + magicNum6 : s1$;
+                 var z = s1$$ - s2$$;
+                 var z$ = _U.cmp(z,
+                 1) < 0 ? z + magicNum8 : z;
+                 return {ctor: "_Tuple2"
+                        ,_0: z$
+                        ,_1: A2(State,s1$$,s2$$)};
+              }();}
+         _U.badCase($moduleName,
+         "between lines 290 and 299");
+      }();
+   };
+   var split = function (_v9) {
+      return function () {
+         switch (_v9.ctor)
+         {case "State":
+            return function () {
+                 var _raw = $Basics.snd(next(_v9)),
+                 $ = _raw.ctor === "State" ? _raw : _U.badCase($moduleName,
+                 "on line 306, column 25 to 38"),
+                 t1 = $._0,
+                 t2 = $._1;
+                 var new_s2 = _U.eq(_v9._1,
+                 1) ? magicNum7 - 1 : _v9._1 - 1;
+                 var new_s1 = _U.eq(_v9._0,
+                 magicNum6 - 1) ? 1 : _v9._0 + 1;
+                 return {ctor: "_Tuple2"
+                        ,_0: A2(State,new_s1,t2)
+                        ,_1: A2(State,t1,new_s2)};
+              }();}
+         _U.badCase($moduleName,
+         "between lines 304 and 308");
+      }();
+   };
+   var initialSeed = function (n) {
+      return A4(Seed,
+      initState(n),
+      next,
+      split,
+      range);
+   };
+   var Generator = function (a) {
+      return {ctor: "Generator"
+             ,_0: a};
+   };
+   var customGenerator = function (generate) {
+      return Generator(generate);
+   };
+   var listHelp = F4(function (list,
+   n,
+   generate,
+   seed) {
+      return _U.cmp(n,
+      1) < 0 ? {ctor: "_Tuple2"
+               ,_0: $List.reverse(list)
+               ,_1: seed} : function () {
+         var $ = generate(seed),
+         value = $._0,
+         seed$ = $._1;
+         return A4(listHelp,
+         A2($List._op["::"],value,list),
+         n - 1,
+         generate,
+         seed$);
+      }();
+   });
+   var list = F2(function (n,
+   _v13) {
+      return function () {
+         switch (_v13.ctor)
+         {case "Generator":
+            return Generator(function (seed) {
+                 return A4(listHelp,
+                 _L.fromArray([]),
+                 n,
+                 _v13._0,
+                 seed);
+              });}
+         _U.badCase($moduleName,
+         "between lines 182 and 183");
+      }();
+   });
+   var pair = F2(function (_v16,
+   _v17) {
+      return function () {
+         switch (_v17.ctor)
+         {case "Generator":
+            return function () {
+                 switch (_v16.ctor)
+                 {case "Generator":
+                    return Generator(function (seed) {
+                         return function () {
+                            var $ = _v16._0(seed),
+                            left = $._0,
+                            seed$ = $._1;
+                            var $ = _v17._0(seed$),
+                            right = $._0,
+                            seed$$ = $._1;
+                            return {ctor: "_Tuple2"
+                                   ,_0: {ctor: "_Tuple2"
+                                        ,_0: left
+                                        ,_1: right}
+                                   ,_1: seed$$};
+                         }();
+                      });}
+                 _U.badCase($moduleName,
+                 "between lines 159 and 163");
+              }();}
+         _U.badCase($moduleName,
+         "between lines 159 and 163");
+      }();
+   });
+   var minInt = -2147483648;
+   var maxInt = 2147483647;
+   var iLogBase = F2(function (b,
+   i) {
+      return _U.cmp(i,
+      b) < 0 ? 1 : 1 + A2(iLogBase,
+      b,
+      i / b | 0);
+   });
+   var $int = F2(function (a,b) {
+      return Generator(function (seed) {
+         return function () {
+            var base = 2147483561;
+            var f = F3(function (n,
+            acc,
+            state) {
+               return function () {
+                  switch (n)
+                  {case 0: return {ctor: "_Tuple2"
+                                  ,_0: acc
+                                  ,_1: state};}
+                  return function () {
+                     var $ = seed.next(state),
+                     x = $._0,
+                     state$ = $._1;
+                     return A3(f,
+                     n - 1,
+                     x + acc * base,
+                     state$);
+                  }();
+               }();
+            });
+            var $ = _U.cmp(a,
+            b) < 0 ? {ctor: "_Tuple2"
+                     ,_0: a
+                     ,_1: b} : {ctor: "_Tuple2"
+                               ,_0: b
+                               ,_1: a},
+            lo = $._0,
+            hi = $._1;
+            var k = hi - lo + 1;
+            var n = A2(iLogBase,base,k);
+            var $ = A3(f,n,1,seed.state),
+            v = $._0,
+            state$ = $._1;
+            return {ctor: "_Tuple2"
+                   ,_0: lo + A2($Basics._op["%"],
+                   v,
+                   k)
+                   ,_1: _U.replace([["state"
+                                    ,state$]],
+                   seed)};
+         }();
+      });
+   });
+   var $float = F2(function (a,b) {
+      return Generator(function (seed) {
+         return function () {
+            var $ = A2(generate,
+            A2($int,minInt,maxInt),
+            seed),
+            number = $._0,
+            seed$ = $._1;
+            var negativeOneToOne = $Basics.toFloat(number) / $Basics.toFloat(maxInt - minInt);
+            var $ = _U.cmp(a,
+            b) < 0 ? {ctor: "_Tuple2"
+                     ,_0: a
+                     ,_1: b} : {ctor: "_Tuple2"
+                               ,_0: b
+                               ,_1: a},
+            lo = $._0,
+            hi = $._1;
+            var scaled = (lo + hi) / 2 + (hi - lo) * negativeOneToOne;
+            return {ctor: "_Tuple2"
+                   ,_0: scaled
+                   ,_1: seed$};
+         }();
+      });
+   });
+   _elm.Random.values = {_op: _op
+                        ,$int: $int
+                        ,$float: $float
+                        ,list: list
+                        ,pair: pair
+                        ,minInt: minInt
+                        ,maxInt: maxInt
+                        ,generate: generate
+                        ,initialSeed: initialSeed
+                        ,customGenerator: customGenerator
+                        ,Seed: Seed};
+   return _elm.Random.values;
+};
 Elm.Result = Elm.Result || {};
 Elm.Result.make = function (_elm) {
    "use strict";
@@ -12320,6 +12780,667 @@ Elm.Signal.make = function (_elm) {
                         ,forwardTo: forwardTo
                         ,Mailbox: Mailbox};
    return _elm.Signal.values;
+};
+Elm.Signal = Elm.Signal || {};
+Elm.Signal.Discrete = Elm.Signal.Discrete || {};
+Elm.Signal.Discrete.make = function (_elm) {
+   "use strict";
+   _elm.Signal = _elm.Signal || {};
+   _elm.Signal.Discrete = _elm.Signal.Discrete || {};
+   if (_elm.Signal.Discrete.values)
+   return _elm.Signal.Discrete.values;
+   var _op = {},
+   _N = Elm.Native,
+   _U = _N.Utils.make(_elm),
+   _L = _N.List.make(_elm),
+   $moduleName = "Signal.Discrete",
+   $Basics = Elm.Basics.make(_elm),
+   $List = Elm.List.make(_elm),
+   $Maybe = Elm.Maybe.make(_elm),
+   $Result = Elm.Result.make(_elm),
+   $Signal = Elm.Signal.make(_elm);
+   var folde = F3(function (step,
+   base,
+   evt) {
+      return A3($Signal.foldp,
+      F2(function (_v0,b) {
+         return function () {
+            return step(b);
+         }();
+      }),
+      base,
+      evt);
+   });
+   var es = $Signal.map($Basics.always({ctor: "_Tuple0"}));
+   var whenEqual = F2(function (value,
+   input) {
+      return function () {
+         var keepIf = $Signal.filter;
+         var matchEvent = A3(keepIf,
+         F2(function (x,y) {
+            return _U.eq(x,y);
+         })(value),
+         value,
+         input);
+         return es(matchEvent);
+      }();
+   });
+   var whenChangeTo = F2(function (value,
+   input) {
+      return whenEqual(value)($Signal.dropRepeats(input));
+   });
+   var whenChange = function (input) {
+      return es($Signal.dropRepeats(input));
+   };
+   _elm.Signal.Discrete.values = {_op: _op
+                                 ,es: es
+                                 ,whenEqual: whenEqual
+                                 ,whenChange: whenChange
+                                 ,whenChangeTo: whenChangeTo
+                                 ,folde: folde};
+   return _elm.Signal.Discrete.values;
+};
+Elm.Signal = Elm.Signal || {};
+Elm.Signal.Extra = Elm.Signal.Extra || {};
+Elm.Signal.Extra.make = function (_elm) {
+   "use strict";
+   _elm.Signal = _elm.Signal || {};
+   _elm.Signal.Extra = _elm.Signal.Extra || {};
+   if (_elm.Signal.Extra.values)
+   return _elm.Signal.Extra.values;
+   var _op = {},
+   _N = Elm.Native,
+   _U = _N.Utils.make(_elm),
+   _L = _N.List.make(_elm),
+   $moduleName = "Signal.Extra",
+   $Basics = Elm.Basics.make(_elm),
+   $List = Elm.List.make(_elm),
+   $Maybe = Elm.Maybe.make(_elm),
+   $Result = Elm.Result.make(_elm),
+   $Signal = Elm.Signal.make(_elm);
+   var passiveMap2 = F2(function (func,
+   a) {
+      return function ($) {
+         return A2($Signal.map2,
+         func,
+         a)($Signal.sampleOn(a)($));
+      };
+   });
+   var withPassive = passiveMap2(F2(function (x,
+   y) {
+      return x(y);
+   }));
+   var combine = A2($List.foldr,
+   $Signal.map2(F2(function (x,y) {
+      return A2($List._op["::"],
+      x,
+      y);
+   })),
+   $Signal.constant(_L.fromArray([])));
+   var mapMany = F2(function (f,
+   l) {
+      return A2($Signal._op["<~"],
+      f,
+      combine(l));
+   });
+   var applyMany = F2(function (fs,
+   l) {
+      return A2($Signal._op["~"],
+      fs,
+      combine(l));
+   });
+   var filter = function (initial) {
+      return A2($Signal.filterMap,
+      $Basics.identity,
+      initial);
+   };
+   var keepIf = $Signal.filter;
+   var runBuffer$ = F3(function (l,
+   n,
+   input) {
+      return function () {
+         var f = F2(function (inp,
+         prev) {
+            return function () {
+               var l = $List.length(prev);
+               return _U.cmp(l,
+               n) < 0 ? A2($Basics._op["++"],
+               prev,
+               _L.fromArray([inp])) : A2($Basics._op["++"],
+               A2($List.drop,l - n + 1,prev),
+               _L.fromArray([inp]));
+            }();
+         });
+         return A3($Signal.foldp,
+         f,
+         l,
+         input);
+      }();
+   });
+   var runBuffer = runBuffer$(_L.fromArray([]));
+   var foldps = F3(function (f,
+   bs,
+   aS) {
+      return A2($Signal._op["<~"],
+      $Basics.fst,
+      A3($Signal.foldp,
+      F2(function (a,_v0) {
+         return function () {
+            switch (_v0.ctor)
+            {case "_Tuple2": return A2(f,
+                 a,
+                 _v0._1);}
+            _U.badCase($moduleName,
+            "on line 172, column 29 to 34");
+         }();
+      }),
+      bs,
+      aS));
+   });
+   var delayRound = F2(function (b,
+   bS) {
+      return A3(foldps,
+      F2(function ($new,old) {
+         return {ctor: "_Tuple2"
+                ,_0: old
+                ,_1: $new};
+      }),
+      {ctor: "_Tuple2",_0: b,_1: b},
+      bS);
+   });
+   var filterFold = F2(function (f,
+   initial) {
+      return function () {
+         var f$ = F2(function (a,s) {
+            return function () {
+               var res = A2(f,a,s);
+               return {ctor: "_Tuple2"
+                      ,_0: res
+                      ,_1: A2($Maybe.withDefault,
+                      s,
+                      res)};
+            }();
+         });
+         return function ($) {
+            return filter(initial)(A2(foldps,
+            f$,
+            {ctor: "_Tuple2"
+            ,_0: $Maybe.Just(initial)
+            ,_1: initial})($));
+         };
+      }();
+   });
+   var initSignal = function (s) {
+      return A2($Signal.sampleOn,
+      $Signal.constant({ctor: "_Tuple0"}),
+      s);
+   };
+   var switchHelper = F4(function (filter,
+   b,
+   l,
+   r) {
+      return function () {
+         var fromJust = function (_v4) {
+            return function () {
+               switch (_v4.ctor)
+               {case "Just": return _v4._0;}
+               _U.badCase($moduleName,
+               "on line 263, column 25 to 26");
+            }();
+         };
+         var lAndR = A2($Signal.merge,
+         A3(filter,
+         b,
+         $Maybe.Nothing,
+         A2($Signal._op["<~"],
+         $Maybe.Just,
+         l)),
+         A3(filter,
+         A2($Signal._op["<~"],
+         $Basics.not,
+         b),
+         $Maybe.Nothing,
+         A2($Signal._op["<~"],
+         $Maybe.Just,
+         r)));
+         var base = A2($Signal._op["~"],
+         A2($Signal._op["~"],
+         A2($Signal._op["<~"],
+         F3(function (bi,li,ri) {
+            return $Maybe.Just(bi ? li : ri);
+         }),
+         initSignal(b)),
+         initSignal(l)),
+         initSignal(r));
+         return A2($Signal._op["<~"],
+         fromJust,
+         A2($Signal.merge,base,lAndR));
+      }();
+   });
+   var unzip4 = function (pairS) {
+      return {ctor: "_Tuple4"
+             ,_0: A2($Signal._op["<~"],
+             function (_v7) {
+                return function () {
+                   switch (_v7.ctor)
+                   {case "_Tuple4": return _v7._0;}
+                   _U.badCase($moduleName,
+                   "on line 132, column 19 to 20");
+                }();
+             },
+             pairS)
+             ,_1: A2($Signal._op["<~"],
+             function (_v13) {
+                return function () {
+                   switch (_v13.ctor)
+                   {case "_Tuple4":
+                      return _v13._1;}
+                   _U.badCase($moduleName,
+                   "on line 132, column 47 to 48");
+                }();
+             },
+             pairS)
+             ,_2: A2($Signal._op["<~"],
+             function (_v19) {
+                return function () {
+                   switch (_v19.ctor)
+                   {case "_Tuple4":
+                      return _v19._2;}
+                   _U.badCase($moduleName,
+                   "on line 132, column 75 to 76");
+                }();
+             },
+             pairS)
+             ,_3: A2($Signal._op["<~"],
+             function (_v25) {
+                return function () {
+                   switch (_v25.ctor)
+                   {case "_Tuple4":
+                      return _v25._3;}
+                   _U.badCase($moduleName,
+                   "on line 132, column 103 to 104");
+                }();
+             },
+             pairS)};
+   };
+   var unzip3 = function (pairS) {
+      return {ctor: "_Tuple3"
+             ,_0: A2($Signal._op["<~"],
+             function (_v31) {
+                return function () {
+                   switch (_v31.ctor)
+                   {case "_Tuple3":
+                      return _v31._0;}
+                   _U.badCase($moduleName,
+                   "on line 126, column 17 to 18");
+                }();
+             },
+             pairS)
+             ,_1: A2($Signal._op["<~"],
+             function (_v36) {
+                return function () {
+                   switch (_v36.ctor)
+                   {case "_Tuple3":
+                      return _v36._1;}
+                   _U.badCase($moduleName,
+                   "on line 126, column 43 to 44");
+                }();
+             },
+             pairS)
+             ,_2: A2($Signal._op["<~"],
+             function (_v41) {
+                return function () {
+                   switch (_v41.ctor)
+                   {case "_Tuple3":
+                      return _v41._2;}
+                   _U.badCase($moduleName,
+                   "on line 126, column 69 to 70");
+                }();
+             },
+             pairS)};
+   };
+   var unzip = function (pairS) {
+      return {ctor: "_Tuple2"
+             ,_0: A2($Signal._op["<~"],
+             $Basics.fst,
+             pairS)
+             ,_1: A2($Signal._op["<~"],
+             $Basics.snd,
+             pairS)};
+   };
+   var zip4 = $Signal.map4(F4(function (v0,
+   v1,
+   v2,
+   v3) {
+      return {ctor: "_Tuple4"
+             ,_0: v0
+             ,_1: v1
+             ,_2: v2
+             ,_3: v3};
+   }));
+   var zip3 = $Signal.map3(F3(function (v0,
+   v1,
+   v2) {
+      return {ctor: "_Tuple3"
+             ,_0: v0
+             ,_1: v1
+             ,_2: v2};
+   }));
+   var zip = $Signal.map2(F2(function (v0,
+   v1) {
+      return {ctor: "_Tuple2"
+             ,_0: v0
+             ,_1: v1};
+   }));
+   var keepWhen = F3(function (boolSig,
+   a,
+   aSig) {
+      return $Signal.map($Basics.snd)(A2(keepIf,
+      $Basics.fst,
+      {ctor: "_Tuple2"
+      ,_0: true
+      ,_1: a})($Signal.sampleOn(aSig)(A2(zip,
+      boolSig,
+      aSig))));
+   });
+   var switchWhen = F3(function (b,
+   l,
+   r) {
+      return A4(switchHelper,
+      keepWhen,
+      b,
+      l,
+      r);
+   });
+   var sampleWhen = F3(function (bs,
+   def,
+   sig) {
+      return $Signal.map($Basics.snd)(A2(keepIf,
+      $Basics.fst,
+      {ctor: "_Tuple2"
+      ,_0: true
+      ,_1: def})(A2(zip,bs,sig)));
+   });
+   var switchSample = F3(function (b,
+   l,
+   r) {
+      return A4(switchHelper,
+      sampleWhen,
+      b,
+      l,
+      r);
+   });
+   var keepThen = F3(function (choice,
+   base,
+   signal) {
+      return A2(switchSample,
+      choice,
+      signal)($Signal.constant(base));
+   });
+   var andMap = F2(function (x,y) {
+      return A2($Signal._op["~"],
+      x,
+      y);
+   });
+   _op["~>"] = $Basics.flip($Signal.map);
+   var foldp$ = F3(function (fun,
+   initFun,
+   input) {
+      return function () {
+         var fromJust = function (_v46) {
+            return function () {
+               switch (_v46.ctor)
+               {case "Just": return _v46._0;}
+               _U.badCase($moduleName,
+               "on line 159, column 25 to 26");
+            }();
+         };
+         var fun$ = F2(function (_v49,
+         mb) {
+            return function () {
+               switch (_v49.ctor)
+               {case "_Tuple2":
+                  return $Maybe.Just(fun(_v49._0)(A2($Maybe.withDefault,
+                    _v49._1,
+                    mb)));}
+               _U.badCase($moduleName,
+               "between lines 156 and 157");
+            }();
+         });
+         var initial = A2(_op["~>"],
+         initSignal(input),
+         initFun);
+         var rest = A3($Signal.foldp,
+         fun$,
+         $Maybe.Nothing,
+         A2(zip,input,initial));
+         return A2($Signal._op["<~"],
+         fromJust,
+         A2($Signal.merge,
+         A2($Signal._op["<~"],
+         $Maybe.Just,
+         initial),
+         rest));
+      }();
+   });
+   var foldps$ = F3(function (f,
+   iF,
+   aS) {
+      return A2($Signal._op["<~"],
+      $Basics.fst,
+      A3(foldp$,
+      F2(function (a,_v53) {
+         return function () {
+            switch (_v53.ctor)
+            {case "_Tuple2": return A2(f,
+                 a,
+                 _v53._1);}
+            _U.badCase($moduleName,
+            "on line 178, column 46 to 51");
+         }();
+      }),
+      iF,
+      aS));
+   });
+   var foldpWith = F4(function (unpack,
+   step,
+   init,
+   input) {
+      return function () {
+         var step$ = F2(function (a,
+         _v57) {
+            return function () {
+               switch (_v57.ctor)
+               {case "_Tuple2":
+                  return unpack(A2(step,
+                    a,
+                    _v57._1));}
+               _U.badCase($moduleName,
+               "on line 192, column 7 to 25");
+            }();
+         });
+         return A2(_op["~>"],
+         A3($Signal.foldp,
+         step$,
+         init,
+         input),
+         $Basics.fst);
+      }();
+   });
+   var keepWhenI = F2(function (fs,
+   s) {
+      return function () {
+         var fromJust = function (_v61) {
+            return function () {
+               switch (_v61.ctor)
+               {case "Just": return _v61._0;}
+               _U.badCase($moduleName,
+               "on line 309, column 25 to 26");
+            }();
+         };
+         return A2(_op["~>"],
+         A3(keepWhen,
+         A2($Signal.merge,
+         $Signal.constant(true),
+         fs),
+         $Maybe.Nothing,
+         A2($Signal._op["<~"],
+         $Maybe.Just,
+         s)),
+         fromJust);
+      }();
+   });
+   var fairMerge = F3(function (resolve,
+   left,
+   right) {
+      return function () {
+         var merged = A2($Signal.merge,
+         left,
+         right);
+         var boolRight = A2($Signal._op["<~"],
+         $Basics.always(false),
+         right);
+         var boolLeft = A2($Signal._op["<~"],
+         $Basics.always(true),
+         left);
+         var bothUpdated = A2($Signal._op["~"],
+         A2($Signal._op["<~"],
+         F2(function (x,y) {
+            return !_U.eq(x,y);
+         }),
+         A2($Signal.merge,
+         boolLeft,
+         boolRight)),
+         A2($Signal.merge,
+         boolRight,
+         boolLeft));
+         var keep = keepWhenI(bothUpdated);
+         var resolved = A2($Signal._op["~"],
+         A2($Signal._op["<~"],
+         resolve,
+         keep(left)),
+         keep(right));
+         return $Signal.merge(resolved)(merged);
+      }();
+   });
+   _elm.Signal.Extra.values = {_op: _op
+                              ,andMap: andMap
+                              ,zip: zip
+                              ,zip3: zip3
+                              ,zip4: zip4
+                              ,unzip: unzip
+                              ,unzip3: unzip3
+                              ,unzip4: unzip4
+                              ,foldp$: foldp$
+                              ,foldps: foldps
+                              ,foldps$: foldps$
+                              ,runBuffer: runBuffer
+                              ,runBuffer$: runBuffer$
+                              ,delayRound: delayRound
+                              ,keepIf: keepIf
+                              ,keepWhen: keepWhen
+                              ,sampleWhen: sampleWhen
+                              ,switchWhen: switchWhen
+                              ,keepWhenI: keepWhenI
+                              ,switchSample: switchSample
+                              ,keepThen: keepThen
+                              ,filter: filter
+                              ,filterFold: filterFold
+                              ,fairMerge: fairMerge
+                              ,combine: combine
+                              ,mapMany: mapMany
+                              ,applyMany: applyMany
+                              ,passiveMap2: passiveMap2
+                              ,withPassive: withPassive};
+   return _elm.Signal.Extra.values;
+};
+Elm.Signal = Elm.Signal || {};
+Elm.Signal.Time = Elm.Signal.Time || {};
+Elm.Signal.Time.make = function (_elm) {
+   "use strict";
+   _elm.Signal = _elm.Signal || {};
+   _elm.Signal.Time = _elm.Signal.Time || {};
+   if (_elm.Signal.Time.values)
+   return _elm.Signal.Time.values;
+   var _op = {},
+   _N = Elm.Native,
+   _U = _N.Utils.make(_elm),
+   _L = _N.List.make(_elm),
+   $moduleName = "Signal.Time",
+   $Basics = Elm.Basics.make(_elm),
+   $List = Elm.List.make(_elm),
+   $Maybe = Elm.Maybe.make(_elm),
+   $Result = Elm.Result.make(_elm),
+   $Signal = Elm.Signal.make(_elm),
+   $Signal$Discrete = Elm.Signal.Discrete.make(_elm),
+   $Signal$Extra = Elm.Signal.Extra.make(_elm),
+   $Time = Elm.Time.make(_elm);
+   var timestamp = $Time.timestamp;
+   var delay = $Time.delay;
+   var since = $Time.since;
+   var settledAfter = F2(function (delay,
+   sig) {
+      return function () {
+         var trailing = $Signal$Discrete.whenChangeTo(false)(A2(since,
+         delay,
+         sig));
+         return A2($Signal.sampleOn,
+         trailing,
+         sig);
+      }();
+   });
+   var dropWithin = F2(function (delay,
+   sig) {
+      return function () {
+         var leading = $Signal$Discrete.whenChangeTo(true)(A2(since,
+         delay,
+         sig));
+         return A2($Signal.sampleOn,
+         leading,
+         sig);
+      }();
+   });
+   var timestamps = function (s) {
+      return A2($Signal$Extra._op["~>"],
+      timestamp(s),
+      $Basics.fst);
+   };
+   var limitRate = F2(function (period,
+   sig) {
+      return function () {
+         var within = F2(function (newt,
+         oldt) {
+            return _U.cmp(newt - oldt,
+            period) > 0 ? newt : oldt;
+         });
+         var windowStart = A2($Signal.foldp,
+         within,
+         0)(timestamps(sig));
+         return A2($Signal.sampleOn,
+         $Signal$Discrete.whenChange(windowStart),
+         sig);
+      }();
+   });
+   var startTime = timestamps($Signal.constant({ctor: "_Tuple0"}));
+   var relativeTime = function (s) {
+      return A2($Signal._op["~"],
+      A2($Signal._op["<~"],
+      F2(function (x,y) {
+         return x - y;
+      }),
+      s),
+      startTime);
+   };
+   _elm.Signal.Time.values = {_op: _op
+                             ,limitRate: limitRate
+                             ,dropWithin: dropWithin
+                             ,settledAfter: settledAfter
+                             ,startTime: startTime
+                             ,relativeTime: relativeTime
+                             ,since: since
+                             ,delay: delay
+                             ,timestamp: timestamp};
+   return _elm.Signal.Time.values;
 };
 Elm.String = Elm.String || {};
 Elm.String.make = function (_elm) {
@@ -12732,6 +13853,85 @@ Elm.Text.make = function (_elm) {
                       ,Over: Over
                       ,Through: Through};
    return _elm.Text.values;
+};
+Elm.Time = Elm.Time || {};
+Elm.Time.make = function (_elm) {
+   "use strict";
+   _elm.Time = _elm.Time || {};
+   if (_elm.Time.values)
+   return _elm.Time.values;
+   var _op = {},
+   _N = Elm.Native,
+   _U = _N.Utils.make(_elm),
+   _L = _N.List.make(_elm),
+   $moduleName = "Time",
+   $Basics = Elm.Basics.make(_elm),
+   $Native$Signal = Elm.Native.Signal.make(_elm),
+   $Native$Time = Elm.Native.Time.make(_elm),
+   $Signal = Elm.Signal.make(_elm);
+   var delay = $Native$Signal.delay;
+   var since = F2(function (time,
+   signal) {
+      return function () {
+         var stop = A2($Signal.map,
+         $Basics.always(-1),
+         A2(delay,time,signal));
+         var start = A2($Signal.map,
+         $Basics.always(1),
+         signal);
+         var delaydiff = A3($Signal.foldp,
+         F2(function (x,y) {
+            return x + y;
+         }),
+         0,
+         A2($Signal.merge,start,stop));
+         return A2($Signal.map,
+         F2(function (x,y) {
+            return !_U.eq(x,y);
+         })(0),
+         delaydiff);
+      }();
+   });
+   var timestamp = $Native$Signal.timestamp;
+   var every = $Native$Time.every;
+   var fpsWhen = $Native$Time.fpsWhen;
+   var fps = function (targetFrames) {
+      return A2(fpsWhen,
+      targetFrames,
+      $Signal.constant(true));
+   };
+   var inMilliseconds = function (t) {
+      return t;
+   };
+   var millisecond = 1;
+   var second = 1000 * millisecond;
+   var minute = 60 * second;
+   var hour = 60 * minute;
+   var inHours = function (t) {
+      return t / hour;
+   };
+   var inMinutes = function (t) {
+      return t / minute;
+   };
+   var inSeconds = function (t) {
+      return t / second;
+   };
+   _elm.Time.values = {_op: _op
+                      ,millisecond: millisecond
+                      ,second: second
+                      ,minute: minute
+                      ,hour: hour
+                      ,inMilliseconds: inMilliseconds
+                      ,inSeconds: inSeconds
+                      ,inMinutes: inMinutes
+                      ,inHours: inHours
+                      ,fps: fps
+                      ,fpsWhen: fpsWhen
+                      ,every: every
+                      ,timestamp: timestamp
+                      ,delay: delay
+                      ,since: since};
+   return _elm.Time.values;
 };
 Elm.Transform2D = Elm.Transform2D || {};
 Elm.Transform2D.make = function (_elm) {

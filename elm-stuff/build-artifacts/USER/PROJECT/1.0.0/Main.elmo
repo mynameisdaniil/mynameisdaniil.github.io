@@ -14,15 +14,77 @@ Elm.Main.make = function (_elm) {
    $Html$Attributes = Elm.Html.Attributes.make(_elm),
    $List = Elm.List.make(_elm),
    $Maybe = Elm.Maybe.make(_elm),
+   $Random = Elm.Random.make(_elm),
    $Result = Elm.Result.make(_elm),
-   $Signal = Elm.Signal.make(_elm);
-   var model = $Signal.constant({_: {}});
+   $Signal = Elm.Signal.make(_elm),
+   $Signal$Time = Elm.Signal.Time.make(_elm);
+   var shuffle = F3(function (data,
+   i,
+   seed) {
+      return function () {
+         var len = $List.length(data);
+         return function () {
+            var _v0 = _U.cmp(i,len) < 1;
+            switch (_v0)
+            {case false: return data;
+               case true: return function () {
+                    var $ = A2($Random.generate,
+                    A2($Random.$int,0,len),
+                    seed),
+                    pivot = $._0,
+                    newSeed = $._1;
+                    var head = A2($List.take,
+                    pivot,
+                    data);
+                    var tail = A2($List.drop,
+                    pivot,
+                    data);
+                    return A3(shuffle,
+                    A2($List.append,tail,head),
+                    i + 1,
+                    newSeed);
+                 }();}
+            _U.badCase($moduleName,
+            "between lines 54 and 61");
+         }();
+      }();
+   });
+   var data = _L.fromArray(["Master\'s degree in signal processing"
+                           ,"All-time linux user since Ubuntu 8.04"
+                           ,"Have expirience in nginx module writing"
+                           ,"/dev/ops"
+                           ,"Have expirience in nodejs native modules writing"
+                           ,"Do love syntax of Erlang"
+                           ,"Pretty reactive"
+                           ,"Very functional"
+                           ,"My other CAP is a theorem"
+                           ,"I do understand Riak\'s code"
+                           ,"I lost my ability to explain monads"
+                           ,"Can\'t decide if I dislike Java more than C++ or vise versa"]);
+   var model = function (time) {
+      return A3(shuffle,
+      data,
+      0,
+      $Random.initialSeed($Basics.round(time)));
+   };
    var view = function (model) {
       return A2($Html.div,
       _L.fromArray([]),
       _L.fromArray([A2($Html.h1,
                    _L.fromArray([]),
                    _L.fromArray([$Html.text("Daniil Sobol")]))
+                   ,A2($Html.p,
+                   _L.fromArray([]),
+                   _L.fromArray([A2($Html.h2,
+                                _L.fromArray([]),
+                                _L.fromArray([$Html.text("Set of random facts about me:")]))
+                                ,$Html.ul(_L.fromArray([]))(A2($List.map,
+                                function (line) {
+                                   return A2($Html.li,
+                                   _L.fromArray([]),
+                                   _L.fromArray([$Html.text(line)]));
+                                },
+                                model))]))
                    ,A2($Html.h6,
                    _L.fromArray([]),
                    _L.fromArray([A2($Html.a,
@@ -31,19 +93,21 @@ Elm.Main.make = function (_elm) {
    };
    var main = A2($Signal._op["<~"],
    view,
-   model);
+   A2($Signal._op["<~"],
+   model,
+   $Signal$Time.startTime));
    var update = F2(function (action,
    model) {
       return model;
    });
    var NoOp = {ctor: "NoOp"};
-   var Model = {_: {}};
    _elm.Main.values = {_op: _op
-                      ,Model: Model
                       ,NoOp: NoOp
                       ,update: update
                       ,view: view
+                      ,data: data
                       ,model: model
+                      ,shuffle: shuffle
                       ,main: main};
    return _elm.Main.values;
 };
