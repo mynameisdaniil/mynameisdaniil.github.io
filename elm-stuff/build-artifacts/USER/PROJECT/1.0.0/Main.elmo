@@ -1,0 +1,49 @@
+Elm.Main = Elm.Main || {};
+Elm.Main.make = function (_elm) {
+   "use strict";
+   _elm.Main = _elm.Main || {};
+   if (_elm.Main.values)
+   return _elm.Main.values;
+   var _op = {},
+   _N = Elm.Native,
+   _U = _N.Utils.make(_elm),
+   _L = _N.List.make(_elm),
+   $moduleName = "Main",
+   $Basics = Elm.Basics.make(_elm),
+   $Html = Elm.Html.make(_elm),
+   $Html$Attributes = Elm.Html.Attributes.make(_elm),
+   $List = Elm.List.make(_elm),
+   $Maybe = Elm.Maybe.make(_elm),
+   $Result = Elm.Result.make(_elm),
+   $Signal = Elm.Signal.make(_elm);
+   var model = $Signal.constant({_: {}});
+   var view = function (model) {
+      return A2($Html.div,
+      _L.fromArray([]),
+      _L.fromArray([A2($Html.h1,
+                   _L.fromArray([]),
+                   _L.fromArray([$Html.text("Daniil Sobol")]))
+                   ,A2($Html.h6,
+                   _L.fromArray([]),
+                   _L.fromArray([A2($Html.a,
+                   _L.fromArray([$Html$Attributes.href("https://github.com/mynameisdaniil/mynameisdaniil.github.io/blob/master/src/Main.elm")]),
+                   _L.fromArray([$Html.text("This site is functional and reactive")]))]))]));
+   };
+   var main = A2($Signal._op["<~"],
+   view,
+   model);
+   var update = F2(function (action,
+   model) {
+      return model;
+   });
+   var NoOp = {ctor: "NoOp"};
+   var Model = {_: {}};
+   _elm.Main.values = {_op: _op
+                      ,Model: Model
+                      ,NoOp: NoOp
+                      ,update: update
+                      ,view: view
+                      ,model: model
+                      ,main: main};
+   return _elm.Main.values;
+};
