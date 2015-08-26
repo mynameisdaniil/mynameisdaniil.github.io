@@ -30,7 +30,7 @@ Elm.Main.make = function (_elm) {
             switch (_.ctor)
             {case "_Tuple2": return _._0;}
             _U.badCase($moduleName,
-            "on line 61, column 20 to 77");
+            "on line 60, column 20 to 77");
          }();
          return list;
       }();
@@ -45,7 +45,7 @@ Elm.Main.make = function (_elm) {
                {case "_Tuple2":
                   return _v11._1;}
                _U.badCase($moduleName,
-               "on line 54, column 31 to 35");
+               "on line 55, column 31 to 35");
             }();
          })($List.sortWith(F2(function (_v3,
          _v4) {
@@ -59,10 +59,10 @@ Elm.Main.make = function (_elm) {
                             _v3._0,
                             _v4._0);}
                        _U.badCase($moduleName,
-                       "on line 55, column 43 to 54");
+                       "on line 56, column 43 to 54");
                     }();}
                _U.badCase($moduleName,
-               "on line 55, column 43 to 54");
+               "on line 56, column 43 to 54");
             }();
          }))(A3($List.map2,
          F2(function (i,line) {
@@ -85,7 +85,8 @@ Elm.Main.make = function (_elm) {
                            ,"My other CAP is a theorem"
                            ,"I do understand Riak\'s code"
                            ,"I lost my ability to explain monads"
-                           ,"Can\'t decide if I dislike Java more than C++ or vise versa"]);
+                           ,"Can\'t decide if I dislike Java more than C++ or vise versa"
+                           ,"Wrote this string in 3:41 AM"]);
    var model = function (time) {
       return A2(shuffle,
       data,

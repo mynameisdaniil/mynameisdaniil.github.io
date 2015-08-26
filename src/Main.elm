@@ -42,7 +42,8 @@ data = [
   "My other CAP is a theorem",
   "I do understand Riak's code",
   "I lost my ability to explain monads",
-  "Can't decide if I dislike Java more than C++ or vise versa"
+  "Can't decide if I dislike Java more than C++ or vise versa",
+  "Wrote this line in 3:43 AM"
   ]
 
 model : Time -> Model
