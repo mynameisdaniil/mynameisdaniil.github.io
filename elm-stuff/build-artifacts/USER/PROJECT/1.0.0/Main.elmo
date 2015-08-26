@@ -30,7 +30,7 @@ Elm.Main.make = function (_elm) {
             switch (_.ctor)
             {case "_Tuple2": return _._0;}
             _U.badCase($moduleName,
-            "on line 60, column 20 to 77");
+            "on line 64, column 20 to 77");
          }();
          return list;
       }();
@@ -45,7 +45,7 @@ Elm.Main.make = function (_elm) {
                {case "_Tuple2":
                   return _v11._1;}
                _U.badCase($moduleName,
-               "on line 55, column 31 to 35");
+               "on line 59, column 31 to 35");
             }();
          })($List.sortWith(F2(function (_v3,
          _v4) {
@@ -59,10 +59,10 @@ Elm.Main.make = function (_elm) {
                             _v3._0,
                             _v4._0);}
                        _U.badCase($moduleName,
-                       "on line 56, column 43 to 54");
+                       "on line 60, column 43 to 54");
                     }();}
                _U.badCase($moduleName,
-               "on line 56, column 43 to 54");
+               "on line 60, column 43 to 54");
             }();
          }))(A3($List.map2,
          F2(function (i,line) {
@@ -77,16 +77,20 @@ Elm.Main.make = function (_elm) {
    var data = _L.fromArray(["Master\'s degree in signal processing"
                            ,"All-time linux user since Ubuntu 8.04"
                            ,"Have expirience in nginx module writing"
-                           ,"/dev/ops"
+                           ,"I have /dev/ops which is recursive link to myself"
                            ,"Have expirience in nodejs native modules writing"
                            ,"Do love syntax of Erlang"
                            ,"Pretty reactive"
                            ,"Very functional"
                            ,"My other CAP is a theorem"
                            ,"I do understand Riak\'s code"
-                           ,"I lost my ability to explain monads"
+                           ,"I\'ve lost my ability to explain monads"
                            ,"Can\'t decide if I dislike Java more than C++ or vise versa"
-                           ,"Wrote this string in 3:41 AM"]);
+                           ,"Wrote this line at 3:43 AM"
+                           ,"Wrote several lisp interpreters"
+                           ,"I\'ve used Ansible back then before it became mainstream"
+                           ,"Engineer"
+                           ,"Good guy"]);
    var model = function (time) {
       return A2(shuffle,
       data,

@@ -34,16 +34,20 @@ data = [
   "Master's degree in signal processing",
   "All-time linux user since Ubuntu 8.04",
   "Have expirience in nginx module writing",
-  "/dev/ops",
+  "I have /dev/ops which is recursive link to myself",
   "Have expirience in nodejs native modules writing",
   "Do love syntax of Erlang",
   "Pretty reactive",
   "Very functional",
   "My other CAP is a theorem",
   "I do understand Riak's code",
-  "I lost my ability to explain monads",
+  "I've lost my ability to explain monads",
   "Can't decide if I dislike Java more than C++ or vise versa",
-  "Wrote this line in 3:43 AM"
+  "Wrote this line at 3:43 AM",
+  "Wrote several lisp interpreters",
+  "I've used Ansible back then before it became mainstream",
+  "Engineer",
+  "Good guy"
   ]
 
 model : Time -> Model
