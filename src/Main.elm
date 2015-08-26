@@ -8,6 +8,7 @@ import Signal exposing (..)
 import List exposing (map)
 import Random exposing (Seed, int)
 import Signal.Time exposing (..)
+import Debug exposing (..)
 
 type alias Model = List String
 
@@ -45,22 +46,18 @@ data = [
   ]
 
 model : Time -> Model
-model time = shuffle data 0 (Random.initialSeed <| round time)
+model time = shuffle data (Random.initialSeed <| round time)
 
-shuffle : List String -> Int -> Seed -> List String
-shuffle data i seed =
-  let len = List.length data
-  in 
-     case i <= len of
-       False -> data
-       True  ->
-         let (pivot, newSeed) = Random.generate (int 0 len) seed
-             head = List.take pivot data
-             tail = List.drop pivot data
-         in
-            shuffle (List.append tail head) (i + 1) newSeed
+shuffle : List String -> Seed -> List String
+shuffle data seed =
+  let len = List.length data in
+      List.map (\(_, line) -> line)
+      <| List.sortWith (\(a, _) (b, _) -> compare a b)
+      <| List.map2 (\i line -> (i, line)) (randomList len seed) data
 
-
+randomList len seed =
+  let (list, _) = (Random.generate (Random.list len (Random.int 0 len)) seed) in
+      list
 
 main : Signal Html
 main = view <~ (model <~ startTime)

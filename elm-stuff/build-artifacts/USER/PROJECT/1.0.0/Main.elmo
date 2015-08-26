@@ -18,35 +18,60 @@ Elm.Main.make = function (_elm) {
    $Result = Elm.Result.make(_elm),
    $Signal = Elm.Signal.make(_elm),
    $Signal$Time = Elm.Signal.Time.make(_elm);
-   var shuffle = F3(function (data,
-   i,
+   var randomList = F2(function (len,
+   seed) {
+      return function () {
+         var _ = A2($Random.generate,
+         A2($Random.list,
+         len,
+         A2($Random.$int,0,len)),
+         seed);
+         var list = function () {
+            switch (_.ctor)
+            {case "_Tuple2": return _._0;}
+            _U.badCase($moduleName,
+            "on line 61, column 20 to 77");
+         }();
+         return list;
+      }();
+   });
+   var shuffle = F2(function (data,
    seed) {
       return function () {
          var len = $List.length(data);
-         return function () {
-            var _v0 = _U.cmp(i,len) < 1;
-            switch (_v0)
-            {case false: return data;
-               case true: return function () {
-                    var $ = A2($Random.generate,
-                    A2($Random.$int,0,len),
-                    seed),
-                    pivot = $._0,
-                    newSeed = $._1;
-                    var head = A2($List.take,
-                    pivot,
-                    data);
-                    var tail = A2($List.drop,
-                    pivot,
-                    data);
-                    return A3(shuffle,
-                    A2($List.append,tail,head),
-                    i + 1,
-                    newSeed);
-                 }();}
-            _U.badCase($moduleName,
-            "between lines 54 and 61");
-         }();
+         return $List.map(function (_v11) {
+            return function () {
+               switch (_v11.ctor)
+               {case "_Tuple2":
+                  return _v11._1;}
+               _U.badCase($moduleName,
+               "on line 54, column 31 to 35");
+            }();
+         })($List.sortWith(F2(function (_v3,
+         _v4) {
+            return function () {
+               switch (_v4.ctor)
+               {case "_Tuple2":
+                  return function () {
+                       switch (_v3.ctor)
+                       {case "_Tuple2":
+                          return A2($Basics.compare,
+                            _v3._0,
+                            _v4._0);}
+                       _U.badCase($moduleName,
+                       "on line 55, column 43 to 54");
+                    }();}
+               _U.badCase($moduleName,
+               "on line 55, column 43 to 54");
+            }();
+         }))(A3($List.map2,
+         F2(function (i,line) {
+            return {ctor: "_Tuple2"
+                   ,_0: i
+                   ,_1: line};
+         }),
+         A2(randomList,len,seed),
+         data)));
       }();
    });
    var data = _L.fromArray(["Master\'s degree in signal processing"
@@ -62,9 +87,8 @@ Elm.Main.make = function (_elm) {
                            ,"I lost my ability to explain monads"
                            ,"Can\'t decide if I dislike Java more than C++ or vise versa"]);
    var model = function (time) {
-      return A3(shuffle,
+      return A2(shuffle,
       data,
-      0,
       $Random.initialSeed($Basics.round(time)));
    };
    var view = function (model) {
@@ -108,6 +132,7 @@ Elm.Main.make = function (_elm) {
                       ,data: data
                       ,model: model
                       ,shuffle: shuffle
+                      ,randomList: randomList
                       ,main: main};
    return _elm.Main.values;
 };
