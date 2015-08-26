@@ -57,14 +57,15 @@ model time = shuffle data (Random.initialSeed <| round time)
 
 shuffle : List String -> Seed -> List String
 shuffle data seed =
-  let len = List.length data in
+  let len = List.length data
+      randomList len seed =
+        let (list, _) = (Random.generate (Random.list len (Random.int 0 len)) seed)
+        in
+           list
+  in
       List.map (\(_, line) -> line)
       <| List.sortWith (\(a, _) (b, _) -> compare a b)
       <| List.map2 (\i line -> (i, line)) (randomList len seed) data
-
-randomList len seed =
-  let (list, _) = (Random.generate (Random.list len (Random.int 0 len)) seed) in
-      list
 
 main : Signal Html
 main = view <~ (model <~ startTime)

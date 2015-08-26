@@ -4203,26 +4203,26 @@ Elm.Main.make = function (_elm) {
    $Result = Elm.Result.make(_elm),
    $Signal = Elm.Signal.make(_elm),
    $Signal$Time = Elm.Signal.Time.make(_elm);
-   var randomList = F2(function (len,
-   seed) {
-      return function () {
-         var _ = A2($Random.generate,
-         A2($Random.list,
-         len,
-         A2($Random.$int,0,len)),
-         seed);
-         var list = function () {
-            switch (_.ctor)
-            {case "_Tuple2": return _._0;}
-            _U.badCase($moduleName,
-            "on line 66, column 20 to 77");
-         }();
-         return list;
-      }();
-   });
    var shuffle = F2(function (data,
    seed) {
       return function () {
+         var randomList = F2(function (len,
+         seed) {
+            return function () {
+               var _ = A2($Random.generate,
+               A2($Random.list,
+               len,
+               A2($Random.$int,0,len)),
+               seed);
+               var list = function () {
+                  switch (_.ctor)
+                  {case "_Tuple2": return _._0;}
+                  _U.badCase($moduleName,
+                  "on line 62, column 26 to 83");
+               }();
+               return list;
+            }();
+         });
          var len = $List.length(data);
          return $List.map(function (_v11) {
             return function () {
@@ -4230,7 +4230,7 @@ Elm.Main.make = function (_elm) {
                {case "_Tuple2":
                   return _v11._1;}
                _U.badCase($moduleName,
-               "on line 61, column 31 to 35");
+               "on line 66, column 31 to 35");
             }();
          })($List.sortWith(F2(function (_v3,
          _v4) {
@@ -4244,10 +4244,10 @@ Elm.Main.make = function (_elm) {
                             _v3._0,
                             _v4._0);}
                        _U.badCase($moduleName,
-                       "on line 62, column 43 to 54");
+                       "on line 67, column 43 to 54");
                     }();}
                _U.badCase($moduleName,
-               "on line 62, column 43 to 54");
+               "on line 67, column 43 to 54");
             }();
          }))(A3($List.map2,
          F2(function (i,line) {
@@ -4324,7 +4324,6 @@ Elm.Main.make = function (_elm) {
                       ,data: data
                       ,model: model
                       ,shuffle: shuffle
-                      ,randomList: randomList
                       ,main: main};
    return _elm.Main.values;
 };
