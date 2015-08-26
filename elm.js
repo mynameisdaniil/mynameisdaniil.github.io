@@ -4218,7 +4218,7 @@ Elm.Main.make = function (_elm) {
                   switch (_.ctor)
                   {case "_Tuple2": return _._0;}
                   _U.badCase($moduleName,
-                  "on line 62, column 26 to 83");
+                  "on line 57, column 26 to 83");
                }();
                return list;
             }();
@@ -4230,7 +4230,7 @@ Elm.Main.make = function (_elm) {
                {case "_Tuple2":
                   return _v11._1;}
                _U.badCase($moduleName,
-               "on line 66, column 31 to 35");
+               "on line 61, column 31 to 35");
             }();
          })($List.sortWith(F2(function (_v3,
          _v4) {
@@ -4244,10 +4244,10 @@ Elm.Main.make = function (_elm) {
                             _v3._0,
                             _v4._0);}
                        _U.badCase($moduleName,
-                       "on line 67, column 43 to 54");
+                       "on line 62, column 43 to 54");
                     }();}
                _U.badCase($moduleName,
-               "on line 67, column 43 to 54");
+               "on line 62, column 43 to 54");
             }();
          }))(A3($List.map2,
          F2(function (i,line) {
@@ -4312,14 +4312,9 @@ Elm.Main.make = function (_elm) {
    A2($Signal._op["<~"],
    model,
    $Signal$Time.startTime));
-   var update = F2(function (action,
-   model) {
-      return model;
-   });
    var NoOp = {ctor: "NoOp"};
    _elm.Main.values = {_op: _op
                       ,NoOp: NoOp
-                      ,update: update
                       ,view: view
                       ,data: data
                       ,model: model

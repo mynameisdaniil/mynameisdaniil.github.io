@@ -14,11 +14,6 @@ type alias Model = List String
 
 type Action = NoOp
 
---port getRandomRange : Int -> Int -> Int
-
-update : Action -> Model -> Model
-update action model = model
-
 view : Model -> Html
 view model =
   div [] [
