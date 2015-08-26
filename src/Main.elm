@@ -46,6 +46,8 @@ data = [
   "Wrote this line at 3:43 AM",
   "Wrote several lisp interpreters",
   "I've used Ansible back then before it became mainstream",
+  "Containers' pioneer (and I'm not talking about Docker)",
+  "Can't advise you continuous integration server",
   "Engineer",
   "Good guy"
   ]
