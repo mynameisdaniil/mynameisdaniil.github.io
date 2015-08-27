@@ -75,7 +75,7 @@ Elm.Main.make = function (_elm) {
       }();
    });
    var data = _L.fromArray(["Master\'s degree in signal processing"
-                           ,"All-time linux user since Ubuntu 8.04"
+                           ,"Full-time linux user since Ubuntu 8.04"
                            ,"Have expirience in nginx module writing"
                            ,"I have /dev/ops which is recursive link to myself"
                            ,"Have expirience in nodejs native modules writing"
@@ -101,9 +101,11 @@ Elm.Main.make = function (_elm) {
    var view = function (model) {
       return A2($Html.div,
       _L.fromArray([]),
-      _L.fromArray([A2($Html.h1,
+      _L.fromArray([A2($Html.a,
+                   _L.fromArray([$Html$Attributes.href("mailto:sobol.daniil@gmail.com")]),
+                   _L.fromArray([A2($Html.h1,
                    _L.fromArray([]),
-                   _L.fromArray([$Html.text("Daniil Sobol")]))
+                   _L.fromArray([$Html.text("Daniil Sobol")]))]))
                    ,A2($Html.p,
                    _L.fromArray([]),
                    _L.fromArray([A2($Html.h2,

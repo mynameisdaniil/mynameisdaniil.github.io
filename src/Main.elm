@@ -17,7 +17,7 @@ type Action = NoOp
 view : Model -> Html
 view model =
   div [] [
-    h1 [] [text "Daniil Sobol"],
+    a [href "mailto:sobol.daniil@gmail.com"] [h1 [] [text "Daniil Sobol"]],
     p  [] [
       h2 [] [text "Set of random facts about me:"],
       ul [] <| List.map (\line -> li [] [text line]) model
@@ -27,7 +27,7 @@ view model =
 
 data = [
   "Master's degree in signal processing",
-  "All-time linux user since Ubuntu 8.04",
+  "Full-time linux user since Ubuntu 8.04",
   "Have expirience in nginx module writing",
   "I have /dev/ops which is recursive link to myself",
   "Have expirience in nodejs native modules writing",
