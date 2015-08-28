@@ -43,6 +43,7 @@ data = [
   "I've used Ansible back then before it became mainstream",
   "Containers' pioneer (and I'm not talking about Docker)",
   "Can't advise you continuous integration server",
+  "RPC? Ask me how",
   "Engineer",
   "Good guy"
   ]

@@ -4218,7 +4218,7 @@ Elm.Main.make = function (_elm) {
                   switch (_.ctor)
                   {case "_Tuple2": return _._0;}
                   _U.badCase($moduleName,
-                  "on line 57, column 26 to 83");
+                  "on line 58, column 26 to 83");
                }();
                return list;
             }();
@@ -4230,7 +4230,7 @@ Elm.Main.make = function (_elm) {
                {case "_Tuple2":
                   return _v11._1;}
                _U.badCase($moduleName,
-               "on line 61, column 31 to 35");
+               "on line 62, column 31 to 35");
             }();
          })($List.sortWith(F2(function (_v3,
          _v4) {
@@ -4244,10 +4244,10 @@ Elm.Main.make = function (_elm) {
                             _v3._0,
                             _v4._0);}
                        _U.badCase($moduleName,
-                       "on line 62, column 43 to 54");
+                       "on line 63, column 43 to 54");
                     }();}
                _U.badCase($moduleName,
-               "on line 62, column 43 to 54");
+               "on line 63, column 43 to 54");
             }();
          }))(A3($List.map2,
          F2(function (i,line) {
@@ -4276,6 +4276,7 @@ Elm.Main.make = function (_elm) {
                            ,"I\'ve used Ansible back then before it became mainstream"
                            ,"Containers\' pioneer (and I\'m not talking about Docker)"
                            ,"Can\'t advise you continuous integration server"
+                           ,"RPC? Ask me how"
                            ,"Engineer"
                            ,"Good guy"]);
    var model = function (time) {
