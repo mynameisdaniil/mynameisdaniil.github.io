@@ -14,11 +14,11 @@ Elm.Main.make = function (_elm) {
    $Html$Attributes = Elm.Html.Attributes.make(_elm),
    $List = Elm.List.make(_elm),
    $Maybe = Elm.Maybe.make(_elm),
+   $Mouse = Elm.Mouse.make(_elm),
    $Random = Elm.Random.make(_elm),
    $Result = Elm.Result.make(_elm),
-   $Signal = Elm.Signal.make(_elm),
-   $Signal$Time = Elm.Signal.Time.make(_elm);
-   var shuffle = F2(function (data,
+   $Signal = Elm.Signal.make(_elm);
+   var shuffle = F2(function (model,
    seed) {
       return function () {
          var randomList = F2(function (len,
@@ -33,19 +33,19 @@ Elm.Main.make = function (_elm) {
                   switch (_.ctor)
                   {case "_Tuple2": return _._0;}
                   _U.badCase($moduleName,
-                  "on line 59, column 26 to 83");
+                  "on line 55, column 26 to 83");
                }();
                return list;
             }();
          });
-         var len = $List.length(data);
+         var len = $List.length(model);
          return $List.map(function (_v11) {
             return function () {
                switch (_v11.ctor)
                {case "_Tuple2":
                   return _v11._1;}
                _U.badCase($moduleName,
-               "on line 63, column 31 to 35");
+               "on line 59, column 26 to 30");
             }();
          })($List.sortWith(F2(function (_v3,
          _v4) {
@@ -59,10 +59,10 @@ Elm.Main.make = function (_elm) {
                             _v3._0,
                             _v4._0);}
                        _U.badCase($moduleName,
-                       "on line 64, column 43 to 54");
+                       "on line 60, column 38 to 49");
                     }();}
                _U.badCase($moduleName,
-               "on line 64, column 43 to 54");
+               "on line 60, column 38 to 49");
             }();
          }))(A3($List.map2,
          F2(function (i,line) {
@@ -71,34 +71,41 @@ Elm.Main.make = function (_elm) {
                    ,_1: line};
          }),
          A2(randomList,len,seed),
-         data)));
+         model)));
       }();
    });
-   var data = _L.fromArray(["Master\'s degree in signal processing"
-                           ,"Full-time linux user since Ubuntu 8.04"
-                           ,"Have expirience in nginx module writing"
-                           ,"I have /dev/ops which is recursive link to myself"
-                           ,"Have expirience in nodejs native modules writing"
-                           ,"Do love syntax of Erlang"
-                           ,"Pretty reactive"
-                           ,"Very functional"
-                           ,"My other CAP is a theorem"
-                           ,"I do understand Riak\'s code"
-                           ,"I\'ve lost my ability to explain monads"
-                           ,"Can\'t decide if I dislike Java more than C++ or vise versa"
-                           ,"Wrote this line at 3:43 AM"
-                           ,"Wrote several lisp interpreters"
-                           ,"I\'ve used Ansible back then before it became mainstream"
-                           ,"Containers\' pioneer (and I\'m not talking about Docker)"
-                           ,"Can\'t advise you continuous integration server"
-                           ,"Wrote this line (and all other lines) using VIM"
-                           ,"RPC? Ask me how"
-                           ,"Engineer"
-                           ,"Good guy"]);
-   var model = function (time) {
-      return A2(shuffle,
-      data,
-      $Random.initialSeed($Basics.round(time)));
+   var model = _L.fromArray(["Master\'s degree in signal processing"
+                            ,"Full-time linux user since Ubuntu 8.04"
+                            ,"Have expirience in nginx module writing"
+                            ,"I have /dev/ops which is recursive link to myself"
+                            ,"Have expirience in nodejs native modules writing"
+                            ,"Do love syntax of Erlang"
+                            ,"Pretty reactive"
+                            ,"Very functional"
+                            ,"My other CAP is a theorem"
+                            ,"I do understand Riak\'s code"
+                            ,"I\'ve lost my ability to explain monads"
+                            ,"Can\'t decide if I dislike Java more than C++ or vise versa"
+                            ,"Wrote this line at 3:43 AM"
+                            ,"Wrote several lisp interpreters"
+                            ,"I\'ve used Ansible back then before it became mainstream"
+                            ,"Containers\' pioneer (and I\'m not talking about Docker)"
+                            ,"Can\'t advise you continuous integration server"
+                            ,"Wrote this line (and all other lines) using VIM"
+                            ,"RPC? Ask me how"
+                            ,"I hate DNS"
+                            ,"Engineer"
+                            ,"Good guy"]);
+   var update = function (_v15) {
+      return function () {
+         switch (_v15.ctor)
+         {case "_Tuple2":
+            return A2(shuffle,
+              model,
+              $Random.initialSeed(_v15._0 + _v15._1));}
+         _U.badCase($moduleName,
+         "on line 64, column 17 to 59");
+      }();
    };
    var view = function (model) {
       return A2($Html.div,
@@ -129,15 +136,15 @@ Elm.Main.make = function (_elm) {
    var main = A2($Signal._op["<~"],
    view,
    A2($Signal._op["<~"],
-   model,
-   $Signal$Time.startTime));
+   update,
+   $Mouse.position));
    var NoOp = {ctor: "NoOp"};
    _elm.Main.values = {_op: _op
                       ,NoOp: NoOp
                       ,view: view
-                      ,data: data
                       ,model: model
                       ,shuffle: shuffle
+                      ,update: update
                       ,main: main};
    return _elm.Main.values;
 };

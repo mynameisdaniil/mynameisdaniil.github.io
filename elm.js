@@ -3544,142 +3544,6 @@ Elm.Html.Attributes.make = function (_elm) {
                                  ,attribute: attribute};
    return _elm.Html.Attributes.values;
 };
-Elm.Html = Elm.Html || {};
-Elm.Html.Events = Elm.Html.Events || {};
-Elm.Html.Events.make = function (_elm) {
-   "use strict";
-   _elm.Html = _elm.Html || {};
-   _elm.Html.Events = _elm.Html.Events || {};
-   if (_elm.Html.Events.values)
-   return _elm.Html.Events.values;
-   var _op = {},
-   _N = Elm.Native,
-   _U = _N.Utils.make(_elm),
-   _L = _N.List.make(_elm),
-   $moduleName = "Html.Events",
-   $Basics = Elm.Basics.make(_elm),
-   $Html = Elm.Html.make(_elm),
-   $Json$Decode = Elm.Json.Decode.make(_elm),
-   $List = Elm.List.make(_elm),
-   $Maybe = Elm.Maybe.make(_elm),
-   $Result = Elm.Result.make(_elm),
-   $Signal = Elm.Signal.make(_elm),
-   $VirtualDom = Elm.VirtualDom.make(_elm);
-   var keyCode = A2($Json$Decode._op[":="],
-   "keyCode",
-   $Json$Decode.$int);
-   var targetChecked = A2($Json$Decode.at,
-   _L.fromArray(["target"
-                ,"checked"]),
-   $Json$Decode.bool);
-   var targetValue = A2($Json$Decode.at,
-   _L.fromArray(["target"
-                ,"value"]),
-   $Json$Decode.string);
-   var defaultOptions = $VirtualDom.defaultOptions;
-   var Options = F2(function (a,
-   b) {
-      return {_: {}
-             ,preventDefault: b
-             ,stopPropagation: a};
-   });
-   var onWithOptions = $VirtualDom.onWithOptions;
-   var on = $VirtualDom.on;
-   var messageOn = F3(function (name,
-   addr,
-   msg) {
-      return A3(on,
-      name,
-      $Json$Decode.value,
-      function (_v0) {
-         return function () {
-            return A2($Signal.message,
-            addr,
-            msg);
-         }();
-      });
-   });
-   var onClick = messageOn("click");
-   var onDoubleClick = messageOn("dblclick");
-   var onMouseMove = messageOn("mousemove");
-   var onMouseDown = messageOn("mousedown");
-   var onMouseUp = messageOn("mouseup");
-   var onMouseEnter = messageOn("mouseenter");
-   var onMouseLeave = messageOn("mouseleave");
-   var onMouseOver = messageOn("mouseover");
-   var onMouseOut = messageOn("mouseout");
-   var onBlur = messageOn("blur");
-   var onFocus = messageOn("focus");
-   var onSubmit = messageOn("submit");
-   var onKey = F3(function (name,
-   addr,
-   handler) {
-      return A3(on,
-      name,
-      keyCode,
-      function (code) {
-         return A2($Signal.message,
-         addr,
-         handler(code));
-      });
-   });
-   var onKeyUp = onKey("keyup");
-   var onKeyDown = onKey("keydown");
-   var onKeyPress = onKey("keypress");
-   _elm.Html.Events.values = {_op: _op
-                             ,onBlur: onBlur
-                             ,onFocus: onFocus
-                             ,onSubmit: onSubmit
-                             ,onKeyUp: onKeyUp
-                             ,onKeyDown: onKeyDown
-                             ,onKeyPress: onKeyPress
-                             ,onClick: onClick
-                             ,onDoubleClick: onDoubleClick
-                             ,onMouseMove: onMouseMove
-                             ,onMouseDown: onMouseDown
-                             ,onMouseUp: onMouseUp
-                             ,onMouseEnter: onMouseEnter
-                             ,onMouseLeave: onMouseLeave
-                             ,onMouseOver: onMouseOver
-                             ,onMouseOut: onMouseOut
-                             ,on: on
-                             ,onWithOptions: onWithOptions
-                             ,defaultOptions: defaultOptions
-                             ,targetValue: targetValue
-                             ,targetChecked: targetChecked
-                             ,keyCode: keyCode
-                             ,Options: Options};
-   return _elm.Html.Events.values;
-};
-Elm.Html = Elm.Html || {};
-Elm.Html.Lazy = Elm.Html.Lazy || {};
-Elm.Html.Lazy.make = function (_elm) {
-   "use strict";
-   _elm.Html = _elm.Html || {};
-   _elm.Html.Lazy = _elm.Html.Lazy || {};
-   if (_elm.Html.Lazy.values)
-   return _elm.Html.Lazy.values;
-   var _op = {},
-   _N = Elm.Native,
-   _U = _N.Utils.make(_elm),
-   _L = _N.List.make(_elm),
-   $moduleName = "Html.Lazy",
-   $Basics = Elm.Basics.make(_elm),
-   $Html = Elm.Html.make(_elm),
-   $List = Elm.List.make(_elm),
-   $Maybe = Elm.Maybe.make(_elm),
-   $Result = Elm.Result.make(_elm),
-   $Signal = Elm.Signal.make(_elm),
-   $VirtualDom = Elm.VirtualDom.make(_elm);
-   var lazy3 = $VirtualDom.lazy3;
-   var lazy2 = $VirtualDom.lazy2;
-   var lazy = $VirtualDom.lazy;
-   _elm.Html.Lazy.values = {_op: _op
-                           ,lazy: lazy
-                           ,lazy2: lazy2
-                           ,lazy3: lazy3};
-   return _elm.Html.Lazy.values;
-};
 Elm.Json = Elm.Json || {};
 Elm.Json.Decode = Elm.Json.Decode || {};
 Elm.Json.Decode.make = function (_elm) {
@@ -4199,11 +4063,11 @@ Elm.Main.make = function (_elm) {
    $Html$Attributes = Elm.Html.Attributes.make(_elm),
    $List = Elm.List.make(_elm),
    $Maybe = Elm.Maybe.make(_elm),
+   $Mouse = Elm.Mouse.make(_elm),
    $Random = Elm.Random.make(_elm),
    $Result = Elm.Result.make(_elm),
-   $Signal = Elm.Signal.make(_elm),
-   $Signal$Time = Elm.Signal.Time.make(_elm);
-   var shuffle = F2(function (data,
+   $Signal = Elm.Signal.make(_elm);
+   var shuffle = F2(function (model,
    seed) {
       return function () {
          var randomList = F2(function (len,
@@ -4218,19 +4082,19 @@ Elm.Main.make = function (_elm) {
                   switch (_.ctor)
                   {case "_Tuple2": return _._0;}
                   _U.badCase($moduleName,
-                  "on line 59, column 26 to 83");
+                  "on line 55, column 26 to 83");
                }();
                return list;
             }();
          });
-         var len = $List.length(data);
+         var len = $List.length(model);
          return $List.map(function (_v11) {
             return function () {
                switch (_v11.ctor)
                {case "_Tuple2":
                   return _v11._1;}
                _U.badCase($moduleName,
-               "on line 63, column 31 to 35");
+               "on line 59, column 26 to 30");
             }();
          })($List.sortWith(F2(function (_v3,
          _v4) {
@@ -4244,10 +4108,10 @@ Elm.Main.make = function (_elm) {
                             _v3._0,
                             _v4._0);}
                        _U.badCase($moduleName,
-                       "on line 64, column 43 to 54");
+                       "on line 60, column 38 to 49");
                     }();}
                _U.badCase($moduleName,
-               "on line 64, column 43 to 54");
+               "on line 60, column 38 to 49");
             }();
          }))(A3($List.map2,
          F2(function (i,line) {
@@ -4256,34 +4120,41 @@ Elm.Main.make = function (_elm) {
                    ,_1: line};
          }),
          A2(randomList,len,seed),
-         data)));
+         model)));
       }();
    });
-   var data = _L.fromArray(["Master\'s degree in signal processing"
-                           ,"Full-time linux user since Ubuntu 8.04"
-                           ,"Have expirience in nginx module writing"
-                           ,"I have /dev/ops which is recursive link to myself"
-                           ,"Have expirience in nodejs native modules writing"
-                           ,"Do love syntax of Erlang"
-                           ,"Pretty reactive"
-                           ,"Very functional"
-                           ,"My other CAP is a theorem"
-                           ,"I do understand Riak\'s code"
-                           ,"I\'ve lost my ability to explain monads"
-                           ,"Can\'t decide if I dislike Java more than C++ or vise versa"
-                           ,"Wrote this line at 3:43 AM"
-                           ,"Wrote several lisp interpreters"
-                           ,"I\'ve used Ansible back then before it became mainstream"
-                           ,"Containers\' pioneer (and I\'m not talking about Docker)"
-                           ,"Can\'t advise you continuous integration server"
-                           ,"Wrote this line (and all other lines) using VIM"
-                           ,"RPC? Ask me how"
-                           ,"Engineer"
-                           ,"Good guy"]);
-   var model = function (time) {
-      return A2(shuffle,
-      data,
-      $Random.initialSeed($Basics.round(time)));
+   var model = _L.fromArray(["Master\'s degree in signal processing"
+                            ,"Full-time linux user since Ubuntu 8.04"
+                            ,"Have expirience in nginx module writing"
+                            ,"I have /dev/ops which is recursive link to myself"
+                            ,"Have expirience in nodejs native modules writing"
+                            ,"Do love syntax of Erlang"
+                            ,"Pretty reactive"
+                            ,"Very functional"
+                            ,"My other CAP is a theorem"
+                            ,"I do understand Riak\'s code"
+                            ,"I\'ve lost my ability to explain monads"
+                            ,"Can\'t decide if I dislike Java more than C++ or vise versa"
+                            ,"Wrote this line at 3:43 AM"
+                            ,"Wrote several lisp interpreters"
+                            ,"I\'ve used Ansible back then before it became mainstream"
+                            ,"Containers\' pioneer (and I\'m not talking about Docker)"
+                            ,"Can\'t advise you continuous integration server"
+                            ,"Wrote this line (and all other lines) using VIM"
+                            ,"RPC? Ask me how"
+                            ,"I hate DNS"
+                            ,"Engineer"
+                            ,"Good guy"]);
+   var update = function (_v15) {
+      return function () {
+         switch (_v15.ctor)
+         {case "_Tuple2":
+            return A2(shuffle,
+              model,
+              $Random.initialSeed(_v15._0 + _v15._1));}
+         _U.badCase($moduleName,
+         "on line 64, column 17 to 59");
+      }();
    };
    var view = function (model) {
       return A2($Html.div,
@@ -4314,15 +4185,15 @@ Elm.Main.make = function (_elm) {
    var main = A2($Signal._op["<~"],
    view,
    A2($Signal._op["<~"],
-   model,
-   $Signal$Time.startTime));
+   update,
+   $Mouse.position));
    var NoOp = {ctor: "NoOp"};
    _elm.Main.values = {_op: _op
                       ,NoOp: NoOp
                       ,view: view
-                      ,data: data
                       ,model: model
                       ,shuffle: shuffle
+                      ,update: update
                       ,main: main};
    return _elm.Main.values;
 };
@@ -4398,6 +4269,37 @@ Elm.Maybe.make = function (_elm) {
                        ,Just: Just
                        ,Nothing: Nothing};
    return _elm.Maybe.values;
+};
+Elm.Mouse = Elm.Mouse || {};
+Elm.Mouse.make = function (_elm) {
+   "use strict";
+   _elm.Mouse = _elm.Mouse || {};
+   if (_elm.Mouse.values)
+   return _elm.Mouse.values;
+   var _op = {},
+   _N = Elm.Native,
+   _U = _N.Utils.make(_elm),
+   _L = _N.List.make(_elm),
+   $moduleName = "Mouse",
+   $Basics = Elm.Basics.make(_elm),
+   $Native$Mouse = Elm.Native.Mouse.make(_elm),
+   $Signal = Elm.Signal.make(_elm);
+   var clicks = $Native$Mouse.clicks;
+   var isDown = $Native$Mouse.isDown;
+   var position = $Native$Mouse.position;
+   var x = A2($Signal.map,
+   $Basics.fst,
+   position);
+   var y = A2($Signal.map,
+   $Basics.snd,
+   position);
+   _elm.Mouse.values = {_op: _op
+                       ,position: position
+                       ,x: x
+                       ,y: y
+                       ,isDown: isDown
+                       ,clicks: clicks};
+   return _elm.Mouse.values;
 };
 Elm.Native.Array = {};
 Elm.Native.Array.make = function(localRuntime) {
@@ -7736,6 +7638,50 @@ Elm.Native.List.make = function(localRuntime) {
 	};
 	return localRuntime.Native.List.values = Elm.Native.List.values;
 
+};
+
+Elm.Native = Elm.Native || {};
+Elm.Native.Mouse = {};
+Elm.Native.Mouse.make = function(localRuntime) {
+
+	localRuntime.Native = localRuntime.Native || {};
+	localRuntime.Native.Mouse = localRuntime.Native.Mouse || {};
+	if (localRuntime.Native.Mouse.values)
+	{
+		return localRuntime.Native.Mouse.values;
+	}
+
+	var NS = Elm.Native.Signal.make(localRuntime);
+	var Utils = Elm.Native.Utils.make(localRuntime);
+
+	var position = NS.input('Mouse.position', Utils.Tuple2(0,0));
+
+	var isDown = NS.input('Mouse.isDown', false);
+
+	var clicks = NS.input('Mouse.clicks', Utils.Tuple0);
+
+	var node = localRuntime.isFullscreen()
+		? document
+		: localRuntime.node;
+
+	localRuntime.addListener([clicks.id], node, 'click', function click() {
+		localRuntime.notify(clicks.id, Utils.Tuple0);
+	});
+	localRuntime.addListener([isDown.id], node, 'mousedown', function down() {
+		localRuntime.notify(isDown.id, true);
+	});
+	localRuntime.addListener([isDown.id], node, 'mouseup', function up() {
+		localRuntime.notify(isDown.id, false);
+	});
+	localRuntime.addListener([position.id], node, 'mousemove', function move(e) {
+		localRuntime.notify(position.id, Utils.getXY(e));
+	});
+
+	return localRuntime.Native.Mouse.values = {
+		position: position,
+		isDown: isDown,
+		clicks: clicks
+	};
 };
 
 Elm.Native.Port = {};
