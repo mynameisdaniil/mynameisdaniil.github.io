@@ -3,7 +3,7 @@ module Main where
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Signal exposing (Signal, (<~))
-import List exposing (map, map2, sortWith)
+import List exposing (map, map2, sortWith, length)
 import Random exposing (Seed)
 import Signal.Time exposing (Time, startTime)
 import Mouse
@@ -21,7 +21,7 @@ view model =
       ul [] <| map (\line -> li [] [text line]) model
       ],
     h6 [] [a [href "https://github.com/mynameisdaniil/mynameisdaniil.github.io/blob/master/src/Main.elm"][ text "This site is functional and reactive too" ]]
-    ]
+  ]
 
 model = [
   "Master's degree in signal processing",
@@ -48,20 +48,26 @@ model = [
   "Good guy"
   ]
 
+zip : List a -> List b -> List (a, b)
+zip = map2 (,)
+
+randomList : Int -> Seed -> List Int
+randomList len seed =
+  fst <| Random.generate (Random.list len (Random.int 0 len)) seed
+
 shuffle : List String -> Seed -> List String
 shuffle model seed =
-  let len = List.length model
-      randomList len seed =
-        let (list, _) = (Random.generate (Random.list len (Random.int 0 len)) seed)
-        in
-           list
-  in
-      map (\(_, line) -> line)
-      <| sortWith (\(a, _) (b, _) -> compare a b)
-      <| map2 (\i line -> (i, line)) (randomList len seed) model
+  map snd
+    <| sortWith (\(a, _) (b, _) -> compare a b)
+      <| zip (randomList (length model) seed) model
 
 update : (Int, Int) -> Model
-update (x, y) = shuffle model (Random.initialSeed <| x + y)
+update (x, y) = shuffle model <| Random.initialSeed <| x + y
+
+-- Mouse.position : Signal (Int, Int)
+
+-- (update <~ mouse.position) : Signal model
 
 main : Signal Html
 main = view <~ (update <~ Mouse.position)
+--main = Signal.map view (Signal.map update Mouse.position)

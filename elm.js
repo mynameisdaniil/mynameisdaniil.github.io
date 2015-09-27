@@ -4067,61 +4067,44 @@ Elm.Main.make = function (_elm) {
    $Random = Elm.Random.make(_elm),
    $Result = Elm.Result.make(_elm),
    $Signal = Elm.Signal.make(_elm);
+   var randomList = F2(function (len,
+   seed) {
+      return $Basics.fst(A2($Random.generate,
+      A2($Random.list,
+      len,
+      A2($Random.$int,0,len)),
+      seed));
+   });
+   var zip = $List.map2(F2(function (v0,
+   v1) {
+      return {ctor: "_Tuple2"
+             ,_0: v0
+             ,_1: v1};
+   }));
    var shuffle = F2(function (model,
    seed) {
-      return function () {
-         var randomList = F2(function (len,
-         seed) {
-            return function () {
-               var _ = A2($Random.generate,
-               A2($Random.list,
-               len,
-               A2($Random.$int,0,len)),
-               seed);
-               var list = function () {
-                  switch (_.ctor)
-                  {case "_Tuple2": return _._0;}
-                  _U.badCase($moduleName,
-                  "on line 55, column 26 to 83");
-               }();
-               return list;
-            }();
-         });
-         var len = $List.length(model);
-         return $List.map(function (_v11) {
-            return function () {
-               switch (_v11.ctor)
-               {case "_Tuple2":
-                  return _v11._1;}
-               _U.badCase($moduleName,
-               "on line 59, column 26 to 30");
-            }();
-         })($List.sortWith(F2(function (_v3,
-         _v4) {
-            return function () {
-               switch (_v4.ctor)
-               {case "_Tuple2":
-                  return function () {
-                       switch (_v3.ctor)
-                       {case "_Tuple2":
-                          return A2($Basics.compare,
-                            _v3._0,
-                            _v4._0);}
-                       _U.badCase($moduleName,
-                       "on line 60, column 38 to 49");
-                    }();}
-               _U.badCase($moduleName,
-               "on line 60, column 38 to 49");
-            }();
-         }))(A3($List.map2,
-         F2(function (i,line) {
-            return {ctor: "_Tuple2"
-                   ,_0: i
-                   ,_1: line};
-         }),
-         A2(randomList,len,seed),
-         model)));
-      }();
+      return $List.map($Basics.snd)($List.sortWith(F2(function (_v0,
+      _v1) {
+         return function () {
+            switch (_v1.ctor)
+            {case "_Tuple2":
+               return function () {
+                    switch (_v0.ctor)
+                    {case "_Tuple2":
+                       return A2($Basics.compare,
+                         _v0._0,
+                         _v1._0);}
+                    _U.badCase($moduleName,
+                    "on line 61, column 36 to 47");
+                 }();}
+            _U.badCase($moduleName,
+            "on line 61, column 36 to 47");
+         }();
+      }))(A2(zip,
+      A2(randomList,
+      $List.length(model),
+      seed),
+      model)));
    });
    var model = _L.fromArray(["Master\'s degree in signal processing"
                             ,"Full-time linux user since Ubuntu 8.04"
@@ -4145,15 +4128,13 @@ Elm.Main.make = function (_elm) {
                             ,"I hate DNS"
                             ,"Engineer"
                             ,"Good guy"]);
-   var update = function (_v15) {
+   var update = function (_v8) {
       return function () {
-         switch (_v15.ctor)
+         switch (_v8.ctor)
          {case "_Tuple2":
-            return A2(shuffle,
-              model,
-              $Random.initialSeed(_v15._0 + _v15._1));}
+            return shuffle(model)($Random.initialSeed(_v8._0 + _v8._1));}
          _U.badCase($moduleName,
-         "on line 64, column 17 to 59");
+         "on line 65, column 17 to 61");
       }();
    };
    var view = function (model) {
@@ -4192,6 +4173,8 @@ Elm.Main.make = function (_elm) {
                       ,NoOp: NoOp
                       ,view: view
                       ,model: model
+                      ,zip: zip
+                      ,randomList: randomList
                       ,shuffle: shuffle
                       ,update: update
                       ,main: main};
