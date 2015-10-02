@@ -4095,10 +4095,10 @@ Elm.Main.make = function (_elm) {
                          _v0._0,
                          _v1._0);}
                     _U.badCase($moduleName,
-                    "on line 61, column 36 to 47");
+                    "on line 62, column 36 to 47");
                  }();}
             _U.badCase($moduleName,
-            "on line 61, column 36 to 47");
+            "on line 62, column 36 to 47");
          }();
       }))(A2(zip,
       A2(randomList,
@@ -4125,6 +4125,7 @@ Elm.Main.make = function (_elm) {
                             ,"Can\'t advise you continuous integration server"
                             ,"Wrote this line (and all other lines) using VIM"
                             ,"RPC? Ask me how"
+                            ,"I know how to write it, cut it, paste it, save it, load it, check it, quick, rewrite it"
                             ,"I hate DNS"
                             ,"Engineer"
                             ,"Good guy"]);
@@ -4134,7 +4135,7 @@ Elm.Main.make = function (_elm) {
          {case "_Tuple2":
             return shuffle(model)($Random.initialSeed(_v8._0 + _v8._1));}
          _U.badCase($moduleName,
-         "on line 65, column 17 to 61");
+         "on line 66, column 17 to 61");
       }();
    };
    var view = function (model) {

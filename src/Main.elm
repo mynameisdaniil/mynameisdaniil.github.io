@@ -43,6 +43,7 @@ model = [
   "Can't advise you continuous integration server",
   "Wrote this line (and all other lines) using VIM",
   "RPC? Ask me how",
+  "I know how to write it, cut it, paste it, save it, load it, check it, quick, rewrite it",
   "I hate DNS",
   "Engineer",
   "Good guy"
