@@ -15,10 +15,13 @@ Elm.Repl.make = function (_elm) {
    $Result = Elm.Result.make(_elm),
    $Signal = Elm.Signal.make(_elm);
    var tsol = {ctor: "_Tuple0"};
-   var deltron3030 = _U.cmp(1,
-   2) < 1;
+   var list = A2($List._op["::"],
+   "one",
+   _L.fromArray(["two","three"]));
+   var deltron3030 = list;
    _elm.Repl.values = {_op: _op
                       ,deltron3030: deltron3030
+                      ,list: list
                       ,tsol: tsol};
    return _elm.Repl.values;
 };
