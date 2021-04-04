@@ -1,74 +1,97 @@
-module Main where
+module Main exposing (main)
 
-import Html exposing (..)
-import Html.Attributes exposing (..)
-import Signal exposing (Signal, (<~))
-import List exposing (map, map2, sortWith, length)
-import Random exposing (Seed)
-import Signal.Time exposing (Time, startTime)
-import Mouse
+import Browser
+import Dict exposing (get)
+import Html exposing (Html, img, div, text, p, a)
+import Html.Attributes exposing (href, src, width, height, style)
+import Http
+import List exposing (map, map2, foldl, drop, sortWith, length)
+import Maybe exposing (withDefault)
+import Random exposing (Generator)
+import String exposing (concat)
+import Task
+import Time
+import Tuple exposing (pair, first, second)
+import Yaml.Decode exposing (map3, fromString, list, dict, string, field)
 
-type alias Model = List String
+overhead = 5
+email = concat ["sobol", ".", "daniil", "@", "gmail", ".", "com"] -- fuck spammers
 
-type Action = NoOp
+type alias Link        = String
+type alias Icon        = String
+type alias Description = String
 
-view : Model -> Html
-view model =
-  div [] [
-    a [href "mailto:sobol.daniil@gmail.com"] [h1 [] [text "Daniil Sobol"]],
-    p  [] [
-      h2 [] [text "Set of random facts about me:"],
-      ul [] <| map (\line -> li [] [text line]) model
-      ],
-    h6 [] [a [href "https://github.com/mynameisdaniil/mynameisdaniil.github.io/blob/master/src/Main.elm"][ text "This site is functional and reactive too" ]]
-  ]
+type Msg = YamlLoaded (Result Http.Error String) | RandomList (List Int) | None
 
-model = [
-  "Master's degree in signal processing",
-  "Full-time linux user since Ubuntu 8.04",
-  "Have expirience in nginx module writing",
-  "I have /dev/ops which is recursive link to myself",
-  "Have expirience in nodejs native modules writing",
-  "Do love syntax of Erlang",
-  "Pretty reactive",
-  "Very functional",
-  "My other CAP is a theorem",
-  "I do understand Riak's code",
-  "I've lost my ability to explain monads",
-  "Can't decide if I dislike Java more than C++ or vise versa",
-  "Wrote this line at 3:43 AM",
-  "Wrote several lisp interpreters",
-  "I've used Ansible back then before it became mainstream",
-  "Containers' pioneer (and I'm not talking about Docker)",
-  "Can't advise you continuous integration server",
-  "Wrote this line (and all other lines) using VIM",
-  "RPC? Ask me how",
-  "I know how to write it, cut it, paste it, save it, load it, check it, quick, rewrite it",
-  "I hate DNS",
-  "Engineer",
-  "Good guy"
-  ]
+type alias Model = {facts : List String, social : List (Link, Icon), links: List (Description, Link), randomness: List Int}
+
+tuple_extractor a b = \v -> (withDefault "" <| get a v, withDefault "" <| get b v)
+
+decoder model =
+  map3 (\facts social links ->
+    {model | facts  = facts,
+             social = map (tuple_extractor "link" "icon") social,
+             links  = map (tuple_extractor "description" "link") links
+    })
+  (field "facts" <| list string)
+  (field "social" <| list (dict string))
+  (field "links" <| list (dict string))
 
 zip : List a -> List b -> List (a, b)
-zip = map2 (,)
+zip = map2 pair
 
-randomList : Int -> Seed -> List Int
-randomList len seed =
-  fst <| Random.generate (Random.list len (Random.int 0 len)) seed
+shuffle : List a -> List comparable -> List a
+shuffle list comparable = map first <| sortWith (\(_, a) (_, b) -> compare a b) <| zip list comparable
 
-shuffle : List String -> Seed -> List String
-shuffle model seed =
-  map snd
-    <| sortWith (\(a, _) (b, _) -> compare a b)
-      <| zip (randomList (length model) seed) model
+main : Program () Model Msg
+main =
+  Browser.document { init = init, update = update, view = view, subscriptions = subscriptions }
 
-update : (Int, Int) -> Model
-update (x, y) = shuffle model <| Random.initialSeed <| x + y
+subscriptions model = Sub.none
 
--- Mouse.position : Signal (Int, Int)
+init : () -> (Model, Cmd Msg)
+init _ =
+  let
+    initialState = {facts = [], social = [], links = [], randomness = []}
+    commands = Cmd.batch [
+      Http.get {url = "../contents.yaml", expect = Http.expectString YamlLoaded}
+      ]
+  in
+    (initialState, commands)
 
--- (update <~ mouse.position) : Signal model
+update : Msg -> Model -> (Model, Cmd Msg)
+update msg model =
+  case msg of
+    YamlLoaded result ->
+      case result of
+        Ok yamlStr ->
+          case fromString (decoder model) yamlStr of
+            Ok updatedModel ->
+              let
+                  amountOfRandomness = length updatedModel.facts + length updatedModel.social + length updatedModel.links + overhead
+                  generator = Random.list amountOfRandomness (Random.int 0 amountOfRandomness)
+              in
+                  (updatedModel, Random.generate RandomList generator)
+            Err e -> (model, Cmd.none)
+        Err e -> (model, Cmd.none)
+    RandomList randomList ->
+        ({model | randomness = randomList}, Cmd.none)
+    None -> (model, Cmd.none)
 
-main : Signal Html
-main = view <~ (update <~ Mouse.position)
---main = Signal.map view (Signal.map update Mouse.position)
+view model = {title = "Hello world", body = body model}
+
+body model =
+  let
+      email_block = [div [] [text "The best way to contact me: ", a [href <| concat ["mailto:", email]] [text email]]]
+      blocks = [display_facts model.facts, display_social model.social, display_links model.links, email_block]
+      (shuffled_blocks, residual_randomness) = foldl (\block (acc, randomness) ->
+        (shuffle block randomness :: acc, drop (length block) randomness)
+        ) ([], model.randomness) blocks
+  in
+    map (div [style "border-radius" "5pt", style "border" "1pt solid #000000", style "padding" "10pt", style "margin" "10pt", style "display" "block", style "position" "absolute"]) <| shuffle shuffled_blocks residual_randomness
+
+display_facts = map (\str -> p [] [ text str ])
+
+display_social = map (\(link, icon) -> p [] [img [src icon, style "height" "20pt", style "vertical-align" "middle"] [], a [href link, style "height" "14pt", style "vertical-align" "middle"] [text link] ])
+
+display_links = map (\(description, link) -> p [] [ text description, text ": ", a [href link] [text link] ])

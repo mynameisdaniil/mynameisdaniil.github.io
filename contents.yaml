@@ -1,0 +1,51 @@
+---
+facts:
+  - Master's degree in signal processing
+  - Full-time linux user since Ubuntu 8.04
+  - Have expirience in nginx module writing
+  - I have /dev/ops which is recursive link to myself
+  - Have expirience in nodejs native modules writing
+  - Do love syntax of Erlang
+  - Pretty reactive
+  - Very functional
+  - My other CAP is a theorem
+  - I do understand Riak's code
+  - I've lost my ability to explain monads
+  - Can't decide if I dislike Java more than C++ or vise versa
+  - Wrote this line at 3:43 in the morning
+  - Wrote several lisp interpreters
+  - I've used Ansible back then before it became mainstream
+  - Containers' pioneer (and I'm not talking about Docker)
+  - Can't advise you continuous integration server
+  - Wrote this line (and all other lines) using VIM
+  - RPC? Ask me how
+  - I know how to write it, cut it, paste it, save it, load it, check it, quick, rewrite it
+  - I hate DNS
+  - Engineer
+  - Good guy
+
+social:
+  - link: https://www.facebook.com/profile.php?id=100015560405467
+    icon: /icons/facebook.png
+  - link: https://twitter.com/mynameisdaniil
+    icon: /icons/twitter.png
+  - link: https://instagram.com/daniel_sable/
+    icon: /icons/instagram.png
+  - link: https://vk.com/mynameisdaniil
+    icon: /icons/vk.png
+  - link: https://t.me/mynameisdaniil
+    icon: /icons/telegram.png
+  - link: https://github.com/mynameisdaniil
+    icon: /icons/github.png
+  - link: https://www.reddit.com/user/mynameisdaniil
+    icon: /icons/reddit.png
+  - link: https://www.linkedin.com/in/mynameisdaniil/
+    icon: /icons/linkedin.png
+  - link: https://stackoverflow.com/users/847216/mynameisdaniil
+    icon: /icons/stackoverflow.png
+
+links:
+  - description: My take on FP introductory article via Haskell
+    link: https://habr.com/ru/post/319440/
+  - description: Article about YAFF. Library of mine inspired by substack's node-seq and AKKA streams. Asynchrnous stream-oriented programming before it became mainstream
+    link: https://habr.com/ru/post/251307/
