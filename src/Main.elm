@@ -1,6 +1,6 @@
 module Main exposing (main)
 
-import Browser
+import Browser exposing (Document)
 import Dict exposing (get)
 import Html exposing (Html, img, div, text, p, a)
 import Html.Attributes exposing (href, src, width, height, style)
@@ -46,6 +46,7 @@ main : Program () Model Msg
 main =
   Browser.document { init = init, update = update, view = view, subscriptions = subscriptions }
 
+subscriptions : Model -> Sub Msg
 subscriptions model = Sub.none
 
 init : () -> (Model, Cmd Msg)
@@ -77,8 +78,10 @@ update msg model =
         ({model | randomness = randomList}, Cmd.none)
     None -> (model, Cmd.none)
 
+view : Model -> Document Msg
 view model = {title = "Hello world", body = body model}
 
+body : Model -> List (Html msg)
 body model =
   let
       blocks = [display_facts model.facts, display_social model.social, display_links model.links, display_email model.email, display_source_code]
