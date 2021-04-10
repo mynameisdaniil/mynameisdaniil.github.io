@@ -6,8 +6,6 @@ facts:
   - I have /dev/ops which is recursive link to myself
   - Have expirience in nodejs native modules writing
   - Do love syntax of Erlang
-  - Pretty reactive
-  - Very functional
   - My other CAP is a theorem
   - I do understand Riak's code
   - I have lost my ability to explain monads
@@ -19,11 +17,8 @@ facts:
   - Can not advise you any continuous integration server
   - Have written this line (and all other lines) using VIM
   - RPC? Ask me how
-  - I know how to write it, cut it, paste it, save it, load it, check it, quick, rewrite it
   - Do hate DNS
-  - Engineer
-  - Good guy
-  - My first language was BASIC; written on a piece of paper and executed in my head
+  - My first language was BASIC; written on a piece of paper and interpreted in my head
   - Stock exchange? Ask me how
   - Actually I don't have any cool facts about Rust language. Guess this is a fact too
 
