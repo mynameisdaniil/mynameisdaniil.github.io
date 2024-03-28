@@ -47,3 +47,9 @@ links:
     link: https://habr.com/ru/post/319440/
   - description: Article about YAFF. Library of mine inspired by substack's node-seq and AKKA streams. Asynchrnous stream-oriented programming before it became mainstream
     link: https://habr.com/ru/post/251307/
+
+projects:
+  - description: Erlang client for Ethereum Portal Network.
+    link: https://eportald.org/
+  - description: Zig (C-compatible) client for Ethreum Portal Network
+    link: https://libportal.net/

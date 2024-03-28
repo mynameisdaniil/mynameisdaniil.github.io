@@ -12,9 +12,9 @@ import String exposing (concat)
 import Task
 import Time
 import Tuple exposing (pair, first, second)
-import Yaml.Decode exposing (map3, fromString, list, dict, string, field)
+import Yaml.Decode exposing (map4, fromString, list, dict, string, field)
 
-overhead = 7
+overhead = 8
 
 type alias Link        = String
 type alias Icon        = String
@@ -22,19 +22,21 @@ type alias Description = String
 
 type Msg = YamlLoaded (Result Http.Error String) | RandomList (List Int) | None
 
-type alias Model = {facts : List String, social : List (Link, Icon), links: List (Description, Link), email: List String, randomness: List Int}
+type alias Model = {facts : List String, social : List (Link, Icon), links: List (Description, Link), projects: List (Description, Link), email: List String, randomness: List Int}
 
 tuple_extractor a b = \v -> (withDefault "" <| get a v, withDefault "" <| get b v)
 
 decoder model =
-  map3 (\facts social links ->
-    {model | facts  = facts,
-             social = map (tuple_extractor "link" "icon") social,
-             links  = map (tuple_extractor "description" "link") links
+  map4 (\facts social links projects ->
+    {model | facts    = facts,
+             social   = map (tuple_extractor "link" "icon") social,
+             links    = map (tuple_extractor "description" "link") links,
+             projects = map (tuple_extractor "description" "link") projects
     })
   (field "facts" <| list string)
   (field "social" <| list (dict string))
   (field "links" <| list (dict string))
+  (field "projects" <| list (dict string))
 
 zip : List a -> List b -> List (a, b)
 zip = map2 pair
@@ -52,7 +54,7 @@ subscriptions model = Sub.none
 init : () -> (Model, Cmd Msg)
 init _ =
   let
-    initialState = {facts = [], social = [], links = [], email = ["sobol", ".", "daniil", "@", "gmail", ".", "com"], randomness = []}
+    initialState = {facts = [], social = [], links = [], projects = [], email = ["sobol", ".", "daniil", "@", "gmail", ".", "com"], randomness = []}
     commands = Cmd.batch [
       Http.get {url = "../contents.yaml", expect = Http.expectString YamlLoaded}
       ]
@@ -68,7 +70,7 @@ update msg model =
           case fromString (decoder model) yamlStr of
             Ok updatedModel ->
               let
-                  amountOfRandomness = length updatedModel.facts + length updatedModel.social + length updatedModel.links + overhead
+                  amountOfRandomness = length updatedModel.facts + length updatedModel.social + length updatedModel.links + length updatedModel.projects + overhead
                   generator = Random.list amountOfRandomness (Random.int 0 amountOfRandomness)
               in
                   (updatedModel, Random.generate RandomList generator)
@@ -84,7 +86,7 @@ view model = {title = "Hello world", body = body model}
 body : Model -> List (Html msg)
 body model =
   let
-      blocks = [display_facts model.facts, display_social model.social, display_links model.links, display_email model.email, display_source_code]
+      blocks = [display_facts model.facts, display_social model.social, display_links model.links, display_links model.projects, display_email model.email, display_source_code]
       (shuffled_blocks, residual_randomness) = foldl (\block (acc, randomness) ->
         (shuffle block randomness :: acc, drop (length block) randomness)
         ) ([], model.randomness) blocks
