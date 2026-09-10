@@ -102,3 +102,16 @@ test("defaults unknown link labels to the target", () => {
   assert.equal(model.cards.get("a").links[0].label, "https://x");
   assert.equal(model.cards.get("a").links[1].label, "a");
 });
+
+test("dedupes bidirectional internal links into one undirected edge", () => {
+  const model = buildModel({
+    meta: { default_card: "about" },
+    cards: [
+      { id: "about", title: "About", links: [{ label: "Projects", card: "projects" }] },
+      { id: "projects", title: "Projects", links: [{ label: "About", card: "about" }] },
+    ],
+  });
+  assert.deepEqual(model.errors, []);
+  assert.equal(model.edges.length, 1);
+  assert.deepEqual(model.edges[0], { source: "about", target: "projects" });
+});

@@ -69,14 +69,18 @@ export function buildModel(raw) {
     });
   }
 
+  const seenEdges = new Set();
   for (const card of cards.values()) {
     for (const link of card.links) {
       if (!link.card) continue;
       if (!cards.has(link.card)) {
         errors.push(`card "${card.id}" links to unknown card "${link.card}"`);
-      } else {
-        edges.push({ source: card.id, target: link.card });
+        continue;
       }
+      const key = [card.id, link.card].sort().join("->");
+      if (seenEdges.has(key)) continue;
+      seenEdges.add(key);
+      edges.push({ source: card.id, target: link.card });
     }
   }
 
