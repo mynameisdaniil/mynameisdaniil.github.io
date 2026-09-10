@@ -117,7 +117,7 @@ export function createGraph({ stage, svg, cardsById, edges, win = window }) {
     for (const node of nodes) {
       const x = snapToDevicePixel(node.x - node.w / 2, dpr);
       const y = snapToDevicePixel(node.y - node.h / 2, dpr);
-      node.el.style.transform = `translate(${x}px, ${y}px)`;
+      node.el.style.translate = `${x}px ${y}px`;
     }
     for (const link of linkData) {
       const line = lineById.get(`${link.source.id}->${link.target.id}`);
