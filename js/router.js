@@ -5,23 +5,20 @@ export function parseHash(hash, cardIds, defaultCard) {
 
 export function createRouter({ defaultCard, cardIds, onFocus, win = globalThis }) {
   let current = parseHash(win.location.hash, cardIds, defaultCard);
-  let lastSet = null;
 
   function focus(id) {
-    const next = parseHash(`#${id}`, cardIds, defaultCard);
-    current = next;
-    if (win.location.hash !== `#${next}`) {
-      lastSet = `#${next}`;
-      win.location.hash = next;
-    }
-    onFocus(next);
-  }
-
-  function onHashChange() {
-    if (win.location.hash === lastSet) {
-      lastSet = null;
+    const target = parseHash(`#${id}`, cardIds, defaultCard);
+    if (win.location.hash !== `#${target}`) {
+      win.location.hash = target;
       return;
     }
+    if (target === current) return;
+    current = target;
+    onFocus(target);
+  }
+
+  function onHashChange(event) {
+    if (event.newURL && event.newURL !== win.location.href) return;
     current = parseHash(win.location.hash, cardIds, defaultCard);
     onFocus(current);
   }
