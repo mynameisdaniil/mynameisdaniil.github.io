@@ -121,8 +121,9 @@ export function createGraph({ stage, svg, cardsById, edges, win = window }) {
     }
   }
 
-  function settle() {
+  function settle(alpha) {
     simulation.stop();
+    simulation.alpha(alpha);
     for (let i = 0; i < 150; i += 1) simulation.tick();
     tick();
   }
@@ -131,7 +132,7 @@ export function createGraph({ stage, svg, cardsById, edges, win = window }) {
   refreshForces();
 
   if (reducedMotion) {
-    settle();
+    settle(1);
   }
 
   function focusCard(id) {
@@ -151,7 +152,7 @@ export function createGraph({ stage, svg, cardsById, edges, win = window }) {
     }
 
     if (reducedMotion) {
-      settle();
+      settle(0.6);
     } else {
       simulation.alpha(0.6).restart();
     }
@@ -166,7 +167,7 @@ export function createGraph({ stage, svg, cardsById, edges, win = window }) {
     measureAll();
     refreshForces();
     if (reducedMotion) {
-      settle();
+      settle(0.2);
     } else {
       simulation.alpha(0.2).restart();
     }
