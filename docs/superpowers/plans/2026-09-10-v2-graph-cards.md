@@ -2321,11 +2321,21 @@ git commit -m "feat: wire content, graph, router, theme, and typography together
 - Consumes: everything above.
 - Produces: the spec's Definition of Done, verified.
 
-- [ ] **Step 1: Ensure protrusion helper classes exist in `assets/site.css`**
+- [ ] **Step 1: Ensure graph/protrusion helper classes exist in `assets/site.css`**
 
-The pass sets inline margins, but these classes keep the elements inline and are useful for debugging. Append if not present:
+The protrusion pass sets inline margins, but these classes keep the elements inline and are useful for debugging. The edge stroke rules were missing from Task 1's initial stylesheet (only the reduced-motion transition rule existed). Append if not present:
 
 ```css
+.edge {
+  stroke: var(--edge-line);
+  stroke-width: 1;
+  transition: stroke 0.35s ease;
+}
+
+.edge--active {
+  stroke: var(--edge-line-active);
+}
+
 .protrude-left,
 .protrude-right {
   display: inline;
