@@ -1,0 +1,14 @@
+meta:
+  title: Daniil Sobol
+  default_card: about
+cards:
+  - id: about
+    title: Daniil Sobol
+    body: |
+      Software engineer working on distributed systems, Erlang, and Ethereum
+      infrastructure. This site is a graph; right now it is a single vertex.
+    links:
+      - label: GitHub
+        url: https://github.com/mynameisdaniil
+      - label: Email
+        url: mailto:sobol.daniil@gmail.com
