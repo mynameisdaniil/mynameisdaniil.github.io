@@ -28,6 +28,11 @@ function forceBounds(padding) {
   return force;
 }
 
+export function snapToDevicePixel(value, dpr) {
+  const ratio = dpr > 0 ? dpr : 1;
+  return Math.round(value * ratio) / ratio;
+}
+
 export function createGraph({ stage, svg, cardsById, edges, win = window }) {
   const reducedMotion = win.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ?? false;
 
@@ -108,8 +113,11 @@ export function createGraph({ stage, svg, cardsById, edges, win = window }) {
   }
 
   function tick() {
+    const dpr = win.devicePixelRatio || 1;
     for (const node of nodes) {
-      node.el.style.transform = `translate(${node.x - node.w / 2}px, ${node.y - node.h / 2}px)`;
+      const x = snapToDevicePixel(node.x - node.w / 2, dpr);
+      const y = snapToDevicePixel(node.y - node.h / 2, dpr);
+      node.el.style.transform = `translate(${x}px, ${y}px)`;
     }
     for (const link of linkData) {
       const line = lineById.get(`${link.source.id}->${link.target.id}`);
