@@ -1,0 +1,22 @@
+Third-party assets bundled with mynameisdaniil.dev
+
+Fonts
+- GOST 2.304-81 Type A Regular — Metrolog/Font.GOST2.304-81 v0.7.6
+  https://github.com/Metrolog/Font.GOST2.304-81
+  License: Apache-2.0
+
+- Latin Modern Roman / Mono — GUST e-foundry, via @typopro/web-latin-modern 3.7.5
+  License: SIL Open Font License 1.1
+  https://www.gust.org.pl/projects/e-foundry/latin-modern
+
+JavaScript
+- d3 v7 — https://d3js.org — ISC License
+- js-yaml v4 — https://github.com/nodeca/js-yaml — MIT License
+- marked — https://github.com/markedjs/marked — MIT License
+- tex-linebreak — https://github.com/robertknight/tex-linebreak — MIT License
+- Hypher — https://github.com/bramstein/hypher — BSD-3-Clause License
+
+Hyphenation patterns (via Hypher pattern packages, from hyph-utf8/TeX and
+LibreOffice dictionaries; see upstream pattern metadata for per-language terms)
+- hyphenation.en-us — https://github.com/bramstein/hypher
+- hyphenation.ru — https://github.com/bramstein/hypher
