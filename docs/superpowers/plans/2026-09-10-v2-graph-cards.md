@@ -958,12 +958,63 @@ Expected: FAIL — `Cannot find module .../js/router.js`.
 
 - [ ] **Step 3: Implement `js/router.js`**
 
+> **REVISED after review:** the original `lastSet` sentinel below had races
+> (duplicate reports; a swallowed external `hashchange`). The approved final
+> design reports synchronously from `focus()`, dedupes the echo when the
+> parsed target equals `current`, and filters superseded queued events via
+> `event.newURL`. The shipped code is:
+
 ```js
 export function parseHash(hash, cardIds, defaultCard) {
   const id = String(hash ?? "").replace(/^#/, "");
   return cardIds.has(id) ? id : defaultCard;
 }
 
+export function createRouter({ defaultCard, cardIds, onFocus, win = globalThis }) {
+  let current = parseHash(win.location.hash, cardIds, defaultCard);
+
+  function focus(id) {
+    const target = parseHash(`#${id}`, cardIds, defaultCard);
+    if (target === current && win.location.hash === `#${target}`) return;
+    current = target;
+    if (win.location.hash !== `#${target}`) {
+      win.location.hash = target;
+    }
+    onFocus(target);
+  }
+
+  function onHashChange(event) {
+    if (event.newURL && event.newURL !== win.location.href) return;
+    const target = parseHash(win.location.hash, cardIds, defaultCard);
+    if (target === current) return;
+    current = target;
+    onFocus(target);
+  }
+
+  function onKeydown(event) {
+    if (event.key === "Escape") focus(defaultCard);
+  }
+
+  win.addEventListener("hashchange", onHashChange);
+  win.addEventListener("keydown", onKeydown);
+
+  return {
+    get current() {
+      return current;
+    },
+    focus,
+  };
+}
+```
+
+The shipped `tests/router.test.js` keeps the five original tests (focus
+tests made synchronous-first with a post-echo assertion) and adds three
+regression tests: repeated same-target focus reports once, rapid
+`focus("contact"); focus("about")` reports exactly `["contact","about"]`,
+and an external hash change interleaved with a pending echo is not swallowed
+(`["contact","about","contact"]`). Original sentinel code, for reference:
+
+```js
 export function createRouter({ defaultCard, cardIds, onFocus, win = globalThis }) {
   let current = parseHash(win.location.hash, cardIds, defaultCard);
   let lastSet = null;
@@ -2156,21 +2207,23 @@ try {
     return card?.lang || "en-us";
   }
 
+  function render(id) {
+    const card = model.cards.get(id);
+    const el = cardsById.get(id);
+    setCardBody(el, renderMarkdown(card.body));
+    graph.focusCard(id);
+    el.querySelector(".card-title")?.focus({ preventScroll: true });
+    for (const cardEl of cardsById.values()) markActiveLinks(cardEl, id);
+    live.textContent = `Showing ${card.title}`;
+    document.title =
+      id === model.meta.defaultCard ? model.meta.title : `${card.title} — ${model.meta.title}`;
+    typography.schedule(el, card.lang || "en-us");
+  }
+
   router = createRouter({
     defaultCard: model.meta.defaultCard,
     cardIds: new Set(model.cards.keys()),
-    onFocus: (id) => {
-      const card = model.cards.get(id);
-      const el = cardsById.get(id);
-      setCardBody(el, renderMarkdown(card.body));
-      graph.focusCard(id);
-      el.querySelector(".card-title")?.focus({ preventScroll: true });
-      for (const cardEl of cardsById.values()) markActiveLinks(cardEl, id);
-      live.textContent = `Showing ${card.title}`;
-      document.title =
-        id === model.meta.defaultCard ? model.meta.title : `${card.title} — ${model.meta.title}`;
-      typography.schedule(el, card.lang || "en-us");
-    },
+    onFocus: render,
   });
 
   let resizeTimer = 0;
@@ -2182,7 +2235,7 @@ try {
   });
 
   await document.fonts.ready;
-  router.focus(router.current);
+  render(router.current);
   await typography.flush();
   stage.style.visibility = "visible";
   stage.setAttribute("aria-busy", "false");
