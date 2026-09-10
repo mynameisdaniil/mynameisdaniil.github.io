@@ -1655,6 +1655,15 @@ git commit -m "feat: add card component with tests and styles"
 
 ### Task 8: Graph engine
 
+> **REVISED after review:** the implementation code below is stale. The shipped
+> `js/graph.js` additionally: seeds nodes in a deterministic ring and measures
+> before the first tick; uses `Math.hypot(w, h) / 2` for the collision radius;
+> re-invokes the d3 force accessors via `refreshForces()` after every
+> measurement (d3-force v3 caches them at `initialize()`); and uses
+> `settle(alpha)` (stop + set alpha + 150 manual ticks + render) for
+> `prefers-reduced-motion` on creation (`settle(1)`), focus (`settle(0.6)`),
+> and resize (`settle(0.2)`). See `js/graph.js` for the source of truth.
+
 **Files:**
 - Create: `js/graph.js`
 
