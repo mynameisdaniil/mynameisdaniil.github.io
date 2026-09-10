@@ -29,17 +29,29 @@ function forceBounds(padding) {
 }
 
 export function createGraph({ stage, svg, cardsById, edges, win = window }) {
+  const reducedMotion = win.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ?? false;
+
+  let width = stage.clientWidth || win.innerWidth;
+  let height = stage.clientHeight || win.innerHeight;
+
   const nodeById = new Map();
-  const nodes = [...cardsById.entries()].map(([id, el]) => {
-    const node = { id, el, x: 0, y: 0, w: 0, h: 0, radius: 60, focused: false };
+  const nodes = [...cardsById.entries()].map(([id, el], index) => {
+    const angle = (index / Math.max(cardsById.size, 1)) * Math.PI * 2;
+    const node = {
+      id,
+      el,
+      x: width / 2 + Math.cos(angle) * 60,
+      y: height / 2 + Math.sin(angle) * 60,
+      w: 0,
+      h: 0,
+      radius: 60,
+      focused: false,
+    };
     nodeById.set(id, node);
     return node;
   });
 
   const linkData = edges.map((edge) => ({ source: edge.source, target: edge.target }));
-
-  let width = stage.clientWidth || win.innerWidth;
-  let height = stage.clientHeight || win.innerHeight;
 
   const svgNS = "http://www.w3.org/2000/svg";
   const lineById = new Map();
@@ -52,12 +64,12 @@ export function createGraph({ stage, svg, cardsById, edges, win = window }) {
     lineById.set(`${edge.source}->${edge.target}`, line);
   }
 
-  const reducedMotion = win.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ?? false;
   const boundary = forceBounds(48);
 
-  function linkDistance(link) {
-    return link.source.focused || link.target.focused ? 240 : 170;
-  }
+  const linkDistance = (link) => (link.source.focused || link.target.focused ? 240 : 170);
+  const xStrength = (node) => (node.focused ? 0.14 : 0.015);
+  const yStrength = (node) => (node.focused ? 0.14 : 0.015);
+  const collideRadius = (node) => node.radius + 12;
 
   const simulation = d3
     .forceSimulation(nodes)
@@ -70,15 +82,9 @@ export function createGraph({ stage, svg, cardsById, edges, win = window }) {
         .strength(0.25),
     )
     .force("charge", d3.forceManyBody().strength(-420))
-    .force(
-      "collide",
-      d3
-        .forceCollide()
-        .radius((d) => d.radius + 12)
-        .strength(0.9),
-    )
-    .force("x", d3.forceX(() => width / 2).strength((d) => (d.focused ? 0.14 : 0.015)))
-    .force("y", d3.forceY(() => height / 2).strength((d) => (d.focused ? 0.14 : 0.015)))
+    .force("collide", d3.forceCollide().radius(collideRadius).strength(0.9))
+    .force("x", d3.forceX(() => width / 2).strength(xStrength))
+    .force("y", d3.forceY(() => height / 2).strength(yStrength))
     .force("boundary", boundary.size([width, height]))
     .alphaDecay(0.05)
     .on("tick", tick);
@@ -87,7 +93,18 @@ export function createGraph({ stage, svg, cardsById, edges, win = window }) {
     node.w = node.el.offsetWidth || 200;
     node.h = node.el.offsetHeight || 80;
     const scale = node.focused ? 1 : 0.6;
-    node.radius = (Math.max(node.w, node.h) / 2) * scale;
+    node.radius = (Math.hypot(node.w, node.h) / 2) * scale;
+  }
+
+  function measureAll() {
+    for (const node of nodes) measure(node);
+  }
+
+  function refreshForces() {
+    simulation.force("link").distance(linkDistance);
+    simulation.force("collide").radius(collideRadius);
+    simulation.force("x").strength(xStrength);
+    simulation.force("y").strength(yStrength);
   }
 
   function tick() {
@@ -104,6 +121,19 @@ export function createGraph({ stage, svg, cardsById, edges, win = window }) {
     }
   }
 
+  function settle() {
+    simulation.stop();
+    for (let i = 0; i < 150; i += 1) simulation.tick();
+    tick();
+  }
+
+  measureAll();
+  refreshForces();
+
+  if (reducedMotion) {
+    settle();
+  }
+
   function focusCard(id) {
     const target = nodeById.get(id);
     if (!target) return;
@@ -112,7 +142,8 @@ export function createGraph({ stage, svg, cardsById, edges, win = window }) {
       node.focused = node.id === id;
       setCardState(node.el, node.focused ? "focused" : "background");
     }
-    for (const node of nodes) measure(node);
+    measureAll();
+    refreshForces();
 
     for (const line of lineById.values()) {
       const active = line.dataset.source === id || line.dataset.target === id;
@@ -120,8 +151,7 @@ export function createGraph({ stage, svg, cardsById, edges, win = window }) {
     }
 
     if (reducedMotion) {
-      for (let i = 0; i < 120; i += 1) simulation.tick();
-      tick();
+      settle();
     } else {
       simulation.alpha(0.6).restart();
     }
@@ -133,9 +163,10 @@ export function createGraph({ stage, svg, cardsById, edges, win = window }) {
     boundary.size([width, height]);
     simulation.force("x").x(() => width / 2);
     simulation.force("y").y(() => height / 2);
-    for (const node of nodes) measure(node);
+    measureAll();
+    refreshForces();
     if (reducedMotion) {
-      tick();
+      settle();
     } else {
       simulation.alpha(0.2).restart();
     }
