@@ -5,10 +5,109 @@ cards:
   - id: about
     title: Daniil Sobol
     body: |
-      Software engineer working on distributed systems, Erlang, and Ethereum
-      infrastructure. This site is a graph; right now it is a single vertex.
+      I'm a software engineer working on distributed systems, Erlang, and Ethereum infrastructure. This site is a graph of cards — follow the links to look around.
     links:
+      - label: Projects
+        card: projects
+      - label: Writing
+        card: writing
+      - label: Facts
+        card: facts
+      - label: Contact
+        card: contact
       - label: GitHub
         url: https://github.com/mynameisdaniil
       - label: Email
         url: mailto:sobol.daniil@gmail.com
+  - id: projects
+    title: Projects
+    body: |
+      Erlang client for Ethereum Portal Network: [ePortalD](https://eportald.org/)
+
+      Zig (C-compatible) client for Ethereum Portal Network: [libportal](https://libportal.net/)
+    links:
+      - label: ← About
+        card: about
+  - id: writing
+    title: Writing
+    body: |
+      [My take on FP introductory article via Haskell](https://habr.com/ru/post/319440/)
+
+      [YAFF — asynchronous stream-oriented programming before it became mainstream](https://habr.com/ru/post/251307/)
+    links:
+      - label: ← About
+        card: about
+  - id: facts
+    title: Facts
+    body: |
+      Master's degree in signal processing
+
+      Full-time Linux user since Ubuntu 8.04
+
+      Have experience in nginx module writing
+
+      I have /dev/ops which is a recursive link to myself
+
+      Have experience in Node.js native module writing
+
+      Do love syntax of Erlang
+
+      My other CAP is a theorem
+
+      I do understand Riak's code
+
+      I have lost my ability to explain monads
+
+      Can't decide if I dislike Java more than C++ or vice versa
+
+      Have written this line at 3:43 in the morning
+
+      Wrote several Lisp interpreters
+
+      I've used Ansible back then before it became mainstream
+
+      Containers pioneer (and I'm not talking about Docker)
+
+      Can not advise you any continuous integration server
+
+      Have written this line (and all other lines) using VIM
+
+      RPC? Ask me how
+
+      Do hate DNS
+
+      My first language was BASIC; written on a piece of paper and interpreted in my head
+
+      Stock exchange? Ask me how
+
+      Actually I don't have any cool facts about Rust language. Guess this is a fact too
+    links:
+      - label: ← About
+        card: about
+  - id: contact
+    title: Contact
+    body: |
+      The best way to contact me is email; I'm also around on these:
+    links:
+      - label: Email
+        url: mailto:sobol.daniil@gmail.com
+      - label: Telegram
+        url: https://t.me/mynameisdaniil
+      - label: GitHub
+        url: https://github.com/mynameisdaniil
+      - label: LinkedIn
+        url: https://www.linkedin.com/in/mynameisdaniil/
+      - label: Reddit
+        url: https://www.reddit.com/user/mynameisdaniil
+      - label: Stack Overflow
+        url: https://stackoverflow.com/users/847216/mynameisdaniil
+      - label: VK
+        url: https://vk.com/mynameisdaniil
+      - label: Instagram
+        url: https://instagram.com/daniel_sable/
+      - label: Facebook
+        url: https://www.facebook.com/profile.php?id=100015560405467
+      - label: Twitter
+        url: https://twitter.com/mynameisdaniil
+      - label: ← About
+        card: about
