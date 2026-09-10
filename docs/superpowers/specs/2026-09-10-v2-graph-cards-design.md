@@ -228,8 +228,7 @@ CSS custom properties on `:root` and `.dark`:
 - Title: GOST Type A, slight tracking, `clamp(1.6rem, 4vw, 2.6rem)`.
 - Body: Latin Modern Roman, 18px, `line-height: 1.55`, `max-width: 65ch`,
   `text-rendering: optimizeLegibility`, common ligatures.
-- LaTeX paragraph style: `p + p { text-indent: 1.5em }`, no vertical margins between
-  paragraphs.
+- Paragraph style: no first-line indent; `p + p { margin-top: 0.6em }` separates paragraphs.
 - Theme: inline `<head>` script applies `.dark` before first paint (no flash);
   toggle top-right (inline SVG sun/moon), `aria-pressed`, persisted in `localStorage`
   under `theme`; otherwise follows `prefers-color-scheme`. `color-scheme` set per theme.
