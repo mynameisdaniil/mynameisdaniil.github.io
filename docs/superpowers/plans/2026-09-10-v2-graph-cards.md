@@ -2,6 +2,8 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
+> **Status:** all 11 tasks executed on branch `v2`; every task passed a spec+quality review, and the whole branch passed a final review ("ready to merge with fixes"; fixes applied and re-reviewed). `- [x]` marks execution, not literal step fidelity — approved deviations are noted inline in Tasks 5 and 8 and recorded in the SDD ledger. Human browser acceptance (fonts, justification, animation, theme, reduced motion, keyboard) is still pending.
+
 **Goal:** Rebuild `mynameisdaniil.dev` as a static, no-deploy-build single-page site where content cards live on a live d3 force-directed graph; one card is focused at a time and the rest recede into a blurred background.
 
 **Architecture:** Vanilla ES modules loaded directly by the browser. A vendored, dev-time esbuild IIFE (`typography.min.js`) exposes `tex-linebreak` + Hypher as `window.typography`. Pure logic lives in small modules (`model`, `router`, `theme`, `protrusion`) with `node:test` unit tests; DOM/graph modules are verified in a browser via a checklist.
@@ -36,7 +38,7 @@
 - Consumes: nothing.
 - Produces: `package.json` scripts `test`, `build:css`, `build:vendor`, `serve`; DOM ids `#stage`, `#edges`, `#cards`, `#live`, `#theme-toggle`; CSS custom property tokens; `assets/site.css` classes `.card`, `.card--focused`, `.card--background`, `.card-title`, `.card-body`, `.card-links`, `.edge`, `.edge--active`, `.theme-toggle`, `.sr-only`, `.card--error`, `.protrude-left`, `.protrude-right`.
 
-- [ ] **Step 1: Remove the old site**
+- [x] **Step 1: Remove the old site**
 
 ```bash
 git rm -r -q Makefile contents.yaml elm.json index.html src slides icons images habr files ef_hack_xchnge
@@ -46,7 +48,7 @@ git status --short | head
 
 Expected: a long list of `D` (deleted) entries; `CNAME` untouched.
 
-- [ ] **Step 2: Write `.gitignore`**
+- [x] **Step 2: Write `.gitignore`**
 
 ```
 node_modules/
@@ -56,7 +58,7 @@ tags
 *.tgz
 ```
 
-- [ ] **Step 3: Write `package.json`**
+- [x] **Step 3: Write `package.json`**
 
 ```json
 {
@@ -86,7 +88,7 @@ tags
 }
 ```
 
-- [ ] **Step 4: Install dev dependencies**
+- [x] **Step 4: Install dev dependencies**
 
 ```bash
 npm install --no-audit --no-fund
@@ -94,7 +96,7 @@ npm install --no-audit --no-fund
 
 Expected: `node_modules/` created, no vulnerabilities message required.
 
-- [ ] **Step 5: Write `assets/fonts.css`**
+- [x] **Step 5: Write `assets/fonts.css`**
 
 ```css
 @font-face {
@@ -154,7 +156,7 @@ Expected: `node_modules/` created, no vulnerabilities message required.
 }
 ```
 
-- [ ] **Step 6: Write `assets/tailwind.src.css`**
+- [x] **Step 6: Write `assets/tailwind.src.css`**
 
 ```css
 @import "tailwindcss";
@@ -163,7 +165,7 @@ Expected: `node_modules/` created, no vulnerabilities message required.
 @custom-variant dark (&:where(.dark, .dark *));
 ```
 
-- [ ] **Step 7: Write `assets/site.css`**
+- [x] **Step 7: Write `assets/site.css`**
 
 ```css
 :root {
@@ -258,7 +260,7 @@ h3 {
 }
 ```
 
-- [ ] **Step 8: Write `index.html`**
+- [x] **Step 8: Write `index.html`**
 
 ```html
 <!doctype html>
@@ -315,13 +317,13 @@ h3 {
 </html>
 ```
 
-- [ ] **Step 9: Write temporary `js/main.js`**
+- [x] **Step 9: Write temporary `js/main.js`**
 
 ```js
 document.documentElement.dataset.site = "v2";
 ```
 
-- [ ] **Step 10: Build Tailwind CSS and verify the skeleton serves**
+- [x] **Step 10: Build Tailwind CSS and verify the skeleton serves**
 
 ```bash
 npm run build:css
@@ -336,11 +338,11 @@ kill "$SERVER_PID"
 
 Expected: four `200` lines, and `assets/tailwind.css` exists and is non-empty.
 
-- [ ] **Step 11: Browser check**
+- [x] **Step 11: Browser check**
 
 Run `npm run serve`, open `http://localhost:8000`. Expected: radial warm-to-cool gray gradient fills the viewport; theme-toggle button is visible top-right; no visible content (stage hidden); console has no errors.
 
-- [ ] **Step 12: Commit**
+- [x] **Step 12: Commit**
 
 ```bash
 git add -A
@@ -360,7 +362,7 @@ git commit -m "chore: reset site to v2 skeleton with tokens, fonts, and tailwind
 - Consumes: `package.json` devDependencies from Task 1.
 - Produces: browser globals `d3`, `jsyaml`, `marked`, `typography`; `window.typography.hyphenateFor(lang) → (word) => string[]`, `window.typography.justifyContent`, `window.typography.unjustifyContent`.
 
-- [ ] **Step 1: Write `scripts/fetch-vendor.sh`**
+- [x] **Step 1: Write `scripts/fetch-vendor.sh`**
 
 ```bash
 #!/usr/bin/env bash
@@ -391,7 +393,7 @@ fi
 echo "vendor assets written"
 ```
 
-- [ ] **Step 2: Write `scripts/typography-entry.js`**
+- [x] **Step 2: Write `scripts/typography-entry.js`**
 
 ```js
 import {
@@ -411,7 +413,7 @@ export function hyphenateFor(lang) {
 export { patterns, justifyContent, unjustifyContent };
 ```
 
-- [ ] **Step 3: Run the vendor build**
+- [x] **Step 3: Run the vendor build**
 
 ```bash
 chmod +x scripts/fetch-vendor.sh
@@ -421,7 +423,7 @@ ls -la assets/vendor assets/fonts
 
 Expected: four vendor JS files and seven `.woff` files; `typography.min.js` ~150KB.
 
-- [ ] **Step 4: Add vendor script tags to `index.html`**
+- [x] **Step 4: Add vendor script tags to `index.html`**
 
 Replace the comment line:
 
@@ -439,7 +441,7 @@ with:
     <!-- The module script is added in Task 10. -->
 ```
 
-- [ ] **Step 5: Write `NOTICE`**
+- [x] **Step 5: Write `NOTICE`**
 
 ```
 Third-party assets bundled with mynameisdaniil.dev
@@ -466,7 +468,7 @@ LibreOffice dictionaries; see upstream pattern metadata for per-language terms)
 - hyphenation.ru — https://github.com/bramstein/hypher
 ```
 
-- [ ] **Step 6: Browser check for globals**
+- [x] **Step 6: Browser check for globals**
 
 Run `npm run serve`, open `http://localhost:8000`, then in the console:
 
@@ -482,7 +484,7 @@ typography.hyphenateFor("en-us")("hyphenation")
 
 Expected: an array such as `["hy", "phen", "ation"]` (values may differ slightly). Then check the Network tab has no external requests, and Application → Frames shows no 404s.
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add -A
@@ -500,7 +502,7 @@ git commit -m "chore: vendor d3, js-yaml, marked, typography bundle, and fonts"
 - Consumes: nothing (pure).
 - Produces: `buildModel(raw) → { meta: { title, defaultCard }, cards: Map<string, { id, title, body, lang, links }>, edges: [{ source, target }], errors: string[] }` where each link is `{ label, url }` or `{ label, card }`; `isValid(model) → boolean`.
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 Create `tests/model.test.js`:
 
@@ -611,7 +613,7 @@ test("defaults unknown link labels to the target", () => {
 });
 ```
 
-- [ ] **Step 2: Run tests to verify they fail**
+- [x] **Step 2: Run tests to verify they fail**
 
 ```bash
 npm test
@@ -619,7 +621,7 @@ npm test
 
 Expected: FAIL — `Cannot find module .../js/model.js`.
 
-- [ ] **Step 3: Implement `js/model.js`**
+- [x] **Step 3: Implement `js/model.js`**
 
 ```js
 const ID_RE = /^[a-z0-9-]+$/;
@@ -715,7 +717,7 @@ export function isValid(model) {
 }
 ```
 
-- [ ] **Step 4: Run tests to verify they pass**
+- [x] **Step 4: Run tests to verify they pass**
 
 ```bash
 npm test
@@ -723,7 +725,7 @@ npm test
 
 Expected: all `tests/model.test.js` tests PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add js/model.js tests/model.test.js
@@ -741,7 +743,7 @@ git commit -m "feat: add content model validation with tests"
 - Consumes: `buildModel` from `js/model.js` (Task 3).
 - Produces: `loadContent(url, deps?) → Promise<model>`, `ContentError` (class with `.details: string[]`), `renderMarkdown(text, deps?) → string`. `deps` accepts `{ fetchImpl, yaml, marked }` for tests; defaults to `globalThis`.
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 Create `tests/content.test.js`:
 
@@ -792,7 +794,7 @@ test("delegates markdown rendering and handles empty text", () => {
 });
 ```
 
-- [ ] **Step 2: Run tests to verify they fail**
+- [x] **Step 2: Run tests to verify they fail**
 
 ```bash
 npm test
@@ -800,7 +802,7 @@ npm test
 
 Expected: FAIL — `Cannot find module .../js/content.js`.
 
-- [ ] **Step 3: Implement `js/content.js`**
+- [x] **Step 3: Implement `js/content.js`**
 
 ```js
 import { buildModel } from "./model.js";
@@ -837,7 +839,7 @@ export function renderMarkdown(text, deps = {}) {
 }
 ```
 
-- [ ] **Step 4: Run tests to verify they pass**
+- [x] **Step 4: Run tests to verify they pass**
 
 ```bash
 npm test
@@ -845,7 +847,7 @@ npm test
 
 Expected: all tests in `tests/model.test.js` and `tests/content.test.js` PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add js/content.js tests/content.test.js
@@ -863,7 +865,7 @@ git commit -m "feat: add content loader and markdown rendering with tests"
 - Consumes: nothing.
 - Produces: `parseHash(hash, cardIds: Set<string>, defaultCard) → string`; `createRouter({ defaultCard, cardIds, onFocus, win? }) → { current, focus(id) }` where `current` is a getter.
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 Create `tests/router.test.js`:
 
@@ -948,7 +950,7 @@ test("Escape focuses the default card", () => {
 });
 ```
 
-- [ ] **Step 2: Run tests to verify they fail**
+- [x] **Step 2: Run tests to verify they fail**
 
 ```bash
 npm test
@@ -956,7 +958,7 @@ npm test
 
 Expected: FAIL — `Cannot find module .../js/router.js`.
 
-- [ ] **Step 3: Implement `js/router.js`**
+- [x] **Step 3: Implement `js/router.js`**
 
 > **REVISED after review:** the original `lastSet` sentinel below had races
 > (duplicate reports; a swallowed external `hashchange`). The approved final
@@ -1054,7 +1056,7 @@ export function createRouter({ defaultCard, cardIds, onFocus, win = globalThis }
 }
 ```
 
-- [ ] **Step 4: Run tests to verify they pass**
+- [x] **Step 4: Run tests to verify they pass**
 
 ```bash
 npm test
@@ -1062,7 +1064,7 @@ npm test
 
 Expected: all tests PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add js/router.js tests/router.test.js
@@ -1081,7 +1083,7 @@ git commit -m "feat: add hash router with tests"
 - Consumes: DOM id `#theme-toggle` (Task 1).
 - Produces: `resolveTheme(stored, systemDark) → "light" | "dark"`; `initTheme({ root?, button, storage?, mql? }) → { apply }`.
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 Create `tests/theme.test.js`:
 
@@ -1150,7 +1152,7 @@ test("system changes apply only when no override is stored", () => {
 });
 ```
 
-- [ ] **Step 2: Run tests to verify they fail**
+- [x] **Step 2: Run tests to verify they fail**
 
 ```bash
 npm test
@@ -1158,7 +1160,7 @@ npm test
 
 Expected: FAIL — `Cannot find module .../js/theme.js`.
 
-- [ ] **Step 3: Implement `js/theme.js`**
+- [x] **Step 3: Implement `js/theme.js`**
 
 ```js
 export function resolveTheme(stored, systemDark) {
@@ -1209,7 +1211,7 @@ export function initTheme({
 }
 ```
 
-- [ ] **Step 4: Run tests to verify they pass**
+- [x] **Step 4: Run tests to verify they pass**
 
 ```bash
 npm test
@@ -1217,7 +1219,7 @@ npm test
 
 Expected: all tests PASS.
 
-- [ ] **Step 5: Append toggle styles to `assets/site.css`**
+- [x] **Step 5: Append toggle styles to `assets/site.css`**
 
 ```css
 .theme-toggle {
@@ -1260,11 +1262,11 @@ Expected: all tests PASS.
 }
 ```
 
-- [ ] **Step 6: Browser check**
+- [x] **Step 6: Browser check**
 
 Run `npm run serve`. Expected: toggle switches the gradient/text between light and dark instantly; the icon swaps sun/moon; reloading keeps the choice; deleting `localStorage.theme` and reloading follows the OS setting; no flash of the wrong theme.
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add js/theme.js tests/theme.test.js assets/site.css
@@ -1283,7 +1285,7 @@ git commit -m "feat: add theme resolution, toggle, and styles with tests"
 - Consumes: card objects from `js/model.js` (Task 3).
 - Produces: `createCard(card, { onSelect }) → HTMLElement`; `setCardState(el, state)` where state is `"focused" | "background"`; `setCardBody(el, html)`; `markActiveLinks(el, activeId)`; `createErrorCard(message, details = []) → HTMLElement`.
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 Create `tests/card.test.js`:
 
@@ -1396,7 +1398,7 @@ test("createErrorCard shows the message and details", () => {
 });
 ```
 
-- [ ] **Step 2: Run tests to verify they fail**
+- [x] **Step 2: Run tests to verify they fail**
 
 ```bash
 npm test
@@ -1404,7 +1406,7 @@ npm test
 
 Expected: FAIL — `Cannot find module .../js/card.js`.
 
-- [ ] **Step 3: Implement `js/card.js`**
+- [x] **Step 3: Implement `js/card.js`**
 
 ```js
 export function createCard(card, { onSelect }) {
@@ -1513,7 +1515,7 @@ export function createErrorCard(message, details = []) {
 }
 ```
 
-- [ ] **Step 4: Run tests to verify they pass**
+- [x] **Step 4: Run tests to verify they pass**
 
 ```bash
 npm test
@@ -1521,7 +1523,7 @@ npm test
 
 Expected: all tests PASS.
 
-- [ ] **Step 5: Append card styles to `assets/site.css`**
+- [x] **Step 5: Append card styles to `assets/site.css`**
 
 ```css
 .card {
@@ -1644,7 +1646,7 @@ Expected: all tests PASS.
 }
 ```
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add js/card.js tests/card.test.js assets/site.css
@@ -1671,7 +1673,7 @@ git commit -m "feat: add card component with tests and styles"
 - Consumes: globals `d3` (Task 2 vendor) and `setCardState` from `js/card.js` (Task 7); DOM ids `#stage`, `#edges`, `#cards` (Task 1).
 - Produces: `createGraph({ stage, svg, cardsById, edges, win? }) → { focusCard(id), resize(), destroy() }`. `cardsById` is a `Map<string, HTMLElement>`; `edges` is `[{ source, target }]`.
 
-- [ ] **Step 1: Implement `js/graph.js`**
+- [x] **Step 1: Implement `js/graph.js`**
 
 ```js
 import { setCardState } from "./card.js";
@@ -1831,7 +1833,7 @@ export function createGraph({ stage, svg, cardsById, edges, win = window }) {
 }
 ```
 
-- [ ] **Step 2: Syntax check**
+- [x] **Step 2: Syntax check**
 
 ```bash
 node --check js/graph.js
@@ -1839,7 +1841,7 @@ node --check js/graph.js
 
 Expected: no output (exit 0).
 
-- [ ] **Step 3: Browser scratch check**
+- [x] **Step 3: Browser scratch check**
 
 Temporarily add this to the end of `js/main.js` (will be replaced in Task 10):
 
@@ -1866,7 +1868,7 @@ g.focusCard("a");
 
 Expected: the card animates to the viewport center and stays there; `el.style.transform` is a `translate(...)`; `g.resize()` keeps it centered after a window resize. Remove the scratch code afterwards.
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add js/graph.js
@@ -1884,7 +1886,7 @@ git commit -m "feat: add d3 force graph engine"
 - Consumes: global `typography` (Task 2 vendor).
 - Produces: `protrusionFor(char, side: "left" | "right") → number` (em units); `applyProtrusion(root) → void`; `clearProtrusion(root) → void`; `createTypography({ getHyphenator, typography? }) → { applyTo(el, lang), schedule(el, lang) → Promise, flush() → Promise }`.
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 Create `tests/protrusion.test.js`:
 
@@ -1950,7 +1952,7 @@ test("applyProtrusion is idempotent when cleared first", () => {
 });
 ```
 
-- [ ] **Step 2: Run tests to verify they fail**
+- [x] **Step 2: Run tests to verify they fail**
 
 ```bash
 npm test
@@ -1958,7 +1960,7 @@ npm test
 
 Expected: FAIL — `Cannot find module .../js/protrusion.js`.
 
-- [ ] **Step 3: Implement `js/protrusion.js`**
+- [x] **Step 3: Implement `js/protrusion.js`**
 
 ```js
 const LEFT = {
@@ -2088,7 +2090,7 @@ export function clearProtrusion(root) {
 }
 ```
 
-- [ ] **Step 4: Run tests to verify they pass**
+- [x] **Step 4: Run tests to verify they pass**
 
 ```bash
 npm test
@@ -2096,7 +2098,7 @@ npm test
 
 Expected: all tests PASS.
 
-- [ ] **Step 5: Implement `js/typography.js`**
+- [x] **Step 5: Implement `js/typography.js`**
 
 ```js
 import { applyProtrusion, clearProtrusion } from "./protrusion.js";
@@ -2138,7 +2140,7 @@ export function createTypography({ getHyphenator, typography = globalThis.typogr
 }
 ```
 
-- [ ] **Step 6: Syntax check**
+- [x] **Step 6: Syntax check**
 
 ```bash
 node --check js/typography.js
@@ -2146,7 +2148,7 @@ node --check js/typography.js
 
 Expected: no output (exit 0).
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add js/protrusion.js js/typography.js tests/protrusion.test.js
@@ -2164,7 +2166,7 @@ git commit -m "feat: add protrusion pass and typography pipeline with tests"
 - Consumes: all modules from Tasks 3–9 and globals from Task 2.
 - Produces: the complete running app.
 
-- [ ] **Step 1: Replace `js/main.js`**
+- [x] **Step 1: Replace `js/main.js`**
 
 ```js
 import { loadContent, renderMarkdown, ContentError } from "./content.js";
@@ -2257,7 +2259,7 @@ try {
 }
 ```
 
-- [ ] **Step 2: Add the module script to `index.html`**
+- [x] **Step 2: Add the module script to `index.html`**
 
 Replace:
 
@@ -2271,7 +2273,7 @@ with:
     <script type="module" src="js/main.js"></script>
 ```
 
-- [ ] **Step 3: Create `content.yml`**
+- [x] **Step 3: Create `content.yml`**
 
 ```yaml
 meta:
@@ -2290,7 +2292,7 @@ cards:
         url: mailto:sobol.daniil@gmail.com
 ```
 
-- [ ] **Step 4: Browser check**
+- [x] **Step 4: Browser check**
 
 Run `npm run serve`, open `http://localhost:8000`. Expected:
 
@@ -2300,7 +2302,7 @@ Run `npm run serve`, open `http://localhost:8000`. Expected:
 - `document.title` is `Daniil Sobol`; `location.hash` becomes `#about`.
 - No console errors, no network requests outside `localhost`.
 
-- [ ] **Step 5: Error-path check**
+- [x] **Step 5: Error-path check**
 
 ```bash
 mv content.yml content.yml.bak
@@ -2312,7 +2314,7 @@ Reload. Expected: a centered error card saying "Could not load content." with an
 mv content.yml.bak content.yml
 ```
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add js/main.js index.html content.yml
@@ -2330,7 +2332,7 @@ git commit -m "feat: wire content, graph, router, theme, and typography together
 - Consumes: everything above.
 - Produces: the spec's Definition of Done, verified.
 
-- [ ] **Step 1: Ensure graph/protrusion helper classes exist in `assets/site.css`**
+- [x] **Step 1: Ensure graph/protrusion helper classes exist in `assets/site.css`**
 
 The protrusion pass sets inline margins, but these classes keep the elements inline and are useful for debugging. The edge stroke rules were missing from Task 1's initial stylesheet (only the reduced-motion transition rule existed). Append if not present:
 
@@ -2361,7 +2363,7 @@ The protrusion pass sets inline margins, but these classes keep the elements inl
 }
 ```
 
-- [ ] **Step 2: Run the full unit suite**
+- [x] **Step 2: Run the full unit suite**
 
 ```bash
 npm test
@@ -2369,7 +2371,7 @@ npm test
 
 Expected: all tests in `tests/` PASS.
 
-- [ ] **Step 3: Verify the spec checklist**
+- [x] **Step 3: Verify the spec checklist**
 
 Run `npm run serve` and confirm each item:
 
@@ -2384,7 +2386,7 @@ Run `npm run serve` and confirm each item:
 9. DevTools Network filtered to "3rd-party" shows nothing; console is clean.
 10. Second-card test in Step 4.
 
-- [ ] **Step 4: Temporary second-card test**
+- [x] **Step 4: Temporary second-card test**
 
 Append to `content.yml`:
 
@@ -2407,7 +2409,7 @@ Add `{ label: Contact, card: contact }` to the `about` card's links, reload, the
 
 Then remove the second card and internal link: `git checkout content.yml`.
 
-- [ ] **Step 5: Check git state and commit any polish**
+- [x] **Step 5: Check git state and commit any polish**
 
 ```bash
 git status --short
@@ -2417,7 +2419,7 @@ git commit -m "style: final responsive and typography polish"
 
 If `assets/site.css` was already complete and nothing changed, skip the commit.
 
-- [ ] **Step 6: Confirm the reset is complete**
+- [x] **Step 6: Confirm the reset is complete**
 
 ```bash
 git ls-files | grep -v '^docs/' | sort
