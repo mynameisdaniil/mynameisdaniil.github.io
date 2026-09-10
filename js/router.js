@@ -8,19 +8,20 @@ export function createRouter({ defaultCard, cardIds, onFocus, win = globalThis }
 
   function focus(id) {
     const target = parseHash(`#${id}`, cardIds, defaultCard);
+    if (target === current && win.location.hash === `#${target}`) return;
+    current = target;
     if (win.location.hash !== `#${target}`) {
       win.location.hash = target;
-      return;
     }
-    if (target === current) return;
-    current = target;
     onFocus(target);
   }
 
   function onHashChange(event) {
     if (event.newURL && event.newURL !== win.location.href) return;
-    current = parseHash(win.location.hash, cardIds, defaultCard);
-    onFocus(current);
+    const target = parseHash(win.location.hash, cardIds, defaultCard);
+    if (target === current) return;
+    current = target;
+    onFocus(target);
   }
 
   function onKeydown(event) {
