@@ -3,22 +3,36 @@ export function resolveTheme(stored, systemDark) {
   return systemDark ? "dark" : "light";
 }
 
-export function initTheme({
-  root = document.documentElement,
-  button = null,
-  storage = globalThis.localStorage,
-  mql = globalThis.matchMedia("(prefers-color-scheme: dark)"),
-} = {}) {
+function safeStorage() {
+  try {
+    return globalThis.localStorage ?? null;
+  } catch (err) {
+    return null;
+  }
+}
+
+function safeMatchMedia() {
+  try {
+    return globalThis.matchMedia("(prefers-color-scheme: dark)");
+  } catch (err) {
+    return { matches: false, addEventListener() {} };
+  }
+}
+
+export function initTheme({ root = document.documentElement, button = null, storage, mql } = {}) {
+  const store = storage !== undefined ? storage : safeStorage();
+  const media = mql !== undefined ? mql : safeMatchMedia();
+
   function storedValue() {
     try {
-      return storage ? storage.getItem("theme") : null;
+      return store ? store.getItem("theme") : null;
     } catch (err) {
       return null;
     }
   }
 
   function apply() {
-    const mode = resolveTheme(storedValue(), mql.matches);
+    const mode = resolveTheme(storedValue(), media.matches);
     root.classList.toggle("dark", mode === "dark");
     root.style.colorScheme = mode;
     if (button) {
@@ -31,13 +45,13 @@ export function initTheme({
   function onToggle() {
     const next = root.classList.contains("dark") ? "light" : "dark";
     try {
-      storage?.setItem("theme", next);
+      store?.setItem("theme", next);
     } catch (err) {}
     apply();
   }
 
   button?.addEventListener("click", onToggle);
-  mql.addEventListener?.("change", () => {
+  media.addEventListener?.("change", () => {
     if (!storedValue()) apply();
   });
   apply();

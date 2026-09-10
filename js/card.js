@@ -42,6 +42,7 @@ export function createCard(card, { onSelect }) {
   });
 
   el.addEventListener("keydown", (event) => {
+    if (event.target.closest("a")) return;
     if (event.key === "Enter" || event.key === " ") {
       event.preventDefault();
       onSelect(card.id);

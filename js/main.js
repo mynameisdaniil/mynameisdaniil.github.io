@@ -75,6 +75,9 @@ try {
   });
 
   await document.fonts.ready;
+  if (window.location.hash !== `#${router.current}`) {
+    history.replaceState(null, "", `#${router.current}`);
+  }
   render(router.current);
   await typography.flush();
   stage.style.visibility = "visible";

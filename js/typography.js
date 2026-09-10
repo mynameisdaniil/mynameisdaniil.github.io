@@ -8,8 +8,8 @@ export function createTypography({ getHyphenator, typography = globalThis.typogr
     const paragraphs = [...el.querySelectorAll(".card-body p")];
     if (paragraphs.length === 0) return;
 
-    clearProtrusion(el);
     try {
+      clearProtrusion(el);
       typography.justifyContent(paragraphs, getHyphenator(lang));
       applyProtrusion(el);
     } catch (err) {

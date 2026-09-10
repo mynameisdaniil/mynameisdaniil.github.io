@@ -66,6 +66,17 @@ test("Enter and Space select a card", () => {
   assert.deepEqual(selected, ["about", "about"]);
 });
 
+test("Enter on an in-card link does not select the card", () => {
+  const dom = setup();
+  const selected = [];
+  const el = createCard(card, { onSelect: (id) => selected.push(id) });
+  const link = el.querySelector('a[target="_blank"]');
+  link.dispatchEvent(
+    new dom.window.KeyboardEvent("keydown", { key: "Enter", bubbles: true, cancelable: true }),
+  );
+  assert.deepEqual(selected, []);
+});
+
 test("setCardState toggles focused/background classes", () => {
   setup();
   const el = createCard(card, { onSelect: () => {} });
