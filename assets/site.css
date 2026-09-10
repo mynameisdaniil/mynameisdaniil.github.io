@@ -88,3 +88,42 @@ h3 {
     transition: none;
   }
 }
+
+.theme-toggle {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  z-index: 10;
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border: 1px solid var(--card-border);
+  border-radius: 999px;
+  background: var(--card-bg);
+  color: var(--title);
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.theme-toggle:hover {
+  background: var(--card-bg-focus);
+}
+
+.theme-toggle svg {
+  width: 1.1rem;
+  height: 1.1rem;
+  fill: currentColor;
+}
+
+.theme-toggle .theme-toggle__moon {
+  display: none;
+}
+
+.dark .theme-toggle .theme-toggle__sun {
+  display: none;
+}
+
+.dark .theme-toggle .theme-toggle__moon {
+  display: block;
+}
