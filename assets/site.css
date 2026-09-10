@@ -82,6 +82,31 @@ h3 {
   border: 0;
 }
 
+.edge {
+  stroke: var(--edge-line);
+  stroke-width: 1;
+  transition: stroke 0.35s ease;
+}
+
+.edge--active {
+  stroke: var(--edge-line-active);
+}
+
+.protrude-left,
+.protrude-right {
+  display: inline;
+}
+
+@media (max-width: 640px) {
+  body {
+    font-size: 16px;
+  }
+
+  .card--focused {
+    padding: 1rem 1.1rem;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .card,
   .edge {
