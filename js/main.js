@@ -1,7 +1,6 @@
 import { loadContent, renderMarkdown, ContentError } from "./content.js";
 import { createTypography } from "./typography.js";
 
-const page = document.querySelector(".page");
 const masthead = document.querySelector(".masthead");
 const titleEl = document.getElementById("site-title");
 const subtitleEl = document.getElementById("site-subtitle");

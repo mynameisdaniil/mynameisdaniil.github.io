@@ -11,7 +11,6 @@
   "devDependencies": {
     "@tailwindcss/cli": "^4.3.3",
     "@typopro/web-latin-modern": "3.7.5",
-    "d3": "^7.9.0",
     "esbuild": "^0.28.2",
     "hyphenation.en-us": "^0.2.1",
     "hyphenation.ru": "^0.2.1",

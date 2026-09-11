@@ -10,7 +10,6 @@ Fonts
   https://www.gust.org.pl/projects/e-foundry/latin-modern
 
 JavaScript
-- d3 v7 — https://d3js.org — ISC License
 - js-yaml v4 — https://github.com/nodeca/js-yaml — MIT License
 - marked — https://github.com/markedjs/marked — MIT License
 - tex-linebreak — https://github.com/robertknight/tex-linebreak — MIT License
