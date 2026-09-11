@@ -7,5 +7,9 @@ export function justify(elements, hyphenate) {
 }
 
 export function unjustify(elements) {
-  unjustifyContent(elements);
+  const list = Array.isArray(elements) ? elements : [elements];
+  for (const el of list) {
+    unjustifyContent(el);
+    el.style.whiteSpace = "";
+  }
 }

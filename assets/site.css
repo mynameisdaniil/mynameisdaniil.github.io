@@ -242,6 +242,7 @@ a:focus-visible {
   }
 
   .paper p {
+    white-space: normal;
     text-align: justify;
     hyphens: auto;
     orphans: 3;

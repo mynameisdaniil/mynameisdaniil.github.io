@@ -10,11 +10,22 @@ let typesetter = null;
 
 window.addEventListener("beforeprint", () => {
   clearProtrusion(paper);
-  unjustify(paper);
+  unjustify([...paper.querySelectorAll("p")]);
 });
 
 window.addEventListener("afterprint", () => {
-  typesetter?.refresh();
+  const printMedia = window.matchMedia("print");
+  if (printMedia.matches) {
+    printMedia.addEventListener(
+      "change",
+      (event) => {
+        if (!event.matches) typesetter?.refresh();
+      },
+      { once: true },
+    );
+  } else {
+    typesetter?.refresh();
+  }
 });
 
 function createLink(link) {

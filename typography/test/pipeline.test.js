@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { JSDOM } from "jsdom";
-import { typeset } from "../src/index.js";
+import { typeset, unjustify } from "../src/index.js";
 
 function setup() {
   const dom = new JSDOM(
@@ -91,4 +91,20 @@ test("typeset passes protrusion overrides through", () => {
   );
   assert.ok(ellipsis);
   assert.equal(ellipsis.style.marginRight, "-0.05em");
+});
+
+test("unjustify resets the inline nowrap set by justification", () => {
+  const dom = setup();
+  const p = dom.window.document.querySelector("p");
+  p.style.whiteSpace = "nowrap";
+  unjustify(p);
+  assert.equal(p.style.whiteSpace, "");
+});
+
+test("unjustify accepts an array of elements", () => {
+  const dom = setup();
+  const paragraphs = [...dom.window.document.querySelectorAll("p")];
+  for (const p of paragraphs) p.style.whiteSpace = "nowrap";
+  unjustify(paragraphs);
+  for (const p of paragraphs) assert.equal(p.style.whiteSpace, "");
 });
