@@ -178,11 +178,6 @@ a:focus-visible {
   outline-offset: 2px;
 }
 
-.protrude-left,
-.protrude-right {
-  display: inline;
-}
-
 .paper--error {
   column-count: 1;
 }

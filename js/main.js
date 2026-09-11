@@ -1,16 +1,11 @@
 import { loadContent, renderMarkdown, ContentError } from "./content.js";
-import { applySmartPunctuation } from "./punctuation.js";
-import { createTypography } from "./typography.js";
+import { typeset } from "../typography/dist/typeset.esm.js";
 
 const masthead = document.querySelector(".masthead");
 const titleEl = document.getElementById("site-title");
 const subtitleEl = document.getElementById("site-subtitle");
 const linksEl = document.getElementById("site-links");
 const paper = document.getElementById("paper");
-
-const typography = createTypography({
-  getHyphenator: (lang) => globalThis.typography.hyphenateFor(lang),
-});
 
 function createLink(link) {
   const a = document.createElement("a");
@@ -39,7 +34,6 @@ function renderSection(section) {
     const body = document.createElement("div");
     body.className = "section-body";
     body.innerHTML = renderMarkdown(section.body);
-    applySmartPunctuation(body);
     el.appendChild(body);
   }
 
@@ -55,14 +49,6 @@ function renderSection(section) {
 }
 
 let model = null;
-
-function applyTypography() {
-  if (!model) return;
-  for (const section of model.sections) {
-    const el = document.getElementById(section.id);
-    if (el) typography.applyTo(el, section.lang || "en-us");
-  }
-}
 
 function showError(details) {
   masthead.hidden = true;
@@ -91,18 +77,11 @@ async function boot() {
     subtitleEl.textContent = model.meta.subtitle;
     renderLinks(linksEl, model.meta.links);
     paper.replaceChildren(...model.sections.map(renderSection));
-    await document.fonts.ready;
-    applyTypography();
+    typeset(paper);
   } catch (err) {
     console.error(err);
     showError(err instanceof ContentError ? err.details : [String(err)]);
   }
 }
-
-let resizeTimer = 0;
-window.addEventListener("resize", () => {
-  clearTimeout(resizeTimer);
-  resizeTimer = setTimeout(applyTypography, 150);
-});
 
 boot();

@@ -13,7 +13,9 @@ JavaScript
 - js-yaml v4 — https://github.com/nodeca/js-yaml — MIT License
 - marked — https://github.com/markedjs/marked — MIT License
 - tex-linebreak — https://github.com/robertknight/tex-linebreak — MIT License
+  (bundled inside typography/dist/typeset.min.js and typeset.esm.js)
 - Hypher — https://github.com/bramstein/hypher — BSD-3-Clause License
+  (bundled inside typography/dist/typeset.min.js and typeset.esm.js)
 
 Hyphenation patterns (via Hypher pattern packages, from hyph-utf8/TeX and
 LibreOffice dictionaries; see upstream pattern metadata for per-language terms)
