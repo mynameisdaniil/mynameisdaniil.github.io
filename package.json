@@ -7,6 +7,7 @@
     "build:css": "tailwindcss -i assets/tailwind.src.css -o assets/tailwind.css --minify",
     "build:fonts": "node scripts/build-fonts.mjs",
     "build:vendor": "bash scripts/fetch-vendor.sh && esbuild scripts/typography-entry.js --bundle --minify --format=iife --global-name=typography --outfile=assets/vendor/typography.min.js",
+    "build:typeset": "esbuild typography/src/index.js --bundle --minify --format=iife --global-name=typeset --outfile=typography/dist/typeset.min.js && esbuild typography/src/index.js --bundle --minify --format=esm --outfile=typography/dist/typeset.esm.js",
     "serve": "python3 -m http.server 8000"
   },
   "devDependencies": {
