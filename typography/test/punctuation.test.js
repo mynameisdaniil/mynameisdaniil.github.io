@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { JSDOM } from "jsdom";
-import { smartPunctuation, applySmartPunctuation } from "../js/punctuation.js";
+import { smartPunctuation, applySmartPunctuation } from "../src/punctuation.js";
 
 test("smartPunctuation converts apostrophes, quotes, dashes, and ellipses", () => {
   assert.equal(smartPunctuation("Can't"), "Can\u2019t");

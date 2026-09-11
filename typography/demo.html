@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>typeset demo</title>
+    <style>
+      body {
+        margin: 0 auto;
+        max-width: 900px;
+        padding: 3rem 2rem;
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: 18px;
+        line-height: 1.6;
+        color: #111;
+        background: #fff;
+      }
+      #demo {
+        columns: 2;
+        column-gap: 2.5rem;
+        column-rule: 1px solid #111;
+      }
+      h1 {
+        font-family: "Courier New", monospace;
+        font-size: 2rem;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>typeset</h1>
+    <div id="demo">
+      <p>
+        Justified prose with hyphenation, hanging punctuation and smart quotes: "the
+        quick brown fox" won't jump over the lazy dog...</p>
+      <p>
+        The TeX algorithm minimises the badness of the whole paragraph rather than
+        filling lines greedily, which matters most in narrow columns like these. Try
+        resizing the window -- the text re-breaks after a short delay.</p>
+      <p>
+        Add your own fonts and typographic scale; this package only handles line
+        breaking, hyphenation, protrusion and punctuation.</p>
+    </div>
+    <script src="dist/typeset.min.js"></script>
+    <script>
+      typeset.typeset(document.getElementById("demo"));
+    </script>
+  </body>
+</html>

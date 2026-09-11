@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { JSDOM } from "jsdom";
-import { protrusionFor, applyProtrusion, clearProtrusion } from "../js/protrusion.js";
+import { protrusionFor, applyProtrusion, clearProtrusion } from "../src/protrusion.js";
 
 test("protrusionFor knows left and right punctuation", () => {
   assert.equal(protrusionFor(".", "right"), 0.15);
