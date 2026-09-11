@@ -127,8 +127,6 @@ The package's `src` imports `tex-linebreak`, `hypher`, `hyphenation.en-us`, and
 - Remove `.protrude-left/right` from `assets/site.css` (package injects it).
 - Move `tests/protrusion.test.js` and `tests/punctuation.test.js` to
   `typography/test/` and retarget imports; `node --test` discovers them recursively.
-- `assets/tailwind.src.css` still scans `js/` and `index.html`; the package source is
-  not Tailwind-scanned (it emits no utility classes).
 
 ## Verification
 

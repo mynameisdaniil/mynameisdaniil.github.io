@@ -105,3 +105,9 @@ async function boot() {
 }
 
 boot();
+
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker
+    .register(new URL("../sw.js", import.meta.url))
+    .catch((err) => console.warn("service worker registration failed", err));
+}
