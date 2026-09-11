@@ -4,8 +4,8 @@ import { loadContent, renderMarkdown, ContentError } from "../js/content.js";
 
 const yaml = {
   load: () => ({
-    meta: { title: "T", default_card: "a" },
-    cards: [{ id: "a", title: "A" }],
+    meta: { title: "T", subtitle: "S", links: [] },
+    sections: [{ id: "a", title: "A" }],
   }),
 };
 
@@ -13,7 +13,8 @@ test("loads and validates content", async () => {
   const fetchImpl = async () => ({ ok: true, status: 200, text: async () => "raw" });
   const model = await loadContent("content.yml", { fetchImpl, yaml });
   assert.equal(model.meta.title, "T");
-  assert.equal(model.cards.has("a"), true);
+  assert.equal(model.sections.length, 1);
+  assert.equal(model.sections[0].id, "a");
 });
 
 test("rejects on non-ok HTTP responses", async () => {
@@ -31,7 +32,7 @@ test("rejects with details on invalid content", async () => {
     () => loadContent("content.yml", { fetchImpl, yaml: badYaml }),
     (err) => {
       assert.equal(err instanceof ContentError, true);
-      assert.equal(err.details.includes("meta.default_card is required"), true);
+      assert.equal(err.details.includes("meta.title is required"), true);
       return true;
     },
   );
