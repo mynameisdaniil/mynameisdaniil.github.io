@@ -1,7 +1,7 @@
 :root {
   --ink: #000;
   --paper: #fff;
-  --link: #3a4666;
+  --link: #438bff;
 }
 
 html,
@@ -96,12 +96,6 @@ body {
 @media (min-width: 1024px) {
   .paper {
     column-count: 3;
-  }
-}
-
-@media (min-width: 1440px) {
-  .paper {
-    column-count: 4;
   }
 }
 
