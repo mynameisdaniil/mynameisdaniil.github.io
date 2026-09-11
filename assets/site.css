@@ -15,7 +15,8 @@ body {
   color: var(--ink);
   font-family: "Latin Modern Roman", "Computer Modern", serif;
   font-size: 18px;
-  line-height: 1.55;
+  line-height: 1.6;
+  text-rendering: optimizeLegibility;
 }
 
 .page {
@@ -91,8 +92,8 @@ body {
 .paper::after {
   content: "";
   position: absolute;
-  top: -0.775em;
-  bottom: -0.775em;
+  top: -0.8em;
+  bottom: -0.8em;
   display: none;
   width: 1px;
   background: var(--ink);
@@ -142,10 +143,12 @@ body {
 
 .paper p {
   margin: 0;
+  orphans: 2;
+  widows: 2;
 }
 
 .paper p + p {
-  margin-top: 0.6em;
+  margin-top: 0.8em;
 }
 
 .paper a {

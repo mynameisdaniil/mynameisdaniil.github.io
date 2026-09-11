@@ -6,6 +6,11 @@ export function createTypography({ getHyphenator, typography = globalThis.typogr
     if (paragraphs.length === 0) return;
 
     try {
+      if (!getComputedStyle(el).font) {
+        console.warn(
+          "typography: empty computed font shorthand; line measurement may be wrong (avoid font-kerning/font-variant-* on measured text)",
+        );
+      }
       clearProtrusion(el);
       typography.justifyContent(paragraphs, getHyphenator(lang));
       applyProtrusion(el);
