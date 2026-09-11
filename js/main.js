@@ -1,11 +1,21 @@
 import { loadContent, renderMarkdown, ContentError } from "./content.js";
-import { typeset } from "../typography/dist/typeset.esm.js";
+import { typeset, unjustify, clearProtrusion } from "../typography/dist/typeset.esm.js";
 
 const masthead = document.querySelector(".masthead");
 const titleEl = document.getElementById("site-title");
 const subtitleEl = document.getElementById("site-subtitle");
 const linksEl = document.getElementById("site-links");
 const paper = document.getElementById("paper");
+let typesetter = null;
+
+window.addEventListener("beforeprint", () => {
+  clearProtrusion(paper);
+  unjustify(paper);
+});
+
+window.addEventListener("afterprint", () => {
+  typesetter?.refresh();
+});
 
 function createLink(link) {
   const a = document.createElement("a");
@@ -76,7 +86,7 @@ async function boot() {
     subtitleEl.textContent = model.meta.subtitle;
     renderLinks(linksEl, model.meta.links);
     paper.replaceChildren(...model.sections.map(renderSection));
-    typeset(paper);
+    typesetter = typeset(paper);
   } catch (err) {
     console.error(err);
     showError(err instanceof ContentError ? err.details : [String(err)]);

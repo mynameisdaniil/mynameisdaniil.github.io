@@ -186,3 +186,69 @@ a:focus-visible {
   margin: 0.75rem 0 0;
   padding-left: 1.25rem;
 }
+
+@media print {
+  @page {
+    size: A4;
+    margin: 18mm 16mm;
+  }
+
+  body {
+    background: #fff;
+    color: #000;
+    font-size: 10.5pt;
+    line-height: 1.4;
+  }
+
+  .page {
+    max-width: none;
+    padding: 0;
+  }
+
+  .masthead {
+    margin-bottom: 1.5rem;
+  }
+
+  .masthead__title {
+    font-size: 24pt;
+  }
+
+  .masthead__subtitle {
+    font-size: 12pt;
+  }
+
+  .links-row a,
+  .links-row a:hover,
+  .paper a,
+  .paper a:hover {
+    color: #000;
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+  }
+
+  .paper {
+    column-count: 2;
+    column-gap: 8mm;
+    column-rule: 0.5pt solid #000;
+  }
+
+  .paper::before,
+  .paper::after {
+    display: none;
+  }
+
+  .paper h2 {
+    font-size: 14pt;
+  }
+
+  .paper p {
+    text-align: justify;
+    hyphens: auto;
+    orphans: 3;
+    widows: 3;
+  }
+
+  .section-links {
+    break-inside: avoid;
+  }
+}
