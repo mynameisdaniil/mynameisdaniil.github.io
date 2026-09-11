@@ -89,8 +89,10 @@ The IIFE build exposes the same API under `window.typeset`.
 - `injectStyles` adds the rule only once (guarded by `style[data-typeset]`).
 - Idempotent: re-runs always clear prior protrusion and rely on
   `unjustifyContent` inside `justifyContent`; safe for resize and manual refresh.
-- Language: `el.getAttribute("lang") || options.lang || "en-us"`; unknown languages
-  fall back to `en-us`.
+- Language: for each paragraph, the nearest ancestor `[lang]` wins
+  (`el.closest("[lang]")`), then `options.lang`, then `"en-us"`. Paragraphs are
+  grouped by resolved language and justified per group with the matching hyphenator;
+  unknown languages fall back to `en-us`.
 - Smart punctuation skips `code` and `pre`; attributes are never touched.
 - Empty computed font guard: before justifying, warn if
   `getComputedStyle(el).font` is empty, because tex-linebreak's canvas measurement
