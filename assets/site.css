@@ -107,6 +107,7 @@ body {
   font-family: "GOST Type A", "Latin Modern Roman", serif;
   font-weight: 400;
   font-size: clamp(1.7rem, 1.2rem + 2vw, 2.2rem);
+  font-variant-caps: small-caps;
   letter-spacing: 0.04em;
   break-after: avoid;
   break-inside: avoid;
