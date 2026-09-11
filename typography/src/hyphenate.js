@@ -1,8 +1,8 @@
-import texLinebreak from "tex-linebreak";
+import * as texLinebreak from "tex-linebreak";
 import enUs from "hyphenation.en-us";
 import ru from "hyphenation.ru";
 
-const { createHyphenator } = texLinebreak;
+const { createHyphenator } = texLinebreak.default || texLinebreak;
 
 export const patterns = { "en-us": enUs, ru };
 

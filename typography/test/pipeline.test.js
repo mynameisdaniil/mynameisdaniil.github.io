@@ -43,3 +43,24 @@ test("destroy removes the resize listener without throwing", () => {
   dom.window.dispatchEvent(new dom.window.Event("resize"));
   assert.ok(true);
 });
+
+test("typeset still runs when font readiness rejects", async () => {
+  const dom = setup();
+  const root = dom.window.document.getElementById("root");
+  Object.defineProperty(dom.window.document, "fonts", {
+    value: { ready: Promise.reject(new Error("no fonts")) },
+    configurable: true,
+  });
+  typeset(root, { justify: false, awaitFonts: true, onResize: false });
+  await Promise.resolve();
+  await Promise.resolve();
+  assert.match(root.textContent, /don\u2019t/);
+});
+
+test("injectStyles adds the protrusion rule only once", () => {
+  const dom = setup();
+  const root = dom.window.document.getElementById("root");
+  typeset(root, { justify: false, awaitFonts: false, onResize: false, injectStyles: true });
+  typeset(root, { justify: false, awaitFonts: false, onResize: false, injectStyles: true });
+  assert.equal(dom.window.document.querySelectorAll("style[data-typeset]").length, 1);
+});

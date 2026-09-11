@@ -1,6 +1,6 @@
-import texLinebreak from "tex-linebreak";
+import * as texLinebreak from "tex-linebreak";
 
-const { justifyContent, unjustifyContent } = texLinebreak;
+const { justifyContent, unjustifyContent } = texLinebreak.default || texLinebreak;
 
 export function justify(elements, hyphenate) {
   justifyContent(elements, hyphenate);

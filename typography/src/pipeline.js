@@ -81,7 +81,10 @@ export function typeset(root, options = {}) {
   if (opts.onResize && win) win.addEventListener("resize", onResize);
 
   if (opts.awaitFonts && doc.fonts && doc.fonts.ready) {
-    doc.fonts.ready.then(() => run(root)).catch(() => {});
+    doc.fonts.ready.then(
+      () => run(root),
+      () => run(root),
+    );
   } else {
     run(root);
   }
