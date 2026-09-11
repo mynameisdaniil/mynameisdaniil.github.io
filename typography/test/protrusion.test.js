@@ -85,3 +85,9 @@ test("protrudes a left character inside an inline element", () => {
   assert.equal(p.querySelector(".protrude-left").textContent, '"');
   assert.equal(p.querySelector(".protrude-left").style.marginLeft, "-0.1em");
 });
+
+test("protrusionFor applies per-side overrides", () => {
+  assert.equal(protrusionFor(".", "right", { right: { ".": 0.05 } }), 0.05);
+  assert.equal(protrusionFor(".", "right", { left: { ".": 0.05 } }), 0.15);
+  assert.equal(protrusionFor(".", "right"), 0.15);
+});

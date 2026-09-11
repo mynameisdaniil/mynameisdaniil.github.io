@@ -35,13 +35,25 @@ test("typeset is idempotent across refresh", () => {
   assert.equal(root.innerHTML, first);
 });
 
-test("destroy removes the resize listener without throwing", () => {
+test("destroy removes the resize listener", () => {
   const dom = setup();
   const root = dom.window.document.getElementById("root");
+  const added = [];
+  const removed = [];
+  const originalAdd = dom.window.addEventListener.bind(dom.window);
+  const originalRemove = dom.window.removeEventListener.bind(dom.window);
+  dom.window.addEventListener = (type, fn, opts) => {
+    if (type === "resize") added.push(fn);
+    return originalAdd(type, fn, opts);
+  };
+  dom.window.removeEventListener = (type, fn, opts) => {
+    if (type === "resize") removed.push(fn);
+    return originalRemove(type, fn, opts);
+  };
   const handle = typeset(root, { justify: false, awaitFonts: false, onResize: true });
   handle.destroy();
-  dom.window.dispatchEvent(new dom.window.Event("resize"));
-  assert.ok(true);
+  assert.equal(added.length, 1);
+  assert.equal(removed[0], added[0]);
 });
 
 test("typeset still runs when font readiness rejects", async () => {
@@ -63,4 +75,20 @@ test("injectStyles adds the protrusion rule only once", () => {
   typeset(root, { justify: false, awaitFonts: false, onResize: false, injectStyles: true });
   typeset(root, { justify: false, awaitFonts: false, onResize: false, injectStyles: true });
   assert.equal(dom.window.document.querySelectorAll("style[data-typeset]").length, 1);
+});
+
+test("typeset passes protrusion overrides through", () => {
+  const dom = setup();
+  const root = dom.window.document.getElementById("root");
+  typeset(root, {
+    justify: false,
+    awaitFonts: false,
+    onResize: false,
+    protrusion: { right: { "\u2026": 0.05 } },
+  });
+  const ellipsis = [...root.querySelectorAll(".protrude-right")].find(
+    (span) => span.textContent === "\u2026",
+  );
+  assert.ok(ellipsis);
+  assert.equal(ellipsis.style.marginRight, "-0.05em");
 });

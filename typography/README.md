@@ -39,6 +39,7 @@ re-runs after 150 ms.
 | `hyphenate` | `true` | pass a Hypher hyphenator to the line breaker |
 | `justify` | `true` | run Knuth-Plass justification |
 | `protrude` | `true` | hanging punctuation at line edges |
+| `protrusion` | `null` | per-side amount overrides, e.g. `{ right: { "…": 0.05 } }` |
 | `punctuation` | `true` | smart quotes/dashes/ellipses in text nodes |
 | `onResize` | `true` | debounced re-run on window resize |
 | `awaitFonts` | `true` | wait for `document.fonts.ready` |

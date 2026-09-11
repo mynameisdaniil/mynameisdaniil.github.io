@@ -49,8 +49,6 @@ function renderSection(section) {
   return el;
 }
 
-let model = null;
-
 function showError(details) {
   masthead.hidden = true;
   paper.replaceChildren();
@@ -72,7 +70,7 @@ function showError(details) {
 
 async function boot() {
   try {
-    model = await loadContent("content.yml");
+    const model = await loadContent("content.yml");
     document.title = model.meta.title;
     titleEl.textContent = model.meta.title;
     subtitleEl.textContent = model.meta.subtitle;

@@ -13,7 +13,7 @@ export function applySmartPunctuation(root) {
   let node = walker.nextNode();
   while (node) {
     const parent = node.parentElement;
-    if (parent && parent.tagName !== "CODE" && parent.tagName !== "PRE") {
+    if (parent && !parent.closest("code, pre")) {
       nodes.push(node);
     }
     node = walker.nextNode();

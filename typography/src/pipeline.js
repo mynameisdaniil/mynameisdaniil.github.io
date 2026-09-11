@@ -9,6 +9,7 @@ const DEFAULTS = {
   hyphenate: true,
   justify: true,
   protrude: true,
+  protrusion: null,
   punctuation: true,
   onResize: true,
   awaitFonts: true,
@@ -39,34 +40,37 @@ export function typeset(root, options = {}) {
     if (opts.punctuation) applySmartPunctuation(el);
 
     if (opts.justify) {
-      const paragraphs = [...el.querySelectorAll(opts.selector)];
-      if (paragraphs.length === 0) return;
-
-      clearProtrusion(el);
-      if (doc.fonts && !getComputedStyle(paragraphs[0]).font) {
-        console.warn(
-          "typeset: empty computed font shorthand; line measurement may be wrong (avoid font-kerning/font-variant-* on measured text)",
-        );
-      }
-
-      const groups = new Map();
-      for (const paragraph of paragraphs) {
-        const lang = resolveLang(paragraph, opts.lang);
-        if (!groups.has(lang)) groups.set(lang, []);
-        groups.get(lang).push(paragraph);
-      }
+      const found = el.matches?.(opts.selector)
+        ? [el, ...el.querySelectorAll(opts.selector)]
+        : [...el.querySelectorAll(opts.selector)];
+      if (found.length === 0) return;
 
       try {
+        clearProtrusion(el);
+        const styleOf = win?.getComputedStyle || getComputedStyle;
+        if (doc.fonts && !styleOf(found[0]).font) {
+          console.warn(
+            "typeset: empty computed font shorthand; line measurement may be wrong (avoid font-kerning/font-variant-* on measured text)",
+          );
+        }
+
+        const groups = new Map();
+        for (const paragraph of found) {
+          const lang = resolveLang(paragraph, opts.lang);
+          if (!groups.has(lang)) groups.set(lang, []);
+          groups.get(lang).push(paragraph);
+        }
+
         for (const [lang, elements] of groups) {
           justify(elements, opts.hyphenate ? hyphenateFor(lang) : undefined);
         }
-        if (opts.protrude) applyProtrusion(el);
+        if (opts.protrude) applyProtrusion(el, opts.protrusion);
       } catch (err) {
         console.error("typeset: justification failed", err);
       }
     } else if (opts.protrude) {
       clearProtrusion(el);
-      applyProtrusion(el);
+      applyProtrusion(el, opts.protrusion);
     }
   }
 
@@ -81,10 +85,12 @@ export function typeset(root, options = {}) {
   if (opts.onResize && win) win.addEventListener("resize", onResize);
 
   if (opts.awaitFonts && doc.fonts && doc.fonts.ready) {
-    doc.fonts.ready.then(
-      () => run(root),
-      () => run(root),
-    );
+    doc.fonts.ready
+      .then(
+        () => run(root),
+        () => run(root),
+      )
+      .catch((err) => console.error("typeset: initial run failed", err));
   } else {
     run(root);
   }

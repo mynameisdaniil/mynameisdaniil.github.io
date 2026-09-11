@@ -34,9 +34,10 @@ const RIGHT = {
   "\u2026": 0.15,
 };
 
-export function protrusionFor(char, side) {
+export function protrusionFor(char, side, overrides) {
   const table = side === "left" ? LEFT : RIGHT;
-  return table[char] ?? 0;
+  const extra = overrides && overrides[side];
+  return (extra && extra[char]) ?? table[char] ?? 0;
 }
 
 function wrapRange(textNode, start, length, className) {
@@ -102,7 +103,7 @@ function findFirstChar(nodes) {
   return null;
 }
 
-export function applyProtrusion(root) {
+export function applyProtrusion(root, overrides) {
   const paragraphs = root.matches?.("p") ? [root] : root.querySelectorAll("p");
   for (const paragraph of paragraphs) {
     for (const nodes of collectLines(paragraph)) {
@@ -111,14 +112,14 @@ export function applyProtrusion(root) {
 
       const last = findLastChar(nodes);
       if (last) {
-        const rightAmount = protrusionFor(last.char, "right");
+        const rightAmount = protrusionFor(last.char, "right", overrides);
         if (rightAmount > 0) wrapRight(last.node, last.offset, last.char, rightAmount);
       }
 
       const firstStillThere =
         first.node.nodeValue.length > first.offset &&
         first.node.nodeValue.charAt(first.offset) === first.char;
-      const leftAmount = protrusionFor(first.char, "left");
+      const leftAmount = protrusionFor(first.char, "left", overrides);
       if (leftAmount > 0 && firstStillThere) {
         wrapLeft(first.node, first.offset, first.char, leftAmount);
       }
