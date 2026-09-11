@@ -162,6 +162,16 @@ body {
   text-decoration-thickness: 2px;
 }
 
+::selection {
+  background: var(--link);
+  color: var(--paper);
+}
+
+a:focus-visible {
+  outline: 2px solid var(--link);
+  outline-offset: 2px;
+}
+
 .protrude-left,
 .protrude-right {
   display: inline;

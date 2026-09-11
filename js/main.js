@@ -1,4 +1,5 @@
 import { loadContent, renderMarkdown, ContentError } from "./content.js";
+import { applySmartPunctuation } from "./punctuation.js";
 import { createTypography } from "./typography.js";
 
 const masthead = document.querySelector(".masthead");
@@ -38,6 +39,7 @@ function renderSection(section) {
     const body = document.createElement("div");
     body.className = "section-body";
     body.innerHTML = renderMarkdown(section.body);
+    applySmartPunctuation(body);
     el.appendChild(body);
   }
 
