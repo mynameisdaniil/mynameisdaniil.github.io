@@ -19,6 +19,12 @@ body {
   text-rendering: optimizeLegibility;
 }
 
+@media (min-width: 1024px) and (max-width: 1919px) {
+  body {
+    font-size: clamp(18px, 0.6rem + 0.75vw, 21px);
+  }
+}
+
 .page {
   max-width: 1600px;
   margin: 0 auto;
