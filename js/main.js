@@ -25,6 +25,7 @@ function renderLinks(container, links) {
 function renderSection(section) {
   const el = document.createElement("section");
   el.id = section.id;
+  if (section.lang) el.setAttribute("lang", section.lang);
 
   const heading = document.createElement("h2");
   heading.textContent = section.title;
