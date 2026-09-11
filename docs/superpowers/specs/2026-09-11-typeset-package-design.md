@@ -37,7 +37,8 @@ typography/
   demo.html            # standalone demo (system fonts)
   dist/
     typeset.min.js     # IIFE, window.typeset, all engines inlined
-    typeset.esm.js     # ESM build, zero imports
+    typeset.esm.js     # ESM build (en-us + ru), zero imports
+    typeset-en.*       # en-only builds; other languages via registerPatterns
 ```
 
 `dist/` is built by `npm run build:typeset` (esbuild) and committed, matching the
@@ -109,7 +110,7 @@ The IIFE build exposes the same API under `window.typeset`.
 `package.json`:
 
 ```json
-"build:typeset": "esbuild typography/src/index.js --bundle --minify --format=iife --global-name=typeset --outfile=typography/dist/typeset.min.js && esbuild typography/src/index.js --bundle --minify --format=esm --outfile=typography/dist/typeset.esm.js"
+"build:typeset": "esbuild typography/src/index.js --bundle --minify --format=iife --global-name=typeset --outfile=typography/dist/typeset.min.js && esbuild typography/src/index.js --bundle --minify --format=esm --outfile=typography/dist/typeset.esm.js && esbuild typography/src/index-en.js --bundle --minify --format=iife --global-name=typeset --outfile=typography/dist/typeset-en.min.js && esbuild typography/src/index-en.js --bundle --minify --format=esm --outfile=typography/dist/typeset-en.esm.js"
 ```
 
 The package's `src` imports `tex-linebreak`, `hypher`, `hyphenation.en-us`, and
@@ -118,7 +119,8 @@ The package's `src` imports `tex-linebreak`, `hypher`, `hyphenation.en-us`, and
 
 ## Site Migration (Dogfood)
 
-- `js/main.js` imports `typeset` from `../typography/dist/typeset.esm.js`.
+- `js/main.js` imports `typeset` from the smaller en-only build
+  `../typography/dist/typeset-en.esm.js`.
 - Delete `js/typography.js`, `js/protrusion.js`, `js/punctuation.js`,
   `assets/vendor/typography.min.js`, `scripts/typography-entry.js`.
 - `index.html` drops the `typography.min.js` script tag.
@@ -132,7 +134,7 @@ The package's `src` imports `tex-linebreak`, `hypher`, `hyphenation.en-us`, and
 
 1. `npm test` — moved protrusion/punctuation tests plus a new jsdom pipeline test
    (toggles, idempotence, `destroy`).
-2. `npm run build:typeset` produces both dist files; `node --check` the ESM build;
+2. `npm run build:typeset` produces the full and en-only dist files; `node --check` the ESM builds;
    grep that the IIFE exposes `typeset`.
 3. Browser (controller): fonts load, paragraphs justified, protrusion spans present,
    no horizontal overflow at 1200/1600; resize re-runs; smart apostrophes rendered.

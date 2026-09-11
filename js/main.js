@@ -1,5 +1,5 @@
 import { loadContent, renderMarkdown, ContentError } from "./content.js";
-import { typeset, unjustify, clearProtrusion } from "../typography/dist/typeset.esm.js";
+import { typeset, unjustify, clearProtrusion } from "../typography/dist/typeset-en.esm.js";
 
 const masthead = document.querySelector(".masthead");
 const titleEl = document.getElementById("site-title");

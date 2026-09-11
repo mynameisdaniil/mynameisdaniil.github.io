@@ -7,7 +7,7 @@
     "build:css": "tailwindcss -i assets/tailwind.src.css -o assets/tailwind.css --minify",
     "build:fonts": "node scripts/build-fonts.mjs",
     "build:vendor": "bash scripts/fetch-vendor.sh",
-    "build:typeset": "esbuild typography/src/index.js --bundle --minify --format=iife --global-name=typeset --outfile=typography/dist/typeset.min.js && esbuild typography/src/index.js --bundle --minify --format=esm --outfile=typography/dist/typeset.esm.js",
+    "build:typeset": "esbuild typography/src/index.js --bundle --minify --format=iife --global-name=typeset --outfile=typography/dist/typeset.min.js && esbuild typography/src/index.js --bundle --minify --format=esm --outfile=typography/dist/typeset.esm.js && esbuild typography/src/index-en.js --bundle --minify --format=iife --global-name=typeset --outfile=typography/dist/typeset-en.min.js && esbuild typography/src/index-en.js --bundle --minify --format=esm --outfile=typography/dist/typeset-en.esm.js",
     "serve": "python3 -m http.server 8000"
   },
   "devDependencies": {
@@ -20,8 +20,8 @@
     "js-yaml": "^4.3.2",
     "jsdom": "^30.0.1",
     "marked": "^18.0.12",
+    "subset-font": "^2.7.0",
     "tailwindcss": "^4.3.3",
-    "tex-linebreak": "^0.9.0",
-    "wawoff2": "^2.0.1"
+    "tex-linebreak": "^0.9.0"
   }
 }

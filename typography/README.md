@@ -53,7 +53,23 @@ Returns `{ typeset(el), refresh(), destroy() }`.
 `justify(elements, hyphenate)`, `unjustify(elements)`, `applyProtrusion(root)`,
 `clearProtrusion(root)`, `protrusionFor(char, side)`, `smartPunctuation(text)`,
 `applySmartPunctuation(root)`, `hyphenateFor(lang)`, `createHyphenator(patterns)`,
-`patterns`.
+`patterns`, `registerPatterns({ lang: patterns })`.
+
+## Builds
+
+| File | Languages | Notes |
+|---|---|---|
+| `dist/typeset.min.js` / `typeset.esm.js` | en-us + ru | full bundle |
+| `dist/typeset-en.min.js` / `typeset-en.esm.js` | en-us | ~25% smaller; other languages can be added at runtime with `registerPatterns` |
+
+For example, to add German from your own pattern object:
+
+```js
+import { registerPatterns, typeset } from "./dist/typeset-en.esm.js";
+import de from "hyphenation.de";
+registerPatterns({ de });
+typeset(document.body);
+```
 
 ## Font requirements
 
