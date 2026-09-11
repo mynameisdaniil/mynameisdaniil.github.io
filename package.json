@@ -5,6 +5,7 @@
   "scripts": {
     "test": "node --test",
     "build:css": "tailwindcss -i assets/tailwind.src.css -o assets/tailwind.css --minify",
+    "build:fonts": "node scripts/build-fonts.mjs",
     "build:vendor": "bash scripts/fetch-vendor.sh && esbuild scripts/typography-entry.js --bundle --minify --format=iife --global-name=typography --outfile=assets/vendor/typography.min.js",
     "serve": "python3 -m http.server 8000"
   },
@@ -19,6 +20,7 @@
     "jsdom": "^30.0.1",
     "marked": "^18.0.12",
     "tailwindcss": "^4.3.3",
-    "tex-linebreak": "^0.9.0"
+    "tex-linebreak": "^0.9.0",
+    "wawoff2": "^2.0.1"
   }
 }
