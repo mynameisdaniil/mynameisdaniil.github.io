@@ -69,13 +69,16 @@ function showError(details) {
 
   const message = document.createElement("p");
   message.textContent = "Could not load content.";
-  const list = document.createElement("ul");
-  for (const detail of details) {
-    const item = document.createElement("li");
-    item.textContent = detail;
-    list.appendChild(item);
+  paper.append(message);
+  if (details.length > 0) {
+    const list = document.createElement("ul");
+    for (const detail of details) {
+      const item = document.createElement("li");
+      item.textContent = detail;
+      list.appendChild(item);
+    }
+    paper.append(list);
   }
-  paper.append(message, list);
 }
 
 async function boot() {
