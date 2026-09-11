@@ -1,11 +1,8 @@
 import { applyProtrusion, clearProtrusion } from "./protrusion.js";
 
 export function createTypography({ getHyphenator, typography = globalThis.typography }) {
-  let raf = 0;
-  let pending = null;
-
   function applyTo(el, lang = "en-us") {
-    const paragraphs = [...el.querySelectorAll(".card-body p")];
+    const paragraphs = [...el.querySelectorAll("p")];
     if (paragraphs.length === 0) return;
 
     try {
@@ -17,21 +14,5 @@ export function createTypography({ getHyphenator, typography = globalThis.typogr
     }
   }
 
-  function schedule(el, lang = "en-us") {
-    cancelAnimationFrame(raf);
-    pending = new Promise((resolve) => {
-      raf = requestAnimationFrame(() => {
-        applyTo(el, lang);
-        pending = null;
-        resolve();
-      });
-    });
-    return pending;
-  }
-
-  async function flush() {
-    if (pending) await pending;
-  }
-
-  return { applyTo, schedule, flush };
+  return { applyTo };
 }

@@ -1,91 +1,104 @@
 import { loadContent, renderMarkdown, ContentError } from "./content.js";
-import {
-  createCard,
-  setCardBody,
-  markActiveLinks,
-  createErrorCard,
-} from "./card.js";
-import { createGraph } from "./graph.js";
-import { createRouter } from "./router.js";
-import { initTheme } from "./theme.js";
 import { createTypography } from "./typography.js";
 
-const stage = document.getElementById("stage");
-const cardsLayer = document.getElementById("cards");
-const svg = document.getElementById("edges");
-const live = document.getElementById("live");
-const toggle = document.getElementById("theme-toggle");
-
-initTheme({ button: toggle });
+const page = document.querySelector(".page");
+const masthead = document.querySelector(".masthead");
+const titleEl = document.getElementById("site-title");
+const subtitleEl = document.getElementById("site-subtitle");
+const linksEl = document.getElementById("site-links");
+const paper = document.getElementById("paper");
 
 const typography = createTypography({
   getHyphenator: (lang) => globalThis.typography.hyphenateFor(lang),
 });
 
-try {
-  const model = await loadContent("content.yml");
-  document.title = model.meta.title;
-
-  const cardsById = new Map();
-  let router = null;
-
-  for (const card of model.cards.values()) {
-    const el = createCard(card, { onSelect: (id) => router.focus(id) });
-    cardsById.set(card.id, el);
-    cardsLayer.appendChild(el);
+function createLink(link) {
+  const a = document.createElement("a");
+  a.textContent = link.label;
+  a.href = link.url;
+  if (!link.url.startsWith("mailto:")) {
+    a.target = "_blank";
+    a.rel = "noopener noreferrer";
   }
-
-  const graph = createGraph({
-    stage,
-    svg,
-    cardsById,
-    edges: model.edges,
-  });
-
-  function currentLang() {
-    const card = model.cards.get(router.current);
-    return card?.lang || "en-us";
-  }
-
-  function render(id) {
-    const card = model.cards.get(id);
-    const el = cardsById.get(id);
-    setCardBody(el, renderMarkdown(card.body));
-    graph.focusCard(id);
-    el.querySelector(".card-title")?.focus({ preventScroll: true });
-    for (const cardEl of cardsById.values()) markActiveLinks(cardEl, id);
-    live.textContent = `Showing ${card.title}`;
-    document.title =
-      id === model.meta.defaultCard ? model.meta.title : `${card.title} — ${model.meta.title}`;
-    typography.schedule(el, card.lang || "en-us");
-  }
-
-  router = createRouter({
-    defaultCard: model.meta.defaultCard,
-    cardIds: new Set(model.cards.keys()),
-    onFocus: render,
-  });
-
-  let resizeTimer = 0;
-  window.addEventListener("resize", () => {
-    clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(() => {
-      typography.schedule(cardsById.get(router.current), currentLang());
-    }, 150);
-  });
-
-  await document.fonts.ready;
-  if (window.location.hash !== `#${router.current}`) {
-    history.replaceState(null, "", `#${router.current}`);
-  }
-  render(router.current);
-  await typography.flush();
-  stage.style.visibility = "visible";
-  stage.setAttribute("aria-busy", "false");
-} catch (err) {
-  console.error(err);
-  const details = err instanceof ContentError ? err.details : [String(err)];
-  stage.appendChild(createErrorCard("Could not load content.", details));
-  stage.style.visibility = "visible";
-  stage.setAttribute("aria-busy", "false");
+  return a;
 }
+
+function renderLinks(container, links) {
+  container.replaceChildren(...links.map(createLink));
+}
+
+function renderSection(section) {
+  const el = document.createElement("section");
+  el.id = section.id;
+
+  const heading = document.createElement("h2");
+  heading.textContent = section.title;
+  el.appendChild(heading);
+
+  if (section.body) {
+    const body = document.createElement("div");
+    body.className = "section-body";
+    body.innerHTML = renderMarkdown(section.body);
+    el.appendChild(body);
+  }
+
+  if (section.links.length > 0) {
+    const nav = document.createElement("nav");
+    nav.className = "links-row section-links";
+    nav.setAttribute("aria-label", `Links for ${section.title}`);
+    renderLinks(nav, section.links);
+    el.appendChild(nav);
+  }
+
+  return el;
+}
+
+let model = null;
+
+function applyTypography() {
+  if (!model) return;
+  for (const section of model.sections) {
+    const el = document.getElementById(section.id);
+    if (el) typography.applyTo(el, section.lang || "en-us");
+  }
+}
+
+function showError(details) {
+  masthead.hidden = true;
+  paper.replaceChildren();
+  paper.classList.add("paper--error");
+
+  const message = document.createElement("p");
+  message.textContent = "Could not load content.";
+  const list = document.createElement("ul");
+  for (const detail of details) {
+    const item = document.createElement("li");
+    item.textContent = detail;
+    list.appendChild(item);
+  }
+  paper.append(message, list);
+}
+
+async function boot() {
+  try {
+    model = await loadContent("content.yml");
+    document.title = model.meta.title;
+    titleEl.textContent = model.meta.title;
+    subtitleEl.textContent = model.meta.subtitle;
+    renderLinks(linksEl, model.meta.links);
+    paper.replaceChildren(...model.sections.map(renderSection));
+    await document.fonts.ready;
+    applyTypography();
+  } catch (err) {
+    console.error(err);
+    showError(err instanceof ContentError ? err.details : [String(err)]);
+  }
+}
+
+let resizeTimer = 0;
+window.addEventListener("resize", () => {
+  clearTimeout(resizeTimer);
+  resizeTimer = setTimeout(applyTypography, 150);
+});
+
+boot();
