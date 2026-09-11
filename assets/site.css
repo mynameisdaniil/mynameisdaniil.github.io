@@ -82,20 +82,46 @@ body {
 }
 
 .paper {
+  position: relative;
   column-count: 1;
   column-gap: 2.5rem;
-  column-rule: 1px solid var(--ink);
+}
+
+.paper::before,
+.paper::after {
+  content: "";
+  position: absolute;
+  top: -0.775em;
+  bottom: -0.775em;
+  display: none;
+  width: 1px;
+  background: var(--ink);
+  pointer-events: none;
 }
 
 @media (min-width: 640px) {
   .paper {
     column-count: 2;
   }
+
+  .paper::before {
+    display: block;
+    left: 50%;
+  }
 }
 
 @media (min-width: 1920px) {
   .paper {
     column-count: 3;
+  }
+
+  .paper::before {
+    left: calc(33.3333% - 0.4167rem);
+  }
+
+  .paper::after {
+    display: block;
+    left: calc(66.6667% + 0.4167rem);
   }
 }
 
