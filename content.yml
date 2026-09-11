@@ -1,42 +1,26 @@
 meta:
   title: Daniil Sobol
-  default_card: about
-cards:
-  - id: about
-    title: Daniil Sobol
-    body: |
-      I'm a software engineer working on distributed systems, Erlang, and Ethereum infrastructure. This site is a graph of cards — follow the links to look around.
-    links:
-      - label: Projects
-        card: projects
-      - label: Writing
-        card: writing
-      - label: Facts
-        card: facts
-      - label: Contact
-        card: contact
-      - label: GitHub
-        url: https://github.com/mynameisdaniil
-      - label: Email
-        url: mailto:sobol.daniil@gmail.com
+  subtitle: distributed systems engineer
+  links:
+    - label: GitHub
+      url: https://github.com/mynameisdaniil
+    - label: Email
+      url: mailto:sobol.daniil@gmail.com
+    - label: Telegram
+      url: https://t.me/mynameisdaniil
+sections:
   - id: projects
     title: Projects
     body: |
       Erlang client for Ethereum Portal Network: [ePortalD](https://eportald.org/)
 
       Zig (C-compatible) client for Ethereum Portal Network: [libportal](https://libportal.net/)
-    links:
-      - label: ← About
-        card: about
   - id: writing
     title: Writing
     body: |
       [My take on FP introductory article via Haskell](https://habr.com/ru/post/319440/)
 
       [YAFF — asynchronous stream-oriented programming before it became mainstream](https://habr.com/ru/post/251307/)
-    links:
-      - label: ← About
-        card: about
   - id: facts
     title: Facts
     body: |
@@ -81,9 +65,6 @@ cards:
       Stock exchange? Ask me how
 
       Actually I don't have any cool facts about Rust language. Guess this is a fact too
-    links:
-      - label: ← About
-        card: about
   - id: contact
     title: Contact
     body: |
@@ -109,5 +90,3 @@ cards:
         url: https://www.facebook.com/profile.php?id=100015560405467
       - label: Twitter
         url: https://twitter.com/mynameisdaniil
-      - label: ← About
-        card: about
