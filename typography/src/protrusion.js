@@ -43,6 +43,11 @@ export function protrusionFor(char, side, overrides) {
 function wrapRange(textNode, start, length, className) {
   const node = textNode.splitText(start);
   node.splitText(length);
+  if (start === 0) {
+    for (const key of Object.keys(textNode)) {
+      node[key] = textNode[key];
+    }
+  }
   const span = document.createElement("span");
   span.className = className;
   node.parentNode.insertBefore(span, node);
@@ -133,5 +138,4 @@ export function clearProtrusion(root) {
     while (span.firstChild) parent.insertBefore(span.firstChild, span);
     parent.removeChild(span);
   }
-  root.normalize();
 }

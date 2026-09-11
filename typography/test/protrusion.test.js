@@ -2,6 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { JSDOM } from "jsdom";
 import { protrusionFor, applyProtrusion, clearProtrusion } from "../src/protrusion.js";
+import { unjustify } from "../src/justify.js";
 
 test("protrusionFor knows left and right punctuation", () => {
   assert.equal(protrusionFor(".", "right"), 0.15);
@@ -90,4 +91,35 @@ test("protrusionFor applies per-side overrides", () => {
   assert.equal(protrusionFor(".", "right", { right: { ".": 0.05 } }), 0.05);
   assert.equal(protrusionFor(".", "right", { left: { ".": 0.05 } }), 0.15);
   assert.equal(protrusionFor(".", "right"), 0.15);
+});
+
+test("clearProtrusion does not merge text nodes and destroy inserted-hyphen tags", () => {
+  const dom = new JSDOM('<p>a<span class="protrude-right">-</span>b</p>');
+  globalThis.document = dom.window.document;
+  globalThis.Node = dom.window.Node;
+  globalThis.NodeFilter = dom.window.NodeFilter;
+  const p = dom.window.document.querySelector("p");
+  clearProtrusion(p);
+  assert.equal(p.childNodes.length, 3);
+  assert.equal(p.textContent, "a-b");
+});
+
+test("protrusion wrapping preserves expando tags on the wrapped character", () => {
+  const dom = new JSDOM("<p></p>");
+  globalThis.document = dom.window.document;
+  globalThis.Node = dom.window.Node;
+  globalThis.NodeFilter = dom.window.NodeFilter;
+  const p = dom.window.document.querySelector("p");
+  p.appendChild(dom.window.document.createTextNode("a"));
+  const hyphen = dom.window.document.createTextNode("-");
+  hyphen.insertedByTexLinebreak = true;
+  p.appendChild(hyphen);
+
+  applyProtrusion(p);
+  const wrapped = p.querySelector(".protrude-right").firstChild;
+  assert.equal(wrapped.insertedByTexLinebreak, true);
+
+  clearProtrusion(p);
+  unjustify(p);
+  assert.equal(p.textContent, "a");
 });
