@@ -1,6 +1,12 @@
-const CACHE = "daniil-site-v1";
+const CACHE = "daniil-site-v2";
 
-const PRECACHE = ["/", "/index.html", "/assets/fonts.css", "/assets/site.css"];
+const PRECACHE = [
+  "/",
+  "/index.html",
+  "/assets/fonts.css",
+  "/assets/site.css",
+  "/assets/app.min.js",
+];
 
 self.addEventListener("install", (event) => {
   event.waitUntil(

@@ -1,5 +1,5 @@
 import { loadContent, renderMarkdown, ContentError } from "./content.js";
-import { typeset, unjustify, clearProtrusion } from "../typography/dist/typeset-en.esm.js";
+import { typeset, unjustify, clearProtrusion } from "../typography/src/index-en.js";
 
 const masthead = document.querySelector(".masthead");
 const titleEl = document.getElementById("site-title");
@@ -108,6 +108,6 @@ boot();
 
 if ("serviceWorker" in navigator) {
   navigator.serviceWorker
-    .register(new URL("../sw.js", import.meta.url))
+    .register("/sw.js")
     .catch((err) => console.warn("service worker registration failed", err));
 }

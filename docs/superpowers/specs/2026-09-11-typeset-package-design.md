@@ -119,8 +119,10 @@ The package's `src` imports `tex-linebreak`, `hypher`, `hyphenation.en-us`, and
 
 ## Site Migration (Dogfood)
 
-- `js/main.js` imports `typeset` from the smaller en-only build
-  `../typography/dist/typeset-en.esm.js`.
+- `js/main.js` imports `typeset` from the package source
+  `../typography/src/index-en.js`; the site's `build:app` bundles it (with the rest
+  of the app) into `assets/app.min.js`. The `typeset-en.*` dist files remain for
+  consumers that load the package standalone.
 - Delete `js/typography.js`, `js/protrusion.js`, `js/punctuation.js`,
   `assets/vendor/typography.min.js`, `scripts/typography-entry.js`.
 - `index.html` drops the `typography.min.js` script tag.
