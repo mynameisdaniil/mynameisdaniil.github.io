@@ -18,7 +18,7 @@ sections:
   - id: writing
     title: Writing
     body: |
-      [My take on FP introductory article via Haskell](https://habr.com/ru/post/319440/)
+      [My take on an introductory FP article via Haskell](https://habr.com/ru/post/319440/)
 
       [YAFF — asynchronous stream-oriented programming before it became mainstream](https://habr.com/ru/post/251307/)
   - id: facts
@@ -28,13 +28,13 @@ sections:
 
       Full-time Linux user since Ubuntu 8.04
 
-      Have experience in nginx module writing
+      Have experience writing nginx modules
 
-      I have /dev/ops which is a recursive link to myself
+      I have /dev/ops, which is a recursive link to myself
 
-      Have experience in Node.js native module writing
+      Have experience writing Node.js native modules
 
-      Do love syntax of Erlang
+      Do love the syntax of Erlang
 
       My other CAP is a theorem
 
@@ -48,23 +48,23 @@ sections:
 
       Wrote several Lisp interpreters
 
-      I've used Ansible back then before it became mainstream
+      I used Ansible back then, before it became mainstream
 
-      Containers pioneer (and I'm not talking about Docker)
+      Container pioneer (and I'm not talking about Docker)
 
-      Can not advise you any continuous integration server
+      Cannot recommend any continuous integration server
 
-      Have written this line (and all other lines) using VIM
+      Have written this line (and all other lines) using Vim
 
       RPC? Ask me how
 
       Do hate DNS
 
-      My first language was BASIC; written on a piece of paper and interpreted in my head
+      My first language was BASIC; my first program was written on a piece of paper and interpreted in my head
 
       Stock exchange? Ask me how
 
-      Actually I don't have any cool facts about Rust language. Guess this is a fact too
+      Actually I don't have any cool facts about the Rust language. Guess this is a fact too
   - id: contact
     title: Contact
     body: |

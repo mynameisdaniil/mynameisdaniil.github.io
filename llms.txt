@@ -19,7 +19,7 @@
 
 ## Writing
 
-- [My take on FP introductory article via Haskell](https://habr.com/ru/post/319440/)
+- [My take on an introductory FP article via Haskell](https://habr.com/ru/post/319440/)
 - [YAFF — asynchronous stream-oriented programming before it became mainstream](https://habr.com/ru/post/251307/)
 
 ## Site
