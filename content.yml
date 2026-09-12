@@ -9,12 +9,6 @@ meta:
     - label: Telegram
       url: https://t.me/mynameisdaniil
 sections:
-  - id: projects
-    title: Projects
-    body: |
-      Erlang client for Ethereum Portal Network: [ePortalD](https://eportald.org/)
-
-      Zig (C-compatible) client for Ethereum Portal Network: [libportal](https://libportal.net/)
   - id: writing
     title: Writing
     body: |
