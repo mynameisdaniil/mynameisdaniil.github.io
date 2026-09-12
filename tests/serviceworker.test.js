@@ -23,3 +23,19 @@ test("sw.js precaches the shell assets", () => {
     assert.ok(sw.includes(`"${asset}"`), `precache is missing ${asset}`);
   }
 });
+
+test("sw.js bypasses the HTTP cache for navigations and content", () => {
+  const sw = readFileSync(swPath, "utf8");
+  assert.ok(
+    sw.includes('fetch(request, { cache: "no-store" })'),
+    "navigations/content.yml must not read the HTTP cache",
+  );
+});
+
+test("sw.js precaches shell assets from the network", () => {
+  const sw = readFileSync(swPath, "utf8");
+  assert.ok(
+    sw.includes('cache: "reload"'),
+    "precache must bypass the HTTP cache so installs are fresh",
+  );
+});

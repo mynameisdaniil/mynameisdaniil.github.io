@@ -1,4 +1,4 @@
-const CACHE = "daniil-site-4672bb7e";
+const CACHE = "daniil-site-ad59f1cd";
 
 const PRECACHE = [
   "/",
@@ -12,7 +12,14 @@ self.addEventListener("install", (event) => {
   event.waitUntil(
     caches
       .open(CACHE)
-      .then((cache) => cache.addAll(PRECACHE))
+      .then((cache) =>
+        Promise.all(
+          PRECACHE.map(async (url) => {
+            const response = await fetch(url, { cache: "reload" });
+            await cache.put(url, response);
+          }),
+        ),
+      )
       .then(() => self.skipWaiting()),
   );
 });
@@ -37,7 +44,7 @@ self.addEventListener("fetch", (event) => {
 
   if (request.mode === "navigate" || url.pathname.endsWith("content.yml")) {
     event.respondWith(
-      fetch(request)
+      fetch(request, { cache: "no-store" })
         .then((response) => {
           const copy = response.clone();
           caches.open(CACHE).then((cache) => cache.put(request, copy));

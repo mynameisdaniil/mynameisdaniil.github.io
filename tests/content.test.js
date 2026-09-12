@@ -25,6 +25,16 @@ test("rejects on non-ok HTTP responses", async () => {
   );
 });
 
+test("bypasses the HTTP cache when loading content", async () => {
+  const calls = [];
+  const fetchImpl = async (...args) => {
+    calls.push(args);
+    return { ok: true, status: 200, text: async () => "raw" };
+  };
+  await loadContent("content.yml", { fetchImpl, yaml });
+  assert.deepEqual(calls, [["content.yml", { cache: "no-store" }]]);
+});
+
 test("rejects with details on invalid content", async () => {
   const fetchImpl = async () => ({ ok: true, status: 200, text: async () => "raw" });
   const badYaml = { load: () => ({ cards: [] }) };

@@ -14,7 +14,7 @@ export async function loadContent(url, deps = {}) {
   const fetchImpl = deps.fetchImpl ?? globalThis.fetch;
   const parser = deps.yaml ?? yaml;
 
-  const response = await fetchImpl(url);
+  const response = await fetchImpl(url, { cache: "no-store" });
   if (!response.ok) {
     throw new ContentError(`Failed to load ${url}: HTTP ${response.status}`);
   }
