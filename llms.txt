@@ -1,0 +1,28 @@
+# Daniil Sobol
+
+> Daniil Sobol is a distributed systems engineer working on Erlang, Ethereum
+> infrastructure, and open source. Personal site: https://mynameisdaniil.dev/
+
+## Contact
+
+- Email: sobol.daniil@gmail.com
+- GitHub: https://github.com/mynameisdaniil
+- LinkedIn: https://www.linkedin.com/in/mynameisdaniil/
+- Telegram: https://t.me/mynameisdaniil
+- Reddit: https://www.reddit.com/user/mynameisdaniil
+- Stack Overflow: https://stackoverflow.com/users/847216/mynameisdaniil
+
+## Work
+
+- [ePortalD](https://eportald.org/): Erlang client for Ethereum Portal Network
+- [libportal](https://libportal.net/): Zig (C-compatible) client for Ethereum Portal Network
+
+## Writing
+
+- [My take on FP introductory article via Haskell](https://habr.com/ru/post/319440/)
+- [YAFF — asynchronous stream-oriented programming before it became mainstream](https://habr.com/ru/post/251307/)
+
+## Site
+
+- Full content as YAML: https://mynameisdaniil.dev/content.yml
+- The site is a static whitepaper; styles and scripts are self-hosted.

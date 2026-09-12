@@ -1,4 +1,4 @@
-const CACHE = "daniil-site-71cb4a90";
+const CACHE = "daniil-site-244ba59d";
 
 const PRECACHE = [
   "/",

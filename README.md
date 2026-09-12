@@ -78,4 +78,6 @@ NOTICE                third-party licenses
 
 ## For agents
 
-See [AGENTS.md](AGENTS.md) for exact commands, invariants, and known traps.
+A machine-readable summary of who this is, what they work on, and how to get in
+touch is served at `/llms.txt`; the page also carries JSON-LD `Person` data.
+Local agent instructions are not tracked in this repository.

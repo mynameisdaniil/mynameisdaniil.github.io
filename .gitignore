@@ -3,3 +3,4 @@ node_modules/
 ._*
 tags
 *.tgz
+AGENTS.md
