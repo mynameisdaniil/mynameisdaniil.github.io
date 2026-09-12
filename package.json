@@ -3,12 +3,13 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "test": "node --test",
-    "build": "npm run build:fonts && npm run build:typeset && npm run build:app",
+    "build": "npm run build:fonts && npm run build:favicon && npm run build:typeset && npm run build:app",
     "build:app": "esbuild js/main.js --bundle --minify --format=esm --outfile=assets/app.min.js",
+    "build:favicon": "node scripts/build-favicon.mjs",
     "build:fonts": "node scripts/build-fonts.mjs",
     "build:typeset": "esbuild typography/src/index.js --bundle --minify --format=iife --global-name=typeset --outfile=typography/dist/typeset.min.js && esbuild typography/src/index.js --bundle --minify --format=esm --outfile=typography/dist/typeset.esm.js && esbuild typography/src/index-en.js --bundle --minify --format=iife --global-name=typeset --outfile=typography/dist/typeset-en.min.js && esbuild typography/src/index-en.js --bundle --minify --format=esm --outfile=typography/dist/typeset-en.esm.js",
-    "serve": "python3 -m http.server 8000"
+    "serve": "python3 -m http.server 8000",
+    "test": "node --test"
   },
   "devDependencies": {
     "@typopro/web-latin-modern": "3.7.5",
@@ -16,6 +17,7 @@
     "hyphenation.en-us": "^0.2.1",
     "hyphenation.ru": "^0.2.1",
     "hypher": "^0.2.5",
+    "jimp": "^1.6.1",
     "js-yaml": "^4.3.2",
     "jsdom": "^30.0.1",
     "marked": "^18.0.12",
