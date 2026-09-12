@@ -3,11 +3,13 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "npm run build:fonts && npm run build:favicon && npm run build:typeset && npm run build:app",
+    "build": "npm run build:fonts && npm run build:favicon && npm run build:typeset && npm run build:app && npm run build:sw",
     "build:app": "esbuild js/main.js --bundle --minify --format=esm --outfile=assets/app.min.js",
     "build:favicon": "node scripts/build-favicon.mjs",
     "build:fonts": "node scripts/build-fonts.mjs",
+    "build:sw": "node scripts/build-sw.mjs",
     "build:typeset": "esbuild typography/src/index.js --bundle --minify --format=iife --global-name=typeset --outfile=typography/dist/typeset.min.js && esbuild typography/src/index.js --bundle --minify --format=esm --outfile=typography/dist/typeset.esm.js && esbuild typography/src/index-en.js --bundle --minify --format=iife --global-name=typeset --outfile=typography/dist/typeset-en.min.js && esbuild typography/src/index-en.js --bundle --minify --format=esm --outfile=typography/dist/typeset-en.esm.js",
+    "check": "npm run build:typeset && npm run build:app && npm run build:sw && git diff --exit-code -- assets/app.min.js typography/dist sw.js",
     "serve": "python3 -m http.server 8000",
     "test": "node --test"
   },
