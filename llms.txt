@@ -1,7 +1,13 @@
 # Daniil Sobol
 
-> Daniil Sobol is a distributed systems engineer working on Erlang, Ethereum
-> infrastructure, and open source. Personal site: https://mynameisdaniil.dev/
+> Daniil Sobol is a P2P and distributed systems engineer with 20+ years building
+> high-load backend platforms, protocol-level infrastructure, and latency-sensitive
+> services. Personal site: https://mynameisdaniil.dev/
+
+## Current
+
+- CTO at Zoopt (2025–present)
+- Based in Yerevan, Armenia; remote worldwide, open to relocation
 
 ## Contact
 

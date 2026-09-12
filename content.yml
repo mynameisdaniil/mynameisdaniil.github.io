@@ -1,6 +1,6 @@
 meta:
   title: Daniil Sobol
-  subtitle: distributed systems engineer
+  subtitle: P2P / distributed systems engineer
   links:
     - label: GitHub
       url: https://github.com/mynameisdaniil
@@ -18,7 +18,7 @@ sections:
   - id: facts
     title: Facts
     body: |
-      Master's degree in signal processing
+      Master's degree in radio engineering
 
       Full-time Linux user since Ubuntu 8.04
 
