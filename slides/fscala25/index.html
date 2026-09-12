@@ -1,0 +1,1094 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+    <title></title>
+    <link rel="stylesheet" href="dist/reveal.css" />
+    <link rel="stylesheet" href="dist/theme/simple.css" id="theme" />
+    <link rel="stylesheet" href="plugin/highlight/zenburn.css" />
+	<link rel="stylesheet" href="css/layout.css" />
+	<link rel="stylesheet" href="plugin/customcontrols/style.css">
+
+
+
+    <script defer src="dist/fontawesome/all.min.js"></script>
+
+	<script type="text/javascript">
+		var forgetPop = true;
+		function onPopState(event) {
+			if(forgetPop){
+				forgetPop = false;
+			} else {
+				parent.postMessage(event.target.location.href, "app://obsidian.md");
+			}
+        }
+		window.onpopstate = onPopState;
+		window.onmessage = event => {
+			if(event.data == "reload"){
+				window.document.location.reload();
+			}
+			forgetPop = true;
+		}
+
+		function fitElements(){
+			const itemsToFit = document.getElementsByClassName('fitText');
+			for (const item in itemsToFit) {
+				if (Object.hasOwnProperty.call(itemsToFit, item)) {
+					var element = itemsToFit[item];
+					fitElement(element,1, 1000);
+					element.classList.remove('fitText');
+				}
+			}
+		}
+
+		function fitElement(element, start, end){
+
+			let size = (end + start) / 2;
+			element.style.fontSize = `${size}px`;
+
+			if(Math.abs(start - end) < 1){
+				while(element.scrollHeight > element.offsetHeight){
+					size--;
+					element.style.fontSize = `${size}px`;
+				}
+				return;
+			}
+
+			if(element.scrollHeight > element.offsetHeight){
+				fitElement(element, start, size);
+			} else {
+				fitElement(element, size, end);
+			}		
+		}
+
+
+		document.onreadystatechange = () => {
+			fitElements();
+			if (document.readyState === 'complete') {
+				if (window.location.href.indexOf("?export") != -1){
+					parent.postMessage(event.target.location.href, "app://obsidian.md");
+				}
+				if (window.location.href.indexOf("print-pdf") != -1){
+					let stateCheck = setInterval(() => {
+						clearInterval(stateCheck);
+						window.print();
+					}, 250);
+				}
+			}
+	};
+
+
+        </script>
+  </head>
+  <body>
+    <div class="reveal">
+      <div class="slides"><section  data-markdown><script type="text/template"><!-- .slide: class="drop" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 1080px; width: 1920px; min-height: 1080px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<img src="dan/public/fscala2025/images/first.png" alt="" style="object-fit: scale-down">
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 1080px; width: 1920px; min-height: 1080px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+## Биржу писали на эрланге,
+
+### поэтому я тут
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 1080px; width: 1920px; min-height: 1080px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+1. Вводный курс биржевой терминологии
+2. Как устроена биржа
+3. Проблемы поддержания последовательности событий
+4. Релятивистские эффекты
+5. Как это влияет на бизнес и архитектуру
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 1080px; width: 1920px; min-height: 1080px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+## Вводный курс биржевой терминологии
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 1080px; width: 1920px; min-height: 1080px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<style>
+html,body {
+  background: radial-gradient(#F0F0F0, #BEBEBE) !Important;
+  --r-heading-color: #333 !Important;
+  --r-main-color: #333 !Important;
+  --r-heading-font: ‘Lato’, sans-serif !Important;
+  --r-main-font: ‘Lato’, sans-serif !Important;
+}
+li {
+ font-size: 80px;
+}
+.reveal pre code {
+  white-space: pre-wrap !important;
+  word-wrap: break-word !important;
+  overflow-x: hidden !important;
+}
+.has-light-background {
+  background: transparent !Important;
+}
+</style>
+
+<div class="has-light-background" style="background-color: white; padding: 0 20px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+ <div class="block">
+
+## Краткое введение в биржи
+</div>
+
+
+</div>
+
+<div class="" style="position: absolute; left: 0%; top: 10%; height: 90%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+
+
+
+<img src="dan/public/fscala2025/images/intro.png" alt="" style="object-fit: scale-down">
+
+
+</div>
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 1080px; width: 1920px; min-height: 1080px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<style>
+html,body {
+  background: radial-gradient(#F0F0F0, #BEBEBE) !Important;
+  --r-heading-color: #333 !Important;
+  --r-main-color: #333 !Important;
+  --r-heading-font: ‘Lato’, sans-serif !Important;
+  --r-main-font: ‘Lato’, sans-serif !Important;
+}
+li {
+ font-size: 80px;
+}
+.reveal pre code {
+  white-space: pre-wrap !important;
+  word-wrap: break-word !important;
+  overflow-x: hidden !important;
+}
+.has-light-background {
+  background: transparent !Important;
+}
+</style>
+
+<div class="has-light-background" style="background-color: white; padding: 0 20px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+ <div class="block">
+
+## Краткое введение в биржи
+</div>
+
+
+</div>
+
+<div class="" style="position: absolute; left: 0%; top: 10%; height: 90%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+
+
+<img src="dan/public/fscala2025/images/intro2.png" alt="" style="object-fit: scale-down">
+
+</div>
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 1080px; width: 1920px; min-height: 1080px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+## Как устроена биржа
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 1080px; width: 1920px; min-height: 1080px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<style>
+html,body {
+  background: radial-gradient(#F0F0F0, #BEBEBE) !Important;
+  --r-heading-color: #333 !Important;
+  --r-main-color: #333 !Important;
+  --r-heading-font: ‘Lato’, sans-serif !Important;
+  --r-main-font: ‘Lato’, sans-serif !Important;
+}
+li {
+ font-size: 80px;
+}
+.reveal pre code {
+  white-space: pre-wrap !important;
+  word-wrap: break-word !important;
+  overflow-x: hidden !important;
+}
+.has-light-background {
+  background: transparent !Important;
+}
+</style>
+
+<div class="has-light-background" style="background-color: white; padding: 0 20px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+ <div class="block">
+
+## Как устроена биржа
+</div>
+
+
+</div>
+
+<div class="" style="position: absolute; left: 0%; top: 10%; height: 90%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+
+
+<img src="dan/public/fscala2025/images/internals.png" alt="" style="object-fit: scale-down">
+
+</div>
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 1080px; width: 1920px; min-height: 1080px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<style>
+html,body {
+  background: radial-gradient(#F0F0F0, #BEBEBE) !Important;
+  --r-heading-color: #333 !Important;
+  --r-main-color: #333 !Important;
+  --r-heading-font: ‘Lato’, sans-serif !Important;
+  --r-main-font: ‘Lato’, sans-serif !Important;
+}
+li {
+ font-size: 80px;
+}
+.reveal pre code {
+  white-space: pre-wrap !important;
+  word-wrap: break-word !important;
+  overflow-x: hidden !important;
+}
+.has-light-background {
+  background: transparent !Important;
+}
+</style>
+
+<div class="has-light-background" style="background-color: white; padding: 0 20px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+ <div class="block">
+
+## SLA
+</div>
+
+
+</div>
+
+<div class="" style="position: absolute; left: 0%; top: 10%; height: 90%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+
+
+
+- Время ответа: 1ms
+- Пропускная способность: 100 000 tps
+</div>
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 1080px; width: 1920px; min-height: 1080px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+## Реордеринг в сети
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 1080px; width: 1920px; min-height: 1080px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<style>
+html,body {
+  background: radial-gradient(#F0F0F0, #BEBEBE) !Important;
+  --r-heading-color: #333 !Important;
+  --r-main-color: #333 !Important;
+  --r-heading-font: ‘Lato’, sans-serif !Important;
+  --r-main-font: ‘Lato’, sans-serif !Important;
+}
+li {
+ font-size: 80px;
+}
+.reveal pre code {
+  white-space: pre-wrap !important;
+  word-wrap: break-word !important;
+  overflow-x: hidden !important;
+}
+.has-light-background {
+  background: transparent !Important;
+}
+</style>
+
+<div class="has-light-background" style="background-color: white; padding: 0 20px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+ <div class="block">
+
+#### В какой момент можно считать сообщение принятым?
+</div>
+
+
+</div>
+
+<div class="" style="position: absolute; left: 0%; top: 10%; height: 90%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+
+
+<img src="dan/public/fscala2025/images/network.png" alt="" style="object-fit: scale-down">
+
+</div>
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 1080px; width: 1920px; min-height: 1080px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<style>
+html,body {
+  background: radial-gradient(#F0F0F0, #BEBEBE) !Important;
+  --r-heading-color: #333 !Important;
+  --r-main-color: #333 !Important;
+  --r-heading-font: ‘Lato’, sans-serif !Important;
+  --r-main-font: ‘Lato’, sans-serif !Important;
+}
+li {
+ font-size: 80px;
+}
+.reveal pre code {
+  white-space: pre-wrap !important;
+  word-wrap: break-word !important;
+  overflow-x: hidden !important;
+}
+.has-light-background {
+  background: transparent !Important;
+}
+</style>
+
+<div class="has-light-background" style="background-color: white; padding: 0 20px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+ <div class="block">
+
+## Пару слов про DPDK и IXY
+</div>
+
+
+</div>
+
+<div class="" style="position: absolute; left: 0%; top: 10%; height: 90%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+
+
+<img src="dan/public/fscala2025/images/network2.png" alt="" style="object-fit: scale-down">
+
+</div>
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 1080px; width: 1920px; min-height: 1080px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<style>
+html,body {
+  background: radial-gradient(#F0F0F0, #BEBEBE) !Important;
+  --r-heading-color: #333 !Important;
+  --r-main-color: #333 !Important;
+  --r-heading-font: ‘Lato’, sans-serif !Important;
+  --r-main-font: ‘Lato’, sans-serif !Important;
+}
+li {
+ font-size: 80px;
+}
+.reveal pre code {
+  white-space: pre-wrap !important;
+  word-wrap: break-word !important;
+  overflow-x: hidden !important;
+}
+.has-light-background {
+  background: transparent !Important;
+}
+</style>
+
+<div class="has-light-background" style="background-color: white; padding: 0 20px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+ <div class="block">
+
+## Реордеринг в сети: UDP и роутеры
+</div>
+
+
+</div>
+
+<div class="" style="position: absolute; left: 0%; top: 10%; height: 90%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+
+
+
+</div>
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 1080px; width: 1920px; min-height: 1080px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+## Релятивистские эффекты
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 1080px; width: 1920px; min-height: 1080px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<style>
+html,body {
+  background: radial-gradient(#F0F0F0, #BEBEBE) !Important;
+  --r-heading-color: #333 !Important;
+  --r-main-color: #333 !Important;
+  --r-heading-font: ‘Lato’, sans-serif !Important;
+  --r-main-font: ‘Lato’, sans-serif !Important;
+}
+li {
+ font-size: 80px;
+}
+.reveal pre code {
+  white-space: pre-wrap !important;
+  word-wrap: break-word !important;
+  overflow-x: hidden !important;
+}
+.has-light-background {
+  background: transparent !Important;
+}
+</style>
+
+<div class="has-light-background" style="background-color: white; padding: 0 20px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+ <div class="block">
+
+## Про теорию относительности
+</div>
+
+
+</div>
+
+<div class="" style="position: absolute; left: 0%; top: 10%; height: 90%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+
+
+<img src="dan/public/fscala2025/images/relativity.png" alt="" style="object-fit: scale-down">
+
+</div>
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 1080px; width: 1920px; min-height: 1080px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<style>
+html,body {
+  background: radial-gradient(#F0F0F0, #BEBEBE) !Important;
+  --r-heading-color: #333 !Important;
+  --r-main-color: #333 !Important;
+  --r-heading-font: ‘Lato’, sans-serif !Important;
+  --r-main-font: ‘Lato’, sans-serif !Important;
+}
+li {
+ font-size: 80px;
+}
+.reveal pre code {
+  white-space: pre-wrap !important;
+  word-wrap: break-word !important;
+  overflow-x: hidden !important;
+}
+.has-light-background {
+  background: transparent !Important;
+}
+</style>
+
+<div class="has-light-background" style="background-color: white; padding: 0 20px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+ <div class="block">
+
+## Про теорию относительности
+</div>
+
+
+</div>
+
+<div class="" style="position: absolute; left: 0%; top: 10%; height: 90%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+
+
+<img src="dan/public/fscala2025/images/relativity2.png" alt="" style="object-fit: scale-down">
+
+</div>
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 1080px; width: 1920px; min-height: 1080px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<style>
+html,body {
+  background: radial-gradient(#F0F0F0, #BEBEBE) !Important;
+  --r-heading-color: #333 !Important;
+  --r-main-color: #333 !Important;
+  --r-heading-font: ‘Lato’, sans-serif !Important;
+  --r-main-font: ‘Lato’, sans-serif !Important;
+}
+li {
+ font-size: 80px;
+}
+.reveal pre code {
+  white-space: pre-wrap !important;
+  word-wrap: break-word !important;
+  overflow-x: hidden !important;
+}
+.has-light-background {
+  background: transparent !Important;
+}
+</style>
+
+<div class="has-light-background" style="background-color: white; padding: 0 20px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+ <div class="block">
+
+### Наверное, вы уже догадались, почему нельзя ускорить биржу параллелизацией
+</div>
+
+
+</div>
+
+<div class="" style="position: absolute; left: 0%; top: 10%; height: 90%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+
+
+<img src="dan/public/fscala2025/images/cpu.png" alt="" style="object-fit: scale-down">
+
+</div>
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 1080px; width: 1920px; min-height: 1080px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<style>
+html,body {
+  background: radial-gradient(#F0F0F0, #BEBEBE) !Important;
+  --r-heading-color: #333 !Important;
+  --r-main-color: #333 !Important;
+  --r-heading-font: ‘Lato’, sans-serif !Important;
+  --r-main-font: ‘Lato’, sans-serif !Important;
+}
+li {
+ font-size: 80px;
+}
+.reveal pre code {
+  white-space: pre-wrap !important;
+  word-wrap: break-word !important;
+  overflow-x: hidden !important;
+}
+.has-light-background {
+  background: transparent !Important;
+}
+</style>
+
+<div class="has-light-background" style="background-color: white; padding: 0 20px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+ <div class="block">
+
+## Актуальных данных не бывает
+</div>
+
+
+</div>
+
+<div class="" style="position: absolute; left: 0%; top: 10%; height: 90%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+
+
+<img src="dan/public/fscala2025/images/cpu11.png" alt="" style="object-fit: scale-down">
+
+</div>
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 1080px; width: 1920px; min-height: 1080px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<style>
+html,body {
+  background: radial-gradient(#F0F0F0, #BEBEBE) !Important;
+  --r-heading-color: #333 !Important;
+  --r-main-color: #333 !Important;
+  --r-heading-font: ‘Lato’, sans-serif !Important;
+  --r-main-font: ‘Lato’, sans-serif !Important;
+}
+li {
+ font-size: 80px;
+}
+.reveal pre code {
+  white-space: pre-wrap !important;
+  word-wrap: break-word !important;
+  overflow-x: hidden !important;
+}
+.has-light-background {
+  background: transparent !Important;
+}
+</style>
+
+<div class="has-light-background" style="background-color: white; padding: 0 20px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+ <div class="block">
+
+## Актуальных данных не бывает
+</div>
+
+
+</div>
+
+<div class="" style="position: absolute; left: 0%; top: 10%; height: 90%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+
+
+<img src="dan/public/fscala2025/images/cpu2.png" alt="" style="object-fit: scale-down">
+
+</div>
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 1080px; width: 1920px; min-height: 1080px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<style>
+html,body {
+  background: radial-gradient(#F0F0F0, #BEBEBE) !Important;
+  --r-heading-color: #333 !Important;
+  --r-main-color: #333 !Important;
+  --r-heading-font: ‘Lato’, sans-serif !Important;
+  --r-main-font: ‘Lato’, sans-serif !Important;
+}
+li {
+ font-size: 80px;
+}
+.reveal pre code {
+  white-space: pre-wrap !important;
+  word-wrap: break-word !important;
+  overflow-x: hidden !important;
+}
+.has-light-background {
+  background: transparent !Important;
+}
+</style>
+
+<div class="has-light-background" style="background-color: white; padding: 0 20px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+ <div class="block">
+
+## Актуальных данных не бывает
+</div>
+
+
+</div>
+
+<div class="" style="position: absolute; left: 0%; top: 10%; height: 90%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+
+
+<img src="dan/public/fscala2025/images/cpu33.png" alt="" style="object-fit: scale-down">
+
+</div>
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 1080px; width: 1920px; min-height: 1080px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+#### Про message passing  как альтернативу блокировке
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 1080px; width: 1920px; min-height: 1080px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+## Как это влияет на бизнес
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 1080px; width: 1920px; min-height: 1080px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<style>
+html,body {
+  background: radial-gradient(#F0F0F0, #BEBEBE) !Important;
+  --r-heading-color: #333 !Important;
+  --r-main-color: #333 !Important;
+  --r-heading-font: ‘Lato’, sans-serif !Important;
+  --r-main-font: ‘Lato’, sans-serif !Important;
+}
+li {
+ font-size: 80px;
+}
+.reveal pre code {
+  white-space: pre-wrap !important;
+  word-wrap: break-word !important;
+  overflow-x: hidden !important;
+}
+.has-light-background {
+  background: transparent !Important;
+}
+</style>
+
+<div class="has-light-background" style="background-color: white; padding: 0 20px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+ <div class="block">
+
+## Бизнес-модель как часть архитектуры
+</div>
+
+
+</div>
+
+<div class="" style="position: absolute; left: 0%; top: 10%; height: 90%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+
+
+<img src="dan/public/fscala2025/images/bus.png" alt="" style="object-fit: scale-down">
+
+</div>
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 1080px; width: 1920px; min-height: 1080px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<style>
+html,body {
+  background: radial-gradient(#F0F0F0, #BEBEBE) !Important;
+  --r-heading-color: #333 !Important;
+  --r-main-color: #333 !Important;
+  --r-heading-font: ‘Lato’, sans-serif !Important;
+  --r-main-font: ‘Lato’, sans-serif !Important;
+}
+li {
+ font-size: 80px;
+}
+.reveal pre code {
+  white-space: pre-wrap !important;
+  word-wrap: break-word !important;
+  overflow-x: hidden !important;
+}
+.has-light-background {
+  background: transparent !Important;
+}
+</style>
+
+<div class="has-light-background" style="background-color: white; padding: 0 20px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+ <div class="block">
+
+## Бизнес-модель как часть архитектуры
+</div>
+
+
+</div>
+
+<div class="" style="position: absolute; left: 0%; top: 10%; height: 90%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+
+
+<img src="dan/public/fscala2025/images/bus1.png" alt="" style="object-fit: scale-down">
+
+</div>
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 1080px; width: 1920px; min-height: 1080px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<style>
+html,body {
+  background: radial-gradient(#F0F0F0, #BEBEBE) !Important;
+  --r-heading-color: #333 !Important;
+  --r-main-color: #333 !Important;
+  --r-heading-font: ‘Lato’, sans-serif !Important;
+  --r-main-font: ‘Lato’, sans-serif !Important;
+}
+li {
+ font-size: 80px;
+}
+.reveal pre code {
+  white-space: pre-wrap !important;
+  word-wrap: break-word !important;
+  overflow-x: hidden !important;
+}
+.has-light-background {
+  background: transparent !Important;
+}
+</style>
+
+<div class="has-light-background" style="background-color: white; padding: 0 20px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+ <div class="block">
+
+## Бизнес-модель как часть архитектуры
+</div>
+
+
+</div>
+
+<div class="" style="position: absolute; left: 0%; top: 10%; height: 90%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+
+
+<img src="dan/public/fscala2025/images/bus2.png" alt="" style="object-fit: scale-down">
+
+</div>
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 1080px; width: 1920px; min-height: 1080px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<style>
+html,body {
+  background: radial-gradient(#F0F0F0, #BEBEBE) !Important;
+  --r-heading-color: #333 !Important;
+  --r-main-color: #333 !Important;
+  --r-heading-font: ‘Lato’, sans-serif !Important;
+  --r-main-font: ‘Lato’, sans-serif !Important;
+}
+li {
+ font-size: 80px;
+}
+.reveal pre code {
+  white-space: pre-wrap !important;
+  word-wrap: break-word !important;
+  overflow-x: hidden !important;
+}
+.has-light-background {
+  background: transparent !Important;
+}
+</style>
+
+<div class="has-light-background" style="background-color: white; padding: 0 20px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+ <div class="block">
+
+## Бизнес-модель как часть архитектуры
+</div>
+
+
+</div>
+
+<div class="" style="position: absolute; left: 0%; top: 10%; height: 90%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+
+
+<img src="dan/public/fscala2025/images/bus3.png" alt="" style="object-fit: scale-down">
+
+</div>
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 1080px; width: 1920px; min-height: 1080px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<style>
+html,body {
+  background: radial-gradient(#F0F0F0, #BEBEBE) !Important;
+  --r-heading-color: #333 !Important;
+  --r-main-color: #333 !Important;
+  --r-heading-font: ‘Lato’, sans-serif !Important;
+  --r-main-font: ‘Lato’, sans-serif !Important;
+}
+li {
+ font-size: 80px;
+}
+.reveal pre code {
+  white-space: pre-wrap !important;
+  word-wrap: break-word !important;
+  overflow-x: hidden !important;
+}
+.has-light-background {
+  background: transparent !Important;
+}
+</style>
+
+<div class="has-light-background" style="background-color: white; padding: 0 20px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+ <div class="block">
+
+## Бизнес-модель как часть архитектуры
+</div>
+
+
+</div>
+
+<div class="" style="position: absolute; left: 0%; top: 10%; height: 90%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+
+
+<img src="dan/public/fscala2025/images/bus4.png" alt="" style="object-fit: scale-down">
+
+</div>
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 1080px; width: 1920px; min-height: 1080px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<style>
+html,body {
+  background: radial-gradient(#F0F0F0, #BEBEBE) !Important;
+  --r-heading-color: #333 !Important;
+  --r-main-color: #333 !Important;
+  --r-heading-font: ‘Lato’, sans-serif !Important;
+  --r-main-font: ‘Lato’, sans-serif !Important;
+}
+li {
+ font-size: 80px;
+}
+.reveal pre code {
+  white-space: pre-wrap !important;
+  word-wrap: break-word !important;
+  overflow-x: hidden !important;
+}
+.has-light-background {
+  background: transparent !Important;
+}
+</style>
+
+<div class="has-light-background" style="background-color: white; padding: 0 20px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+ <div class="block">
+
+## Чему учат биржи
+</div>
+
+
+</div>
+
+<div class="" style="position: absolute; left: 0%; top: 10%; height: 90%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+
+
+
+1. Не бывает CA систем (в контексте CAP)
+2. Актуальных данных не бывает (совсем)
+3. Иногда "идеальное" решение невозможно
+4. Нужно понять, в каком месте компромиссы  
+обойдутся дешевле всего
+</div>
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 1080px; width: 1920px; min-height: 1080px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<style>
+html,body {
+  background: radial-gradient(#F0F0F0, #BEBEBE) !Important;
+  --r-heading-color: #333 !Important;
+  --r-main-color: #333 !Important;
+  --r-heading-font: ‘Lato’, sans-serif !Important;
+  --r-main-font: ‘Lato’, sans-serif !Important;
+}
+li {
+ font-size: 80px;
+}
+.reveal pre code {
+  white-space: pre-wrap !important;
+  word-wrap: break-word !important;
+  overflow-x: hidden !important;
+}
+.has-light-background {
+  background: transparent !Important;
+}
+</style>
+
+<div class="has-light-background" style="background-color: white; padding: 0 20px; box-sizing: border-box; position: absolute; left: 0%; top: 0%; height: 10%; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-evenly" align="left">
+
+ <div class="block">
+
+## Что почитать на досуге:
+</div>
+
+
+</div>
+
+<div class="" style="position: absolute; left: 0%; top: 10%; height: 90%; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+
+
+<div class="" style="position: absolute; left: 0%; top: 0%; height: 100%; width: 14%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+
+<img src="dan/public/fscala2025/images/self-link.png" alt="" style="width: 500px; object-fit: fill">
+
+</div>
+<style>
+.small-list ol li {
+ font-size: 40px !important;
+}
+</style>
+<div class="" style="position: absolute; left: 15%; top: 0%; height: 100%; width: 80%; display: flex; flex-direction: column; align-items: center; justify-content: center" >
+ <!-- .element: class="small-list" -->
+
+1. lmax-exchange.github.io/disruptor/
+2. infoq.com/articles/cap-twelve-years-later-how-the-rules-have-changed/
+3. armstrongonsoftware.blogspot.com
+4. joearms.github.io
+5. lamport.azurewebsites.net/pubs/time-clocks.pdf
+6. Martin Kleppmann — Designing Data-Intensive Applications
+7. usenix.org/legacy/event/hotos09/tech/full_papers/baumann/baumann_html/index.html
+8. wiki.cs.pdx.edu/rp/
+</div>
+
+</div>
+</div></script></section><section  data-markdown><script type="text/template"><!-- .slide: class="drop" -->
+<div class="" style="position: absolute; left: 0px; top: 0px; height: 1080px; width: 1920px; min-height: 1080px; display: flex; flex-direction: column; align-items: center; justify-content: center" absolute="true">
+
+<img src="dan/public/fscala2025/images/last.png" alt="" style="object-fit: scale-down">
+</div></script></section></div>
+    </div>
+
+    <script src="dist/reveal.js"></script>
+
+    <script src="plugin/markdown/markdown.js"></script>
+    <script src="plugin/highlight/highlight.js"></script>
+    <script src="plugin/zoom/zoom.js"></script>
+    <script src="plugin/notes/notes.js"></script>
+    <script src="plugin/math/math.js"></script>
+	<script src="plugin/mermaid/mermaid.js"></script>
+	<script src="plugin/chart/chart.min.js"></script>
+	<script src="plugin/chart/plugin.js"></script>
+	<script src="plugin/customcontrols/plugin.js"></script>
+	<script src="plugin/elapsed-time-bar/elapsed-time-bar.js"></script>
+
+    <script>
+      function extend() {
+        var target = {};
+        for (var i = 0; i < arguments.length; i++) {
+          var source = arguments[i];
+          for (var key in source) {
+            if (source.hasOwnProperty(key)) {
+              target[key] = source[key];
+            }
+          }
+        }
+        return target;
+      }
+
+	  function isLight(color) {
+		let hex = color.replace('#', '');
+
+		// convert #fff => #ffffff
+		if(hex.length == 3){
+			hex = `${hex[0]}${hex[0]}${hex[1]}${hex[1]}${hex[2]}${hex[2]}`;
+		}
+
+		const c_r = parseInt(hex.substr(0, 2), 16);
+		const c_g = parseInt(hex.substr(2, 2), 16);
+		const c_b = parseInt(hex.substr(4, 2), 16);
+		const brightness = ((c_r * 299) + (c_g * 587) + (c_b * 114)) / 1000;
+		return brightness > 155;
+	}
+
+	var bgColor = getComputedStyle(document.documentElement).getPropertyValue('--r-background-color').trim();
+	var isLight = isLight(bgColor);
+
+	if(isLight){
+		document.body.classList.add('has-light-background');
+	} else {
+		document.body.classList.add('has-dark-background');
+	}
+
+      // default options to init reveal.js
+      var defaultOptions = {
+        controls: true,
+        progress: true,
+        history: true,
+        center: true,
+        transition: 'default', // none/fade/slide/convex/concave/zoom
+        plugins: [
+          RevealMarkdown,
+          RevealHighlight,
+          RevealZoom,
+          RevealNotes,
+          RevealMath.MathJax3,
+		  RevealMermaid,
+		  RevealChart,
+		  RevealCustomControls,
+		  ElapsedTimeBar
+        ],
+
+
+    	allottedTime: 120 * 1000,
+
+		mathjax3: {
+			mathjax: 'plugin/math/mathjax/tex-mml-chtml.js',
+		},
+		markdown: {
+		  gfm: true,
+		  mangle: true,
+		  pedantic: false,
+		  smartLists: false,
+		  smartypants: false,
+		},
+
+		mermaid: {
+			theme: isLight ? 'default' : 'dark',
+		},
+
+		customcontrols: {
+			controls: [
+				{id: 'toggle-overview',
+				title: 'Toggle overview (O)',
+				icon: '<i class="fa fa-th"></i>',
+				action: 'Reveal.toggleOverview();'
+				},
+			]
+		},
+      };
+
+      // options from URL query string
+      var queryOptions = Reveal().getQueryHash() || {};
+
+      var options = extend(defaultOptions, {"width":"1920","height":"1080","margin":0.04,"controls":"false","progress":true,"slideNumber":"true","transition":"slide","transitionSpeed":"default"}, queryOptions);
+    </script>
+
+    <script>
+      Reveal.initialize(options);
+    </script>
+  </body>
+
+  <!-- created with Advanced Slides -->
+</html>

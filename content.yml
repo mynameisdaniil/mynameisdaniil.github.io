@@ -20,13 +20,15 @@ sections:
     body: |
       Conference talks on distributed systems, actor architectures, high-load systems, and blockchain infrastructure.
 
-      Portal Network and libportalnet: Building Lightweight Ethereum Protocol Implementations — EthBelgrade [EN]
+      [Portal Network and libportalnet: Building Lightweight Ethereum Protocol Implementations](/slides/ethbelgrade2024/) — EthBelgrade [EN]
 
-      Exchanges and the Theory of Relativity: Applying Concepts from Physics to High-Load Distributed Systems — F[Scala]
+      [Exchanges and the Theory of Relativity: Applying Concepts from Physics to High-Load Distributed Systems](/slides/fscala25/) — F[Scala]
 
-      Designing Actor Architectures for Scalable Concurrent Systems — Saint P Ruby Community / Rubyconf [RU]
+      [Designing Actor Architectures for Scalable Concurrent Systems](/slides/rubyconf2024/) — Rubyconf / [Saint P Ruby Community](/slides/ruby_meetup_2024_autumn/) [RU]
 
-      Why Elixir Couldn't Have Been Based on the JVM: A Look at Garbage Collection in the BEAM — Moscow Elixir Meetup [RU]
+      [Why Elixir Couldn't Have Been Based on the JVM: A Look at Garbage Collection in the BEAM](/slides/elixir-meetup/) — Moscow Elixir Meetup [RU]
+
+      [How Ethereum works](/slides/sysconf2025/) — SysConf 2025 [RU]
 
       Why You Probably Should Re-Invent the Wheel in Erlang: Lessons from Real Systems — FPconf
   - id: facts
