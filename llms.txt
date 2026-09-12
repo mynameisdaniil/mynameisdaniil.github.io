@@ -12,11 +12,6 @@
 - Reddit: https://www.reddit.com/user/mynameisdaniil
 - Stack Overflow: https://stackoverflow.com/users/847216/mynameisdaniil
 
-## Work
-
-- [ePortalD](https://eportald.org/): Erlang client for Ethereum Portal Network
-- [libportal](https://libportal.net/): Zig (C-compatible) client for Ethereum Portal Network
-
 ## Writing
 
 - [My take on an introductory FP article via Haskell](https://habr.com/ru/post/319440/)
