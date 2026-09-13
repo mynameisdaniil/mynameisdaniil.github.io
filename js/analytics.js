@@ -15,6 +15,24 @@ const POSTHOG_CONFIG = {
   respect_dnt: true,
 };
 
+const LABEL_LIMIT = 200;
+
+function sectionFor(anchor) {
+  const section = anchor.closest("section[id]");
+  return section ? section.id : "masthead";
+}
+
+function wireClicks(doc, posthog) {
+  doc.addEventListener("click", (event) => {
+    const anchor = event.target.closest?.("a[href]");
+    if (!anchor) return;
+    const href = anchor.getAttribute("href");
+    if (!href || href.startsWith("#")) return;
+    const label = anchor.textContent.trim().slice(0, LABEL_LIMIT);
+    posthog.capture("outbound_click", { href, label, section: sectionFor(anchor) });
+  });
+}
+
 function defaultSchedule(win) {
   return (fn) => {
     if (typeof win.requestIdleCallback === "function") {
@@ -65,6 +83,7 @@ export async function initAnalytics(deps = {}) {
           .then(() => load(win, doc, scriptUrl))
           .then(() => {
             win.posthog.init(key, POSTHOG_CONFIG);
+            wireClicks(doc, win.posthog);
           })
           .catch(() => {})
           .then(resolve);

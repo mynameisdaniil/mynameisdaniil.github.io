@@ -81,3 +81,44 @@ test("suppresses loader failures", async () => {
   await initAnalytics(h.deps);
   assert.equal(h.calls.init.length, 0);
 });
+
+function click(win, el) {
+  el.dispatchEvent(new win.MouseEvent("click", { bubbles: true }));
+}
+
+test("reports outbound clicks with href, label, and section", async () => {
+  const h = await run();
+  click(h.dom.window, h.dom.window.document.querySelector("#talks a"));
+  assert.deepEqual(h.calls.capture, [
+    ["outbound_click", { href: "/slides/fscala25/", label: "Deck", section: "talks" }],
+  ]);
+});
+
+test("reports masthead links with section masthead", async () => {
+  const h = await run();
+  click(h.dom.window, h.dom.window.document.querySelector(".masthead a"));
+  assert.equal(h.calls.capture.length, 1);
+  assert.equal(h.calls.capture[0][1].section, "masthead");
+});
+
+test("ignores in-page fragment links and non-anchor clicks", async () => {
+  const h = await run({
+    html: `<!doctype html><html><body>
+      <a class="skip" href="#paper">Skip</a>
+      <p id="text">hello</p>
+    </body></html>`,
+  });
+  const { window } = h.dom;
+  click(window, window.document.querySelector(".skip"));
+  click(window, window.document.querySelector("#text"));
+  assert.equal(h.calls.capture.length, 0);
+});
+
+test("caps the label at 200 characters", async () => {
+  const long = "x".repeat(250);
+  const h = await run({
+    html: `<!doctype html><html><body><section id="writing"><a href="https://a.example">${long}</a></section></body></html>`,
+  });
+  click(h.dom.window, h.dom.window.document.querySelector("#writing a"));
+  assert.equal(h.calls.capture[0][1].label.length, 200);
+});
