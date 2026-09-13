@@ -92,3 +92,9 @@ outbound clicks, scroll depth, and heatmaps — no cookies and no consent banner
 To enable it: create an EU PostHog project, enable **Cookieless** and
 **Heatmaps** in project settings, put the `phc_…` key in `POSTHOG_KEY`, then run
 `npm run build:app && npm run build:sw` and commit the rebuilt artifacts.
+
+The SDK and capture requests go through `omg.mynameisdaniil.dev`, a PostHog
+managed reverse proxy (EU), so ad blockers that target `posthog.com` do not
+block analytics. The proxy's CNAME target lives in PostHog's organization proxy
+settings; `api_host`/`ui_host`/`POSTHOG_SCRIPT` in `js/analytics.js` must match
+that subdomain.
