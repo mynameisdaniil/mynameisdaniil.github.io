@@ -39,3 +39,8 @@ test("sw.js precaches shell assets from the network", () => {
     "precache must bypass the HTTP cache so installs are fresh",
   );
 });
+
+test("sw.js rejects non-ok precache responses", () => {
+  const sw = readFileSync(swPath, "utf8");
+  assert.ok(sw.includes("if (!response.ok) throw"), "precache must reject non-2xx responses");
+});

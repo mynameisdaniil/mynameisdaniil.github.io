@@ -16,6 +16,7 @@ self.addEventListener("install", (event) => {
         Promise.all(
           PRECACHE.map(async (url) => {
             const response = await fetch(url, { cache: "reload" });
+            if (!response.ok) throw new Error(`precache failed for ${url}`);
             await cache.put(url, response);
           }),
         ),
