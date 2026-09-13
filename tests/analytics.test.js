@@ -69,7 +69,8 @@ test("loads the EU script once and initializes the cookieless config", async () 
   assert.equal(config.api_host, "https://omg.mynameisdaniil.dev");
   assert.equal(config.ui_host, "https://eu.posthog.com");
   assert.equal(config.cookieless_mode, "always");
-  assert.equal(config.enable_heatmaps, true);
+  assert.equal(config.capture_heatmaps, true);
+  assert.equal(config.capture_dead_clicks, false);
   assert.equal(config.autocapture, true);
   assert.equal(config.capture_pageleave, true);
   assert.equal(config.disable_session_recording, true);
