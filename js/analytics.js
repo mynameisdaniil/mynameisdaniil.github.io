@@ -22,6 +22,43 @@ function sectionFor(anchor) {
   return section ? section.id : "masthead";
 }
 
+const SCROLL_THRESHOLDS = [25, 50, 75, 100];
+
+function defaultFrame(win) {
+  return (fn) => {
+    if (typeof win.requestAnimationFrame === "function") {
+      win.requestAnimationFrame(fn);
+    } else {
+      fn();
+    }
+  };
+}
+
+function wireScroll(win, doc, posthog, frame) {
+  const fired = new Set();
+  let ticking = false;
+  const emit = () => {
+    ticking = false;
+    const percent =
+      ((win.scrollY + win.innerHeight) / doc.documentElement.scrollHeight) * 100;
+    for (const threshold of SCROLL_THRESHOLDS) {
+      if (percent >= threshold && !fired.has(threshold)) {
+        fired.add(threshold);
+        posthog.capture("scroll_depth", { percent: threshold });
+      }
+    }
+  };
+  win.addEventListener(
+    "scroll",
+    () => {
+      if (ticking) return;
+      ticking = true;
+      frame(emit);
+    },
+    { passive: true },
+  );
+}
+
 function wireClicks(doc, posthog) {
   doc.addEventListener("click", (event) => {
     const anchor = event.target.closest?.("a[href]");
@@ -72,6 +109,7 @@ export async function initAnalytics(deps = {}) {
   const key = deps.key ?? POSTHOG_KEY;
   if (!key) return;
   const schedule = deps.schedule ?? defaultSchedule(win);
+  const frame = deps.frame ?? defaultFrame(win);
   const whenReady = deps.whenReady ?? defaultWhenReady(win, doc);
   const load = deps.load ?? loadScript;
   const scriptUrl = deps.scriptUrl ?? POSTHOG_SCRIPT;
@@ -84,6 +122,7 @@ export async function initAnalytics(deps = {}) {
           .then(() => {
             win.posthog.init(key, POSTHOG_CONFIG);
             wireClicks(doc, win.posthog);
+            wireScroll(win, doc, win.posthog, frame);
           })
           .catch(() => {})
           .then(resolve);

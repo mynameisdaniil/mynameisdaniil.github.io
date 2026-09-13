@@ -25,6 +25,7 @@ function harness({ hostname = "mynameisdaniil.dev", html = HTML } = {}) {
     key: "phc_test",
     load,
     schedule: (fn) => fn(),
+    frame: (fn) => fn(),
     whenReady: (fn) => fn(),
   };
   return { dom, calls, deps };
@@ -121,4 +122,30 @@ test("caps the label at 200 characters", async () => {
   });
   click(h.dom.window, h.dom.window.document.querySelector("#writing a"));
   assert.equal(h.calls.capture[0][1].label.length, 200);
+});
+
+test("reports scroll depth once per threshold", async () => {
+  const h = await run();
+  const { window } = h.dom;
+  Object.defineProperty(window, "innerHeight", { value: 800, configurable: true });
+  Object.defineProperty(window, "scrollY", { value: 0, writable: true, configurable: true });
+  Object.defineProperty(window.document.documentElement, "scrollHeight", {
+    value: 4000,
+    configurable: true,
+  });
+  const scroll = (y) => {
+    window.scrollY = y;
+    window.dispatchEvent(new window.Event("scroll"));
+  };
+  scroll(800);
+  scroll(800);
+  scroll(1600);
+  scroll(2600);
+  scroll(3400);
+  assert.deepEqual(h.calls.capture, [
+    ["scroll_depth", { percent: 25 }],
+    ["scroll_depth", { percent: 50 }],
+    ["scroll_depth", { percent: 75 }],
+    ["scroll_depth", { percent: 100 }],
+  ]);
 });
