@@ -41,7 +41,7 @@ re-runs after 150 ms.
 | `protrude` | `true` | hanging punctuation at line edges |
 | `protrusion` | `null` | per-side amount overrides, e.g. `{ right: { "…": 0.05 } }` |
 | `punctuation` | `true` | smart quotes/dashes/ellipses in text nodes |
-| `onResize` | `true` | debounced re-run on window resize |
+| `onResize` | `true` | debounced re-run when the window width changes |
 | `awaitFonts` | `true` | wait for `document.fonts.ready` |
 | `injectStyles` | `true` | inject `.protrude-left/right { display: inline }` |
 | `resizeDelay` | `150` | resize debounce in ms |

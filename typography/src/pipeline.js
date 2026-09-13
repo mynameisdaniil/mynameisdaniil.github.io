@@ -30,6 +30,24 @@ function resolveLang(el, fallback) {
   return (tagged && tagged.getAttribute("lang")) || fallback || "en-us";
 }
 
+export function resizeHandler(win, run, delay = 150) {
+  let timer = 0;
+  let lastWidth = win.innerWidth;
+  const onResize = () => {
+    if (win.innerWidth === lastWidth) return;
+    lastWidth = win.innerWidth;
+    clearTimeout(timer);
+    timer = setTimeout(run, delay);
+  };
+  win.addEventListener("resize", onResize);
+  return {
+    destroy() {
+      win.removeEventListener("resize", onResize);
+      clearTimeout(timer);
+    },
+  };
+}
+
 export function typeset(root, options = {}) {
   const opts = { ...DEFAULTS, ...options };
   const doc = root.ownerDocument || document;
@@ -75,14 +93,8 @@ export function typeset(root, options = {}) {
   }
 
   const win = doc.defaultView || (typeof window !== "undefined" ? window : null);
-  let resizeTimer = 0;
-
-  function onResize() {
-    clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(() => run(root), opts.resizeDelay);
-  }
-
-  if (opts.onResize && win) win.addEventListener("resize", onResize);
+  const resize =
+    opts.onResize && win ? resizeHandler(win, () => run(root), opts.resizeDelay) : null;
 
   if (opts.awaitFonts && doc.fonts && doc.fonts.ready) {
     doc.fonts.ready
@@ -99,8 +111,7 @@ export function typeset(root, options = {}) {
     typeset: (el) => run(el || root),
     refresh: () => run(root),
     destroy() {
-      if (win) win.removeEventListener("resize", onResize);
-      clearTimeout(resizeTimer);
+      if (resize) resize.destroy();
     },
   };
 }

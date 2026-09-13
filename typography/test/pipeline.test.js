@@ -2,6 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { JSDOM } from "jsdom";
 import { typeset, unjustify } from "../src/index.js";
+import { resizeHandler } from "../src/pipeline.js";
 
 function setup() {
   const dom = new JSDOM(
@@ -33,6 +34,27 @@ test("typeset is idempotent across refresh", () => {
   const first = root.innerHTML;
   handle.refresh();
   assert.equal(root.innerHTML, first);
+});
+
+test("resize handler ignores height-only resizes", async () => {
+  const dom = setup();
+  let runs = 0;
+  const handler = resizeHandler(
+    dom.window,
+    () => {
+      runs += 1;
+    },
+    0,
+  );
+  dom.window.dispatchEvent(new dom.window.Event("resize"));
+  await new Promise((resolve) => setTimeout(resolve, 5));
+  assert.equal(runs, 0);
+  Object.defineProperty(dom.window, "innerWidth", { value: 800, configurable: true });
+  dom.window.dispatchEvent(new dom.window.Event("resize"));
+  dom.window.dispatchEvent(new dom.window.Event("resize"));
+  await new Promise((resolve) => setTimeout(resolve, 5));
+  assert.equal(runs, 1);
+  handler.destroy();
 });
 
 test("destroy removes the resize listener", () => {
