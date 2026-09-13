@@ -1,5 +1,6 @@
 import { loadContent, renderMarkdown, ContentError } from "./content.js";
 import { typeset, unjustify, clearProtrusion } from "../typography/src/index-en.js";
+import { initAnalytics } from "./analytics.js";
 
 const masthead = document.querySelector(".masthead");
 const titleEl = document.getElementById("site-title");
@@ -105,6 +106,8 @@ async function boot() {
 }
 
 boot();
+
+initAnalytics();
 
 if ("serviceWorker" in navigator) {
   navigator.serviceWorker

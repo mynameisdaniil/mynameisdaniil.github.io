@@ -81,3 +81,14 @@ NOTICE                third-party licenses
 A machine-readable summary of who this is, what they work on, and how to get in
 touch is served at `/llms.txt`; the page also carries JSON-LD `Person` data.
 Local agent instructions are not tracked in this repository.
+
+## Analytics
+
+The site uses PostHog Cloud (EU) in cookieless mode: pageviews, referrers,
+outbound clicks, scroll depth, and heatmaps — no cookies and no consent banner.
+`js/analytics.js` no-ops unless `POSTHOG_KEY` is set and the hostname is
+`mynameisdaniil.dev`.
+
+To enable it: create an EU PostHog project, enable **Cookieless** and
+**Heatmaps** in project settings, put the `phc_…` key in `POSTHOG_KEY`, then run
+`npm run build:app && npm run build:sw` and commit the rebuilt artifacts.
