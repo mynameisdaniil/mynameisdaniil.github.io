@@ -1,10 +1,11 @@
 const POSTHOG_KEY = "phc_C5tSXrtERrTTB47Nt8258rzH2gnLhqGbBwXZkXsqrb7S";
-const POSTHOG_SCRIPT = "https://eu-assets.i.posthog.com/static/array.js";
-const POSTHOG_HOST = "https://eu.i.posthog.com";
+const POSTHOG_SCRIPT = "https://omg.mynameisdaniil.dev/static/array.js";
+const POSTHOG_HOST = "https://omg.mynameisdaniil.dev";
 const PRODUCTION_HOST = "mynameisdaniil.dev";
 
 const POSTHOG_CONFIG = {
   api_host: POSTHOG_HOST,
+  ui_host: "https://eu.posthog.com",
   cookieless_mode: "always",
   enable_heatmaps: true,
   autocapture: true,

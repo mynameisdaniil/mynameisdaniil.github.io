@@ -57,16 +57,17 @@ test("waits for window load before loading the SDK", async () => {
   assert.equal(h.calls.load.length, 0);
   h.dom.window.dispatchEvent(new h.dom.window.Event("load"));
   await pending;
-  assert.deepEqual(h.calls.load, ["https://eu-assets.i.posthog.com/static/array.js"]);
+  assert.deepEqual(h.calls.load, ["https://omg.mynameisdaniil.dev/static/array.js"]);
 });
 
 test("loads the EU script once and initializes the cookieless config", async () => {
   const h = await run();
-  assert.deepEqual(h.calls.load, ["https://eu-assets.i.posthog.com/static/array.js"]);
+  assert.deepEqual(h.calls.load, ["https://omg.mynameisdaniil.dev/static/array.js"]);
   assert.equal(h.calls.init.length, 1);
   const [key, config] = h.calls.init[0];
   assert.equal(key, "phc_test");
-  assert.equal(config.api_host, "https://eu.i.posthog.com");
+  assert.equal(config.api_host, "https://omg.mynameisdaniil.dev");
+  assert.equal(config.ui_host, "https://eu.posthog.com");
   assert.equal(config.cookieless_mode, "always");
   assert.equal(config.enable_heatmaps, true);
   assert.equal(config.autocapture, true);
