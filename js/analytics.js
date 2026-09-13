@@ -1,4 +1,4 @@
-const POSTHOG_KEY = "";
+const POSTHOG_KEY = "phc_C5tSXrtERrTTB47Nt8258rzH2gnLhqGbBwXZkXsqrb7S";
 const POSTHOG_SCRIPT = "https://eu-assets.i.posthog.com/static/array.js";
 const POSTHOG_HOST = "https://eu.i.posthog.com";
 const PRODUCTION_HOST = "mynameisdaniil.dev";
