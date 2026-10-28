@@ -1,0 +1,384 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>node-seq Revisited (About Asynchrony, Again) — Daniil Sobol</title>
+    <meta
+      name="description"
+      content="In 2015, tired of node-seq's abandoned code, Daniil Sobol wrote YAFF: a small async flow-control library built around a single argument stack. A story about callback spaghetti, error handling, and learning to love finally."
+    />
+    <link rel="canonical" href="https://mynameisdaniil.dev/habr/yaff/" />
+    <meta name="author" content="Daniil Sobol" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://mynameisdaniil.dev/habr/yaff/" />
+    <meta
+      property="og:title"
+      content="node-seq Revisited (About Asynchrony, Again)"
+    />
+    <meta
+      property="og:description"
+      content="In 2015, tired of node-seq's abandoned code, Daniil Sobol wrote YAFF: a small async flow-control library built around a single argument stack. A story about callback spaghetti, error handling, and learning to love finally."
+    />
+    <meta property="og:image" content="https://mynameisdaniil.dev/assets/og.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="article:published_time" content="2015-02-24" />
+    <meta property="article:author" content="Daniil Sobol" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta
+      name="twitter:title"
+      content="node-seq Revisited (About Asynchrony, Again)"
+    />
+    <meta
+      name="twitter:description"
+      content="In 2015, tired of node-seq's abandoned code, Daniil Sobol wrote YAFF: a small async flow-control library built around a single argument stack. A story about callback spaghetti, error handling, and learning to love finally."
+    />
+    <meta name="twitter:image" content="https://mynameisdaniil.dev/assets/og.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png" />
+    <link
+      rel="preload"
+      href="/assets/fonts/latin-modern-roman-regular.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      href="/assets/fonts/gost-type-a-regular.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      href="/assets/fonts/latin-modern-mono-regular.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link rel="stylesheet" href="/assets/fonts.css" />
+    <link rel="stylesheet" href="/assets/site.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#paper">Skip to content</a>
+    <div class="page page--article">
+      <main class="paper paper--article" id="paper" aria-labelledby="article-title" tabindex="-1">
+        <article class="article">
+          <header class="article__header">
+            <nav class="article-nav" aria-label="Site">
+              <a href="/">Home</a>
+            </nav>
+            <h1 class="article__title" id="article-title">
+              node-seq Revisited (About Asynchrony, Again)
+            </h1>
+            <p class="article__meta">
+              By Daniil Sobol ·
+              <time datetime="2015-02-24">24 February 2015</time> ·
+              <a href="https://habr.com/ru/post/251307/">Original Russian article on Habr</a>
+            </p>
+          </header>
+
+          <p>
+            I'm late to the party. While the new Tesla Roadster drove upside down and did mid-air
+            flips at its reveal, and the most impatient people are already using ES6 features in
+            their projects, I've brought you another library to make an async developer's life
+            easier.
+          </p>
+
+          <p>
+            There have long been a million promise implementations, and <code>async</code> for
+            anyone who wants it. There's also <a href="https://github.com/substack/node-seq">Seq</a>,
+            widely known in narrow circles, by the not entirely unknown Substack. I started using
+            it almost from my first days with JavaScript and used it wherever I could. Its approach
+            to taming asynchronous spaghetti seems clearer and more logical to me than the one in
+            <code>async</code>, for example. See for yourself:
+          </p>
+
+          <pre><code>var fs = require('fs');
+var Hash = require('hashish');
+var Seq = require('seq');
+
+Seq()
+  .seq(function () {
+    fs.readdir(__dirname, this);
+  })
+  .flatten()
+  .parEach(function (file) {
+    fs.stat(__dirname + '/' + file, this.into(file));
+  })
+  .seq(function () {
+    var sizes = Hash.map(this.vars, function (s) { return s.size })
+    console.dir(sizes);
+  });</code></pre>
+
+          <p>
+            It's all so simple and clear that I'm too lazy to explain it. Unfortunately, the
+            library hasn't been developed or maintained for a long time. On top of that, I
+            accumulated a list of bugs I kept running into, a list of features I wanted, a list
+            of complaints — because not everything worked as well as I'd imagined. One day I ran
+            into the world's imperfection once again and decided that This Moment had arrived.
+            Time to fork and fix. I do that often, but what this library did seemed like real
+            Magic.
+          </p>
+
+          <p>
+            So, happy and full of determination, I do <code>git clone</code>, <code>cd</code>,
+            <code>gvim</code>, and try to understand what's going on. I don't. The author uses a
+            couple more of his own libraries, so to reach enlightenment I first have to figure
+            those out. After a couple of hours I get bored and discover a Fatal Flaw. Said and
+            done. I sit down and write the Library of Dreams from scratch. Strangely enough, there
+            was no magic in any of it. The prototype was ready in an evening. Then I spent some
+            more time polishing it while using it in a real project, replacing Seq completely. And
+            here's what came out. Let's get acquainted.
+          </p>
+
+          <p>YAFF — Yet Another Flow Framework.</p>
+
+          <p>
+            Overall, I tried to make it compatible with Seq. Most code migrated by simply
+            replacing the import (from <code>var Seq = require('seq');</code> to
+            <code>var Seq = require('yaff');</code>). Of course, a few other things had to change
+            too. Seq uses <code>.catch()</code> to catch bugs. For example, the snippet above
+            could be changed like this:
+          </p>
+
+          <pre><code>var fs = require('fs');
+var Hash = require('hashish');
+var Seq = require('seq');
+
+Seq()
+  .seq(function () {
+    fs.readdir(__dirname, this);
+  })
+  .flatten()
+  .parEach(function (file) {
+    fs.stat(__dirname + '/' + file, this.into(file));
+  })
+  .catch(function (err) {
+    console.error(err);
+  })
+  .seq(function () {
+    var sizes = Hash.map(this.vars, function (s) { return s.size })
+    console.dir(sizes);
+  });</code></pre>
+
+          <p>
+            This construct is terrible because after we've “caught” an error we can keep going.
+            That can't be allowed. First, it's unclear what to do when <code>parEach</code> (or
+            another similar method) throws several errors. Catch only the first? Catch all? What
+            if we've already gone far down the chain and an error pops up on a timer in some
+            <code>parEach</code> above? What if there's no <code>catch</code> below us anymore?
+            What if the catches below aren't prepared to handle errors that crawl out of a
+            <code>forEach</code> on a timer? Many questions, no answers.
+          </p>
+
+          <p>
+            So I decided that every YAFF chain should have exactly one error-handling construct,
+            and it should be at the end. And to keep with Node.js tradition, let it handle the
+            result too. The result is beauty. See for yourself:
+          </p>
+
+          <pre><code>var fs = require('fs');
+YAFF(['./', '../'])
+  .par(function (path) {
+    fs.readdir(path, this);
+  })
+  .par(function (path) {
+    fs.readdir(path, this);
+  })
+  .flatten()
+  .parMap(function (file) {
+    fs.stat(__dirname + '/' + file, this);
+  })
+  .map(function (stat) {
+    return stat.size;
+  })
+  .unflatten()
+  .finally(function (e, sizes) {
+    if (e)
+      throw e;
+    log(sizes);
+  });</code></pre>
+
+          <p>
+            If we assume this is all inside an asynchronous function, in <code>finally</code> we
+            can simply pass in the callback we were given, like this:
+          </p>
+
+          <pre><code>var listDirs = function (dirs, cb) {
+  YAFF(dirs)
+    // magic bubbles
+    .finally(cb);
+};</code></pre>
+
+          <p>Convenient? I like it too.</p>
+
+          <p>
+            Actually, the library is built around the concept of an argument stack array (I should
+            have written about that at the very beginning). Every method here changes that stack
+            by applying to it or to its individual elements. Say a flock of functions wrapped in
+            <code>par</code> takes one element each from the stack, in the order the
+            <code>par</code> calls are written. Only after all the <code>par</code> callbacks have
+            fired — the callback inside every method is <code>this</code> — does YAFF move on to
+            what's next in line. Suppose next we have several functions wrapped in
+            <code>seq</code>. YAFF will apply the whole stack to them and replace it with whatever
+            the wrapped function returns in its callback. Here's the code, so it's clear:
+          </p>
+
+          <pre><code>YAFF(['one', 'two', 'three'])
+  .par(function (one) {
+    this(null, one);
+  })
+  .par(function (two) {
+    this(null, two);
+  })
+  .par(function (three) {
+    this(null, three);
+  })
+  .seq(function (one, two, three) {
+    this(null, one, three);
+  })
+  .seq(function (one, three) {
+    this(null, null);
+  })
+  .seq(function () {
+    this(null, 'and so on and so forth');
+  })</code></pre>
+
+          <p>
+            Of course, if someone calls their callback with a non-null first argument — an error —
+            YAFF immediately spits on all the functions still waiting there. It goes off to
+            execute what's written in <code>finally</code>. If you forgot to write
+            <code>finally</code>, or decided that your code definitely can't have errors, YAFF
+            will unceremoniously throw an exception when one occurs. So it's better to have a
+            <code>finally</code>.
+          </p>
+
+          <p>
+            There are also all sorts of synchronous functions for working with the argument stack
+            as an array: <code>push</code>, <code>pop</code>, <code>filter</code>,
+            <code>set</code>, <code>reduce</code>, <code>flatten</code>, <code>extend</code>,
+            <code>unflatten</code>, <code>empty</code>, <code>shift</code>,
+            <code>unshift</code>, <code>splice</code>, <code>reverse</code>,
+            <code>save(name)</code>, <code>load(fromName)</code>. Phew, I think that's all. The
+            names speak for themselves, but if anything — don't hesitate to ask and look at the
+            source. There's one file (<a
+              href="https://github.com/mynameisdaniil/yaff/blob/master/main.js"
+              ><code>main.js</code></a
+            >) and the whole thing is very simple.
+          </p>
+
+          <p>
+            And, of course, the reason all this was started: the asynchronous functions for
+            processing arrays of data — <code>forEach</code> (YAFF won't wait for this block to
+            finish; its results won't affect the stack; YAFF moves straight to the next handler in
+            the chain), <code>seqEach</code>, <code>parEach</code> (YAFF will wait for all the
+            functions to fire, but their results won't affect the stack), <code>seqMap</code>,
+            <code>parMap</code>, <code>seqFilter</code>, <code>parFilter</code> — they do what you
+            expect. YAFF waits for them to finish, and their results replace the values that were
+            on the stack before.
+          </p>
+
+          <p>
+            Also, every method with a <code>par</code> prefix accepts a number after the function.
+            That number is the limit of simultaneously running asynchronous functions. Something
+            like this:
+          </p>
+
+          <pre><code>var resizePhotos = function (photos, cb) {
+  YAFF(photos)
+    .parMap(function (photo) {
+      asyncResize(photo.image, photo.params, this);
+    }, 10)
+    .unflatten()
+    .finally(cb);
+};</code></pre>
+
+          <p>
+            In this example we resize a batch of photos asynchronously. To avoid overloading the
+            server, we resize no more than 10 pictures at once for each client.
+            <code>unflatten</code> is needed to gather the photos spread across the stack into an
+            array that will be a single argument for the callback.
+          </p>
+
+          <p>
+            YAFF also has <code>mseq</code> and <code>mpar</code> — a curtsy toward
+            <code>async</code> users. These methods take an array of functions to be executed
+            sequentially or in parallel. We could just as well write a bunch of <code>seq()</code>
+            and <code>par()</code>, but sometimes you want to generate functions dynamically. We're
+            a functional language, after all, aren't we?
+          </p>
+
+          <p>
+            To confuse you completely, I came up with the following example and drew a picture (in
+            the desperate hope that it will clarify everything):
+          </p>
+
+          <pre><code>YAFF(['./'])
+  .mseq([
+    function (path1) {
+      fs.readdir(path1, this);
+    },
+    function (arg) {
+      this(null, arg);
+    }
+  ])
+  .flatten()
+  .parMap(function (file) {
+    fs.stat(__dirname + '/' + file, this);
+  })
+  .map(function (stat) {
+    return stat.size;
+  })
+  .unflatten()
+  .finally(function (e, sizes) {
+    log(sizes);
+  });</code></pre>
+
+          <figure>
+            <a href="flow.svg" aria-label="Open the full-size diagram">
+              <img
+                src="flow.svg"
+                width="1000"
+                height="1280"
+                alt="Diagram of a YAFF chain: each step transforms the argument stack, from the initial path through mseq, flatten, parMap, map, unflatten, and finally"
+                loading="lazy"
+                decoding="async"
+              />
+            </a>
+            <figcaption class="article__meta">
+              The big picture. Every step transforms the argument stack.
+              <a href="flow.svg">Open full size</a>.
+            </figcaption>
+          </figure>
+
+          <p>
+            I hope I managed to explain what I wanted clearly. You've got the idea — and I'm not
+            the only one who doesn't understand why anyone needs <code>async</code>.
+          </p>
+
+          <p>
+            All concrete wishes and suggestions are best filed as
+            <a href="https://github.com/mynameisdaniil/yaff/issues">issues</a> (in English — don't
+            be shy, I'm bad at it too; we'll practice together) on GitHub, or even as
+            <a href="https://github.com/mynameisdaniil/yaff/pulls">pull requests</a>.
+          </p>
+
+          <p>
+            Oh, right — the library is on
+            <a href="https://www.npmjs.com/package/yaff">npmjs.org</a>.
+          </p>
+
+          <p>
+            P.S. Just now, in a fit of passion, I added a synchronous <code>apply</code> method —
+            so all the other synchronous methods can be thrown away. But I'll keep them for
+            convenience and compatibility.
+          </p>
+        </article>
+      </main>
+    </div>
+    <script type="module" src="/js/article.js"></script>
+  </body>
+</html>

@@ -11,6 +11,7 @@ const SHELL_ASSETS = [
   "assets/site.css",
   "assets/app.min.js",
   "habr/habradude/index.html",
+  "habr/yaff/index.html",
   "js/article.js",
   "js/analytics.js",
   "js/print-lifecycle.js",

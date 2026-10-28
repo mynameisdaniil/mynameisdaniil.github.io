@@ -14,7 +14,7 @@ sections:
     body: |
       [Haskell for Absolute Beginners: A Codefights Walkthrough](/habr/habradude/)
 
-      [YAFF — asynchronous stream-oriented programming before it became mainstream](https://habr.com/ru/post/251307/)
+      [YAFF — asynchronous stream-oriented programming before it became mainstream](/habr/yaff/)
   - id: talks
     title: Talks
     body: |

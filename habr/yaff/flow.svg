@@ -1,0 +1,93 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1280" width="1000" height="1280" role="img" aria-labelledby="flow-title flow-desc">
+  <title id="flow-title">How a YAFF chain transforms its argument stack</title>
+  <desc id="flow-desc">Seven steps in a YAFF chain: start with a path, read a directory with mseq, flatten the array, stat each file in parallel with parMap, map the stats to sizes, unflatten the stack, and handle the result in finally.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#000" />
+    </marker>
+    <style>
+      text { font-family: Georgia, "Times New Roman", serif; fill: #000; }
+      .code { font-family: "DejaVu Sans Mono", "Courier New", monospace; font-size: 15px; }
+      .stack { font-family: "DejaVu Sans Mono", "Courier New", monospace; font-size: 13.5px; }
+      .note { font-size: 14px; }
+      .header { font-family: Georgia, "Times New Roman", serif; font-size: 12px; letter-spacing: 1.4px; fill: #6b665c; }
+      .footer { font-family: Georgia, "Times New Roman", serif; font-size: 13px; fill: #6b665c; }
+      .box { fill: none; stroke: #000; stroke-width: 1.4; }
+      .arrow { stroke: #000; stroke-width: 1.4; fill: none; marker-end: url(#arrow); }
+      .rule { stroke: #d8d2c4; stroke-width: 1; }
+    </style>
+  </defs>
+
+  <text class="header" x="24" y="38">PROGRAM</text>
+  <text class="header" x="360" y="38">ARGUMENT STACK</text>
+  <text class="header" x="700" y="38">WHAT&#8217;S HAPPENING</text>
+
+  <g>
+    <text class="code" x="24" y="118">YAFF([&#39;./&#39;])</text>
+    <rect class="box" x="360" y="86" width="300" height="108" rx="3" />
+    <text class="stack" x="376" y="144">[&#39;./&#39;]</text>
+    <text class="note" x="700" y="114">Start with one path.</text>
+    <path class="arrow" d="M 510 196 L 510 244" />
+  </g>
+
+  <g>
+    <text class="code" x="24" y="278">.mseq([readDir, pass])</text>
+    <rect class="box" x="360" y="246" width="300" height="108" rx="3" />
+    <text class="stack" x="376" y="274">[null,</text>
+    <text class="stack" x="376" y="294"> [&#39;./test&#39;, &#39;./best&#39;,</text>
+    <text class="stack" x="376" y="314">  &#39;./rest&#39;]]</text>
+    <text class="note" x="700" y="274">Run the functions in sequence.</text>
+    <text class="note" x="700" y="294">The first slot is the error.</text>
+    <path class="arrow" d="M 510 356 L 510 404" />
+  </g>
+
+  <g>
+    <text class="code" x="24" y="438">.flatten()</text>
+    <rect class="box" x="360" y="406" width="300" height="108" rx="3" />
+    <text class="stack" x="376" y="464">[null, &#39;./test&#39;,</text>
+    <text class="stack" x="376" y="484"> &#39;./best&#39;, &#39;./rest&#39;]</text>
+    <text class="note" x="700" y="454">Flatten the nested array into</text>
+    <text class="note" x="700" y="474">separate arguments.</text>
+    <path class="arrow" d="M 510 516 L 510 564" />
+  </g>
+
+  <g>
+    <text class="code" x="24" y="598">.parMap(fs.stat)</text>
+    <rect class="box" x="360" y="566" width="300" height="108" rx="3" />
+    <text class="stack" x="376" y="624">[null, stat, stat, stat]</text>
+    <text class="note" x="700" y="614">Run in parallel; each argument</text>
+    <text class="note" x="700" y="634">becomes a function result.</text>
+    <path class="arrow" d="M 510 676 L 510 724" />
+  </g>
+
+  <g>
+    <text class="code" x="24" y="758">.map(s =&gt; s.size)</text>
+    <rect class="box" x="360" y="726" width="300" height="108" rx="3" />
+    <text class="stack" x="376" y="784">[null, 10, 20, 30]</text>
+    <text class="note" x="700" y="774">A plain synchronous map over</text>
+    <text class="note" x="700" y="794">the argument stack.</text>
+    <path class="arrow" d="M 510 836 L 510 884" />
+  </g>
+
+  <g>
+    <text class="code" x="24" y="918">.unflatten()</text>
+    <rect class="box" x="360" y="886" width="300" height="108" rx="3" />
+    <text class="stack" x="376" y="944">[null, [10, 20, 30]]</text>
+    <text class="note" x="700" y="934">Collect the stack into one</text>
+    <text class="note" x="700" y="954">array argument.</text>
+    <path class="arrow" d="M 510 996 L 510 1044" />
+  </g>
+
+  <g>
+    <text class="code" x="24" y="1078">.finally((e, sizes) =&gt; ...)</text>
+    <rect class="box" x="360" y="1046" width="300" height="108" rx="3" />
+    <text class="stack" x="376" y="1084">e = null</text>
+    <text class="stack" x="376" y="1104">sizes = [10, 20, 30]</text>
+    <text class="note" x="700" y="1094">Handle the error and print</text>
+    <text class="note" x="700" y="1114">the result.</text>
+  </g>
+
+  <line class="rule" x1="24" y1="1206" x2="976" y2="1206" />
+  <text class="footer" x="24" y="1234">Every step returns the chain and transforms the argument stack.</text>
+  <text class="footer" x="24" y="1256">par* waits for every task; seq* runs one at a time.</text>
+</svg>

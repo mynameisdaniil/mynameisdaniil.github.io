@@ -223,15 +223,19 @@ test("homepage Writing section points at the English article", () => {
   );
   assert.ok(articleLink, "writing section must link to the English article");
   assert.match(articleLink.label, /Haskell for Absolute Beginners/);
-  assert.ok(
-    links.some((link) => link.href === "https://habr.com/ru/post/251307/"),
-    "the unrelated writing entry stays untouched",
-  );
-  assert.equal(
-    links.some((link) => link.href === "https://habr.com/ru/post/319440/"),
-    false,
-    "the Russian article moves to the article page as the source link",
-  );
+
+  const yaffUrl = "https://mynameisdaniil.dev/habr/yaff/";
+  const yaffLink = links.find((link) => new URL(link.href, siteUrl).href === yaffUrl);
+  assert.ok(yaffLink, "writing section must link to the English YAFF article");
+  assert.match(yaffLink.label, /YAFF/);
+
+  for (const source of ["319440", "251307"]) {
+    assert.equal(
+      links.some((link) => link.href.includes(source)),
+      false,
+      `the Russian original ${source} moves to the article page as the source link`,
+    );
+  }
 });
 
 test("sitemap lists the article canonical URL", () => {
@@ -248,6 +252,7 @@ test("service worker cache version hashes the article runtime", async () => {
     "assets/site.css",
     "assets/app.min.js",
     "habr/habradude/index.html",
+    "habr/yaff/index.html",
     "js/article.js",
     "js/analytics.js",
     "js/print-lifecycle.js",
