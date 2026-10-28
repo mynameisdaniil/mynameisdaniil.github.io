@@ -1,5 +1,6 @@
 import { loadContent, renderMarkdown, ContentError } from "./content.js";
 import { typeset, unjustify, clearProtrusion } from "../typography/src/index-en.js";
+import { installPrintLifecycle } from "./print-lifecycle.js";
 import { initAnalytics } from "./analytics.js";
 
 const masthead = document.querySelector(".masthead");
@@ -7,27 +8,6 @@ const titleEl = document.getElementById("site-title");
 const subtitleEl = document.getElementById("site-subtitle");
 const linksEl = document.getElementById("site-links");
 const paper = document.getElementById("paper");
-let typesetter = null;
-
-window.addEventListener("beforeprint", () => {
-  clearProtrusion(paper);
-  unjustify([...paper.querySelectorAll("p")]);
-});
-
-window.addEventListener("afterprint", () => {
-  const printMedia = window.matchMedia("print");
-  if (printMedia.matches) {
-    printMedia.addEventListener(
-      "change",
-      (event) => {
-        if (!event.matches) typesetter?.refresh();
-      },
-      { once: true },
-    );
-  } else {
-    typesetter?.refresh();
-  }
-});
 
 function createLink(link) {
   const a = document.createElement("a");
@@ -98,7 +78,8 @@ async function boot() {
     subtitleEl.textContent = model.meta.subtitle;
     renderLinks(linksEl, model.meta.links);
     paper.replaceChildren(...model.sections.map(renderSection));
-    typesetter = typeset(paper);
+    const typesetter = typeset(paper);
+    installPrintLifecycle({ win: window, root: paper, clearProtrusion, unjustify, typesetter });
   } catch (err) {
     console.error(err);
     showError(err instanceof ContentError ? err.details : [String(err)]);

@@ -1,0 +1,507 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Haskell for Absolute Beginners: A Codefights Walkthrough — Daniil Sobol</title>
+    <meta
+      name="description"
+      content="A code-first introduction to Haskell for programmers coming from JavaScript or Python, built around a Codefights problem about counting the train wagons a very relaxed Dude missed."
+    />
+    <link rel="canonical" href="https://mynameisdaniil.dev/habr/habradude/" />
+    <meta name="author" content="Daniil Sobol" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://mynameisdaniil.dev/habr/habradude/" />
+    <meta
+      property="og:title"
+      content="Haskell for Absolute Beginners: A Codefights Walkthrough"
+    />
+    <meta
+      property="og:description"
+      content="A code-first introduction to Haskell for programmers coming from JavaScript or Python, built around a Codefights problem about counting the train wagons a very relaxed Dude missed."
+    />
+    <meta property="og:image" content="https://mynameisdaniil.dev/assets/og.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="article:published_time" content="2017-01-18" />
+    <meta property="article:author" content="Daniil Sobol" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta
+      name="twitter:title"
+      content="Haskell for Absolute Beginners: A Codefights Walkthrough"
+    />
+    <meta
+      name="twitter:description"
+      content="A code-first introduction to Haskell for programmers coming from JavaScript or Python, built around a Codefights problem about counting the train wagons a very relaxed Dude missed."
+    />
+    <meta name="twitter:image" content="https://mynameisdaniil.dev/assets/og.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png" />
+    <link
+      rel="preload"
+      href="/assets/fonts/latin-modern-roman-regular.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      href="/assets/fonts/gost-type-a-regular.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      href="/assets/fonts/latin-modern-mono-regular.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link rel="stylesheet" href="/assets/fonts.css" />
+    <link rel="stylesheet" href="/assets/site.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#paper">Skip to content</a>
+    <div class="page page--article">
+      <header class="masthead masthead--article">
+        <a class="masthead__home" href="/">Daniil Sobol</a>
+        <nav class="article-nav" aria-label="Site">
+          <a href="/">Home</a>
+        </nav>
+      </header>
+      <main class="paper paper--article" id="paper" aria-labelledby="article-title" tabindex="-1">
+        <article class="article">
+          <header class="article__header">
+            <h1 class="article__title" id="article-title">
+              Haskell for Absolute Beginners: A Codefights Walkthrough
+            </h1>
+            <p class="article__meta">
+              By Daniil Sobol ·
+              <time datetime="2017-01-18">18 January 2017</time> ·
+              <a href="https://habr.com/ru/articles/319440/">Original Russian article on Habr</a>
+            </p>
+          </header>
+
+
+          <figure>
+            <img
+              src="crowbar.png"
+              width="400"
+              height="402"
+              alt="A hand-drawn crowbar with a red outline"
+              decoding="async"
+            />
+          </figure>
+
+          <p>
+            If you're interested in functional programming — or even slowly trying to get the
+            hang of it — you've probably heard the same thing more than once. The big difference
+            from the imperative style you're used to is that programs are built from the general
+            to the particular, not the other way around. First you decide what you want, and only
+            then how to get there.
+          </p>
+
+          <p>
+            It sounds simple. In practice, it gives your brain no peace and causes a lot of
+            frustration the moment you try to write something useful. If that sounds familiar —
+            or if you're just curious about Haskell and FP — keep reading. I'll show you how
+            simple it all is. This article is in the “no time to explain, write code” style.
+          </p>
+
+          <p>
+            The idea came to me the morning after I finished
+            <a href="https://codefights.com/challenge/X8dWNNGxbAAnMkBaB"
+              >the contest on codefights.com</a
+            >, where I had to shave off another 10 characters to get the shortest solution. Then I
+            looked at the other entries and saw this: if I hadn't finished mine at five in the
+            morning and hadn't forgotten to apply one hack, mine would have been the shortest.
+            More importantly, it would have stayed simple and clear.
+          </p>
+
+          <p>
+            Wait a minute, I thought. If you explain a couple of nuances to any programmer who's
+            written JavaScript or Python, they'll get it right away. Let me go
+            <a href="https://stackedit.io/editor">write</a>
+            <a href="https://habr.com/ru/articles/319440/">an article about it on Habr</a>!
+          </p>
+
+          <p>
+            So, the problem. There's a Dude. The Dude likes to come to the railway station and
+            count the wagons on the train that passes through every day. He likes it so much that
+            he shows up every day. Sometimes he goes bowling and drinks White Russians. And then
+            he can drop out of reality for a few days. When he comes back to his senses, the first
+            thing he wants to know is how many wagons he missed. We're going to help him with
+            that.
+          </p>
+
+          <p>
+            The number of wagons on the train isn't constant. On the first day of the month, the
+            train is just one wagon:
+          </p>
+
+          <figure>
+            <img
+              src="train_one.png"
+              width="800"
+              height="540"
+              alt="A hand-drawn locomotive pulling one wagon"
+              loading="lazy"
+              decoding="async"
+            />
+          </figure>
+
+          <p>Every day after that, there are two more wagons:</p>
+
+          <figure>
+            <img
+              src="train_three.png"
+              width="800"
+              height="333"
+              alt="A hand-drawn locomotive pulling three wagons"
+              loading="lazy"
+              decoding="async"
+            />
+          </figure>
+
+          <p>
+            And so on until the start of the next month. The inputs: <code>month ∈ [1..12]</code>,
+            <code>day ∈ [1..the maximum number of days in that month]</code>, and
+            <code>n ∈ [0..365]</code> — the number of days spent bowling. Return an integer: how
+            many wagons the Dude will miss.
+          </p>
+
+          <p>
+            For example, <code>month=1, day=1, n=1</code> gives <code>1</code>. On the first day
+            of any month the train has one wagon, and only one day is missed — that very first
+            day. For <code>month=5, day=1, n=5</code> the answer is <code>25</code>:
+          </p>
+
+          <figure>
+            <img
+              src="example_25.png"
+              width="800"
+              height="536"
+              alt="Hand-drawn chart of wagons per day for days 1 through 5, summing to 25"
+              loading="lazy"
+              decoding="async"
+            />
+          </figure>
+
+          <p>
+            For <code>month=2, day=1, n=30</code> the answer is 788 (can I skip drawing that
+            one?). And so on.
+          </p>
+
+          <p>
+            Install Haskell, unholster your favorite editor, create an
+            <a href="dude.hs">empty file</a> called <code>dude.hs</code>, and make it executable
+            with <code>chmod +x dude.hs</code>. We won't compile anything — Haskell works
+            perfectly well as a scripting language. Put <code>#!/usr/bin/env runhaskell</code> at
+            the very top, and we're ready to start. (Or just use this
+            <a href="https://rextester.com/l/haskell_online_compiler">online service</a>.)
+          </p>
+
+          <pre><code>#!/usr/bin/env runhaskell
+dude month day n = …</code></pre>
+
+          <p>
+            <code>dude</code> is the name of the function. Everything after it is an argument,
+            and after the equals sign comes the function body — which we're about to invent.
+          </p>
+
+          <p>
+            So what do we want to get? The number of missed wagons. And what is that number? The
+            sum of the wagons over all the days the Dude didn't show up at the station. So we need
+            a sum.
+          </p>
+
+          <p>
+            We'll find it in the
+            <a href="https://hackage.haskell.org/package/base-4.9.0.0/docs/Prelude.html"
+              >Prelude</a
+            >
+            — the standard library that every module imports by default. Look carefully and you'll
+            find the
+            <a href="https://hackage.haskell.org/package/base-4.9.0.0/docs/Prelude.html#v:sum"
+              ><code>sum</code></a
+            >
+            function. It adds up all the numbers in a list. Notice I haven't said a word about
+            types, monads, or whatever else they've tried to scare you with. Haskell is actually
+            much simpler than that, and very similar to modern JavaScript. (Which is a good moment
+            to recall
+            <a href="https://lionet.livejournal.com/124973.html">Lev Valkin's post</a> about
+            throwing the syntactic garbage out of JavaScript and ending up with Haskell.) Anyway,
+            we're getting carried away:
+          </p>
+
+          <pre><code>dude month day n = sum …</code></pre>
+
+          <p>
+            Good — we know how to find a sum. Now we need the list of missed wagons. To begin
+            with, let's put a test list in place of that ridiculous ellipsis and make sure the
+            program runs at all. Something like this:
+          </p>
+
+          <pre><code>dude month day n = sum [1, 3, 5, 7, 9]</code></pre>
+
+          <p>
+            Let's run it: <code>./dude.hs</code>. Doesn't work? Is it yelling at you? Of course it
+            is. We need an entry point — the <code>main</code> function — and it also has to turn
+            our answer into a string and print it. Something like this will do:
+          </p>
+
+          <pre><code>main = putStrLn (show (dude 1 1 1))</code></pre>
+
+          <p>
+            Whoa-whoa-whoa. So many parentheses at once, almost like Lisp. They're there because
+            function application in Haskell is left-associative. If we'd left them out and written
+            this:
+          </p>
+
+          <pre><code>main = putStrLn show dude 1 1 1</code></pre>
+
+          <p>Haskell would have decided we meant this:</p>
+
+          <pre><code>main = ((putStrLn show) dude) 1 1 1</code></pre>
+
+          <p>
+            That's not what we want. In the correct <code>main</code>, we first call
+            <code>dude</code> with three arguments (which, for now, it happily ignores), then use
+            <code>show</code> to turn the result into a string, and only then print that string
+            with <code>putStrLn</code>.
+          </p>
+
+          <p>
+            In the wrong version, <code>putStrLn</code> tries to print the <code>show</code>
+            function — unsuccessfully, as you might guess. Then the result (which should be a
+            function, but never will be) gets <code>dude</code> as its only argument. Then the
+            result of that monstrosity (which should also be a function) gets those three
+            arguments. That's not how any of this works.
+          </p>
+
+          <p>
+            Hence the parentheses. There's also a wonderful operator, <code>$</code>, which
+            basically tells Haskell: “first do everything to the right of me, then put the result
+            in my place.” So the correct <code>main</code> can be rewritten like this:
+          </p>
+
+          <pre><code>main = putStrLn $ show $ dude 1 1 1</code></pre>
+
+          <p>
+            It's the turnip fairy tale all over again: everyone depends on the one before them.
+            We want to print, but first we need a string. We want a string, but first we need to
+            call the Dude. The Dude takes three arguments and returns a sum. The sum turns into a
+            string easily, and the string prints easily. Beautiful.
+          </p>
+
+          <p>
+            Back to the wagons. If we run <code>./dude.hs</code> now, we get <code>25</code> — the
+            sum of the numbers in our test list. How do we build the real list?
+          </p>
+
+          <p>
+            Remember, we want the wagon counts for the days the Dude didn't come to the station.
+            So why not build a list of wagons for every day of the year, then pick out the days he
+            was away? I don't know about you, but I like that idea. We dig into the Prelude and
+            find the
+            <a href="https://hackage.haskell.org/package/base-4.9.0.0/docs/Prelude.html#v:take"
+              ><code>take</code></a
+            >
+            function:
+          </p>
+
+          <pre><code>dude month day n = sum $ take n $ …</code></pre>
+
+          <p>
+            Okay, we've taken <code>n</code> days from the list. But those are the first
+            <code>n</code> days of the first month of the year, because <code>take</code> takes
+            the first <code>n</code> values from the start of the list. Not good. We need to skip
+            <code>day</code> days from the start of the month — actually <code>day - 1</code>,
+            since the first day of absence counts too. We'll retreat the way Napoleon did —
+            burning down Moscow — using
+            <a href="https://hackage.haskell.org/package/base-4.9.0.0/docs/Prelude.html#v:drop"
+              ><code>drop</code></a
+            >:
+          </p>
+
+          <pre><code>dude month day n = sum $ take n $ drop (day - 1) $ …</code></pre>
+
+          <p>
+            And then another <code>month - 1</code> months from the start of the year. We'll deal
+            with that a little later. Since we're working with days, we can't just skip a few
+            months: every month has its own number of days, one that defies all logic and common
+            sense. So let's write down the number of days in each month somewhere on a new line.
+            It'll come in handy:
+          </p>
+
+          <pre><code>months = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]</code></pre>
+
+          <p>
+            And you know what? It might turn out that the Dude starts on the 31st and finishes on
+            the 9th. We'll have to account for that. Jumping from the end of the list (December)
+            back to the beginning (January)? Too lazy. Better to turn the list into an infinite
+            one and always walk forward:
+          </p>
+
+          <pre><code>months = cycle [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]</code></pre>
+
+          <p>
+            The
+            <a href="https://hackage.haskell.org/package/base-4.9.0.0/docs/Prelude.html#v:cycle"
+              ><code>cycle</code></a
+            >
+            function turns a finite list into an infinite one by cycling the original list. It's
+            implemented roughly like this:
+          </p>
+
+          <pre><code>cycle list = list ++ cycle list</code></pre>
+
+          <p>
+            Here <code>++</code> is the operator that glues two lists into one, and
+            <code>list</code> is our list — the one we want to make infinite.
+          </p>
+
+          <p>
+            How is that possible, you ask? This is infinite recursion! Memory is finite, time is
+            finite, but the recursion and the list it produces aren't? Yes. Exactly. The thing is,
+            Haskell is lazy (just like programmers — what a coincidence), so it won't do anything
+            until the results are needed (procrastination?). That's why we can work with infinite
+            lists here — and with trees, and with whatever else can be infinite (human
+            stupidity?). But only as long as we work on a finite subset of such a list.
+          </p>
+
+          <p>If we'd written this:</p>
+
+          <pre><code>months = cycle [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+dude month day n = sum months --infinite dude</code></pre>
+
+          <p>
+            then the online runner would have killed Haskell after four seconds (try it, by the
+            way) because of the execution time limit. Summing the elements of an infinite list
+            takes infinitely long. Good thing we only take <code>n</code> days from our infinite
+            list!
+          </p>
+
+          <p>
+            Now for the most important part: turn the list of months into a list of days, then
+            count how many wagons there are in each one. To go from one thing (a list of months)
+            to another thing (a list of days), the whole universe uses
+            <a href="https://hackage.haskell.org/package/base-4.9.0.0/docs/Prelude.html#v:map"
+              ><code>map</code></a
+            >:
+          </p>
+
+          <pre><code>months = cycle [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+to_days max_days = …
+dude month day n = sum $ take n $ drop (day - 1) $ map to_days months</code></pre>
+
+          <p>
+            The first argument of <code>map</code> is a function that turns a month into a list of
+            days — we still have to invent it. The second argument is our infinite list. Don't
+            worry, <code>map</code> is lazy too and won't walk further than we need.
+          </p>
+
+          <p>Now it's really simple:</p>
+
+          <pre><code>months = cycle [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+to_days max_days = [1..max_days]
+dude month day n = sum $ take n $ drop (day - 1) $ map to_days months</code></pre>
+
+          <p>
+            <code>[1..max_days]</code> is syntactic sugar for a list of all integers from 1 to
+            <code>max_days</code>. If we run the program now, it won't work again. The thing is,
+            <code>to_days</code> receives just one number from <code>map</code> — one element from
+            the list of days in a month — but returns a whole list of days in that month. So we
+            get a list inside a list:
+          </p>
+
+          <figure>
+            <img
+              src="map.png"
+              width="800"
+              height="375"
+              alt="Hand-drawn illustration of map turning month lengths into lists of days"
+              loading="lazy"
+              decoding="async"
+            />
+          </figure>
+
+          <p>
+            We can call
+            <a href="https://hackage.haskell.org/package/base-4.9.0.0/docs/Prelude.html#v:concat"
+              ><code>concat</code></a
+            >
+            and flatten it into one dimension:
+          </p>
+
+          <pre><code>months = cycle [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+to_days max_days = [1..max_days]
+dude month day n = sum $ take n $ drop (day - 1) $ concat $ map to_days months</code></pre>
+
+          <p>
+            Or we can use
+            <a
+              href="https://hackage.haskell.org/package/base-4.9.0.0/docs/Prelude.html#v:concatMap"
+              ><code>concatMap</code></a
+            >
+            right away:
+          </p>
+
+          <pre><code>months = cycle [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+to_days max_days = [1..max_days]
+dude month day n = sum $ take n $ drop (day - 1) $ concatMap to_days months</code></pre>
+
+          <p>
+            Almost there. Now let's turn the list of days into a list of wagons for that day. The
+            problem says that on the first day of the month the train has one wagon, and every day
+            after that it adds two. Let's write that on its own line:
+          </p>
+
+          <pre><code>number_of_wagons x = x*2 - 1</code></pre>
+
+          <p>
+            Here <code>x</code> is the day number in the month, of course. We map this function
+            over the list of days from the previous step — and don't forget to skip
+            <code>month - 1</code> months:
+          </p>
+
+          <pre><code>#!/usr/bin/env runhaskell
+months = cycle [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+to_days max_days = [1..max_days]
+number_of_wagons x = x*2 - 1
+dude month day n = sum $ take n $ drop (day - 1) $ map number_of_wagons $ concatMap to_days $ drop (month - 1) months
+main = putStrLn $ show $ dude 1 1 1</code></pre>
+
+          <p>
+            Let's run it. It works. The answer is <code>1</code>. Let's try other values —
+            <code>3 2 4</code>, for example. The answer is <code>24</code>. Now let's check our
+            hypothesis about 31 December. Input: <code>12 31 10</code>. Answer:
+            <code>142</code>. That's a lot! But the answer is correct.
+          </p>
+
+          <hr />
+
+          <p>
+            So where's the shortest solution, you ask? Here's the thing: there's a word that
+            starts with the letter m. And I still haven't figured out how to explain it in the
+            same format. Besides, this has gotten long — for one article it would be overkill.
+            Next time.
+          </p>
+
+          <figure>
+            <img
+              src="lambda_plain.png"
+              width="800"
+              height="603"
+              alt="Hand-drawn lambda symbol on a plain background"
+              loading="lazy"
+              decoding="async"
+            />
+          </figure>
+        </article>
+      </main>
+    </div>
+    <script type="module" src="/js/article.js"></script>
+  </body>
+</html>

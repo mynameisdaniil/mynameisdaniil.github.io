@@ -10,7 +10,14 @@ const SHELL_ASSETS = [
   "assets/fonts.css",
   "assets/site.css",
   "assets/app.min.js",
+  "habr/habradude/index.html",
+  "js/article.js",
+  "js/analytics.js",
+  "js/print-lifecycle.js",
+  "typography/dist/typeset-en.esm.js",
 ];
+
+export { SHELL_ASSETS };
 
 export async function cacheVersion() {
   const hash = createHash("sha256");

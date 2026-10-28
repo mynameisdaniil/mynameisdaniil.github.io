@@ -12,7 +12,7 @@ sections:
   - id: writing
     title: Writing
     body: |
-      [My take on an introductory FP article via Haskell](https://habr.com/ru/post/319440/)
+      [Haskell for Absolute Beginners: A Codefights Walkthrough](/habr/habradude/)
 
       [YAFF — asynchronous stream-oriented programming before it became mainstream](https://habr.com/ru/post/251307/)
   - id: talks
